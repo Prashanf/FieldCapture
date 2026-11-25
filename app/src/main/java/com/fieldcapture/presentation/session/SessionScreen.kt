@@ -40,6 +40,7 @@ import com.fieldcapture.presentation.components.CaptureCard
 import com.fieldcapture.presentation.components.ConnectionStatusBar
 import com.fieldcapture.presentation.components.JobControlBar
 import com.fieldcapture.presentation.components.JobRecordSummaryCard
+import com.fieldcapture.presentation.components.OfflineIndicator
 import com.fieldcapture.presentation.components.VoiceCommandIndicator
 import com.fieldcapture.presentation.components.shareJobRecordJson
 import com.fieldcapture.voice.VoiceCommandService.ListeningState
@@ -58,6 +59,7 @@ fun SessionScreen(
     val listeningState by viewModel.listeningState.collectAsState()
     val lastCommand by viewModel.lastCommand.collectAsState()
     val isOnline by viewModel.isOnline.collectAsState()
+    val queuedCount by viewModel.queuedCount.collectAsState()
     val captures by viewModel.captures.collectAsState()
     val currentJobId by viewModel.currentJobId.collectAsState()
     val jobRecord by viewModel.jobRecord.collectAsState()
@@ -94,6 +96,12 @@ fun SessionScreen(
                 glassesState = glassesState,
                 listeningState = listeningState,
                 isOnline = isOnline
+            )
+
+            OfflineIndicator(
+                isOnline = isOnline,
+                queuedCount = queuedCount,
+                onRetrySync = { viewModel.retryQueuedExtractions() }
             )
 
             Column(

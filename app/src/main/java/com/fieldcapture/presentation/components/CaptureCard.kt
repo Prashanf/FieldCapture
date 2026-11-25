@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NoteAdd
+import androidx.compose.material.icons.filled.CloudQueue
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -86,9 +88,17 @@ fun CaptureCard(
 
                 AssistChip(
                     onClick = {},
+                    colors = if (capture.status == CaptureStatus.QUEUED) {
+                        AssistChipDefaults.assistChipColors(
+                            containerColor = Color(0xFFFFF3E0),
+                            labelColor = Color(0xFFE65100)
+                        )
+                    } else {
+                        AssistChipDefaults.assistChipColors()
+                    },
                     label = {
                         Text(
-                            text = capture.status.name,
+                            text = if (capture.status == CaptureStatus.QUEUED) "queued" else capture.status.name,
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
@@ -111,6 +121,25 @@ fun CaptureCard(
             }
 
             when {
+                capture.status == CaptureStatus.QUEUED -> {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CloudQueue,
+                            contentDescription = "Queued for sync",
+                            tint = Color(0xFFE65100),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "Queued locally — will extract automatically when online",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFE65100)
+                        )
+                    }
+                }
                 capture.status == CaptureStatus.EXTRACTING -> {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(

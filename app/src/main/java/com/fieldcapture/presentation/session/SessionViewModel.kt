@@ -24,7 +24,8 @@ import com.fieldcapture.glasses.CameraStreamManager
 import com.fieldcapture.glasses.GlassesSessionManager
 import com.fieldcapture.glasses.GlassesState
 import com.fieldcapture.glasses.MockDeviceManager
-import com.fieldcapture.sync.ConnectivityMonitor
+import com.fieldcapture.network.ConnectivityObserver
+import com.fieldcapture.sync.SyncManager
 import com.fieldcapture.util.JsonExporter
 import com.fieldcapture.voice.AudioFeedbackManager
 import com.fieldcapture.voice.VoiceCommandParser
@@ -32,12 +33,14 @@ import com.fieldcapture.voice.VoiceCommandService
 import com.meta.wearable.dat.camera.types.StreamState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
@@ -66,7 +69,8 @@ class SessionViewModel @Inject constructor(
     private val captureRepository: CaptureRepository,
     private val jobRecordRepository: JobRecordRepository,
     private val jsonExporter: JsonExporter,
-    connectivityMonitor: ConnectivityMonitor
+    private val connectivityObserver: ConnectivityObserver,
+    private val syncManager: SyncManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionUiState())
@@ -78,8 +82,11 @@ class SessionViewModel @Inject constructor(
     val latestFrame: StateFlow<Bitmap?> = cameraStreamManager.latestFrame
     val listeningState: StateFlow<VoiceCommandService.ListeningState> = voiceCommandService.listeningState
 
-    val isOnline: StateFlow<Boolean> = connectivityMonitor.observeConnectivity()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    private val _isOnline = MutableStateFlow(connectivityObserver.isOnline())
+    val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
+
+    val queuedCount: StateFlow<Int> = captureRepository.getPendingExtractionCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     private val _captures = MutableStateFlow<List<Capture>>(emptyList())
     val captures: StateFlow<List<Capture>> = _captures.asStateFlow()
@@ -103,11 +110,34 @@ class SessionViewModel @Inject constructor(
 
     private var wasPreviouslyConnected = false
     private var keepVoiceListeningActive = false
+    private var capturesObserverJob: Job? = null
 
     init {
         audioFeedbackManager.initialize()
+        observeConnectivity()
         observeVoiceCommands()
         observeGlassesStateForFeedback()
+        observeJobCapturesFromRoom(_uiState.value.jobId)
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            connectivityObserver.observe().collectLatest { status ->
+                _isOnline.value = (status == ConnectivityObserver.Status.AVAILABLE)
+            }
+        }
+    }
+
+    private fun observeJobCapturesFromRoom(jobId: String) {
+        capturesObserverJob?.cancel()
+        capturesObserverJob = viewModelScope.launch {
+            captureRepository.observeCapturesForJob(jobId).collect { dbCaptures ->
+                val inMemoryBytes = _captures.value.associate { it.id to it.imageBytes }
+                _captures.value = dbCaptures.map { dbCap ->
+                    dbCap.copy(imageBytes = dbCap.imageBytes ?: inMemoryBytes[dbCap.id])
+                }
+            }
+        }
     }
 
     fun initializeSession(useMock: Boolean = true) {
@@ -138,6 +168,7 @@ class SessionViewModel @Inject constructor(
         _jobRecord.value = null
         _exportedFilePath.value = null
         _uiState.value = _uiState.value.copy(jobId = newJobId, errorMessage = null)
+        observeJobCapturesFromRoom(newJobId)
         audioFeedbackManager.speak("Job started. Ready for captures.")
     }
 
@@ -181,6 +212,10 @@ class SessionViewModel @Inject constructor(
             Log.i(TAG, "Job exported to: ${file.absolutePath}")
             Log.i(TAG, "JSON preview:\n${jsonExporter.toJsonString(record).take(500)}")
         }
+    }
+
+    fun retryQueuedExtractions() {
+        syncManager.triggerQueueProcessing()
     }
 
     fun exportCompletedJob() {
@@ -331,43 +366,50 @@ class SessionViewModel @Inject constructor(
     }
 
     private suspend fun runExtraction(capture: Capture) {
-        updateCaptureStatus(capture.id, CaptureStatus.EXTRACTING)
+        if (connectivityObserver.isOnline()) {
+            updateCaptureStatus(capture.id, CaptureStatus.EXTRACTING)
 
-        val extractionMetadata = ExtractionMetadata(
-            room = capture.metadata.room,
-            surface = capture.metadata.surface,
-            spokenText = capture.metadata.noteText,
-            captureTimestamp = capture.timestamp
-        )
+            val extractionMetadata = ExtractionMetadata(
+                room = capture.metadata.room,
+                surface = capture.metadata.surface,
+                spokenText = capture.metadata.noteText,
+                captureTimestamp = capture.timestamp
+            )
 
-        val result = extractCaptureDataUseCase.execute(
-            imageBytes = capture.imageBytes,
-            captureType = capture.type,
-            metadata = extractionMetadata
-        )
+            val result = extractCaptureDataUseCase.execute(
+                imageBytes = capture.imageBytes,
+                captureType = capture.type,
+                metadata = extractionMetadata
+            )
 
-        result.fold(
-            onSuccess = { extractionResult ->
-                updateCaptureWithExtraction(capture.id, extractionResult, CaptureStatus.EXTRACTED)
-                Log.d(
-                    TAG,
-                    "Extraction complete for ${capture.type}: confidence=${extractionResult.overallConfidence}"
-                )
-                if (capture.type == CaptureType.NAMEPLATE &&
-                    extractionResult is NameplateExtraction &&
-                    extractionResult.error == null
-                ) {
-                    val mfg = extractionResult.manufacturer ?: "unknown"
-                    audioFeedbackManager.speak(
-                        "Nameplate extracted. $mfg ${extractionResult.equipmentType ?: "equipment"}"
+            result.fold(
+                onSuccess = { extractionResult ->
+                    updateCaptureWithExtraction(capture.id, extractionResult, CaptureStatus.EXTRACTED)
+                    Log.d(
+                        TAG,
+                        "Extraction complete for ${capture.type}: confidence=${extractionResult.overallConfidence}"
                     )
+                    if (capture.type == CaptureType.NAMEPLATE &&
+                        extractionResult is NameplateExtraction &&
+                        extractionResult.error == null
+                    ) {
+                        val mfg = extractionResult.manufacturer ?: "unknown"
+                        audioFeedbackManager.speak(
+                            "Nameplate extracted. $mfg ${extractionResult.equipmentType ?: "equipment"}"
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    Log.w(TAG, "Extraction failed, queued for retry: ${error.message}")
+                    updateCaptureStatus(capture.id, CaptureStatus.QUEUED)
+                    syncManager.triggerQueueProcessing()
                 }
-            },
-            onFailure = { error ->
-                Log.e(TAG, "Extraction failed for ${capture.id}", error)
-                updateCaptureStatus(capture.id, CaptureStatus.EXTRACTION_FAILED)
-            }
-        )
+            )
+        } else {
+            updateCaptureStatus(capture.id, CaptureStatus.QUEUED)
+            audioFeedbackManager.speak("Offline. Capture saved. Will extract when connected.")
+            Log.i(TAG, "Offline — capture ${capture.id} queued")
+        }
     }
 
     private fun updateCaptureStatus(captureId: String, status: CaptureStatus) {

@@ -17,8 +17,14 @@ interface CaptureDao {
     @Query("SELECT * FROM captures WHERE id = :id LIMIT 1")
     suspend fun getCaptureById(id: String): CaptureEntity?
 
+    @Query("SELECT * FROM captures WHERE status = :status ORDER BY timestamp ASC")
+    suspend fun getCapturesByStatus(status: CaptureStatus): List<CaptureEntity>
+
     @Query("SELECT * FROM captures WHERE status IN (:statuses) ORDER BY timestamp ASC")
-    suspend fun getCapturesByStatus(statuses: List<CaptureStatus>): List<CaptureEntity>
+    suspend fun getCapturesByStatuses(statuses: List<CaptureStatus>): List<CaptureEntity>
+
+    @Query("SELECT COUNT(*) FROM captures WHERE status IN ('QUEUED', 'EXTRACTION_FAILED')")
+    fun getPendingExtractionCount(): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCapture(entity: CaptureEntity)

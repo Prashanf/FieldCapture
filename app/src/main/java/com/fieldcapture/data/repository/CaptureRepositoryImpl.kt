@@ -15,6 +15,7 @@ import com.fieldcapture.extraction.NoteExtraction
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 import java.time.Instant
 import javax.inject.Inject
 
@@ -49,8 +50,23 @@ class CaptureRepositoryImpl @Inject constructor(
         captureDao.updateExtraction(id, gson.toJson(result), status)
     }
 
+    override suspend fun getCapturesByStatus(status: CaptureStatus): List<Capture> {
+        return captureDao.getCapturesByStatus(status).map { it.toDomain() }
+    }
+
+    override fun getPendingExtractionCount(): Flow<Int> {
+        return captureDao.getPendingExtractionCount()
+    }
+
+    override suspend fun loadImageBytes(captureId: String): ByteArray? {
+        val capture = captureDao.getCaptureById(captureId) ?: return null
+        val path = capture.imagePath ?: return null
+        val file = File(path)
+        return if (file.exists()) file.readBytes() else null
+    }
+
     override suspend fun getPendingCaptures(): List<Capture> {
-        return captureDao.getCapturesByStatus(
+        return captureDao.getCapturesByStatuses(
             listOf(CaptureStatus.CAPTURED, CaptureStatus.EXTRACTION_FAILED, CaptureStatus.QUEUED)
         ).map { it.toDomain() }
     }

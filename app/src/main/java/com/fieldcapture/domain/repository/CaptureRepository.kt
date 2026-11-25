@@ -11,6 +11,9 @@ interface CaptureRepository {
     suspend fun saveCapture(capture: Capture): Result<Unit>
     suspend fun updateCaptureStatus(id: String, status: CaptureStatus): Result<Unit>
     suspend fun updateExtraction(id: String, result: ExtractionResult, status: CaptureStatus): Result<Unit>
+    suspend fun getCapturesByStatus(status: CaptureStatus): List<Capture>
+    fun getPendingExtractionCount(): Flow<Int>
+    suspend fun loadImageBytes(captureId: String): ByteArray?
     suspend fun getPendingCaptures(): List<Capture>
     suspend fun deleteCapture(id: String): Result<Unit>
 }
