@@ -1,16 +1,194 @@
 {
-  "job_id": "00000000-0000-0000-0000-000000000002",
-  "created_at": "2026-11-25T00:00:00Z",
-  "technician_id": "tech_001",
-  "location": { "address": "", "lat": 0, "lng": 0 },
-  "session": {
-    "started_at": "2026-11-25T00:00:00Z",
-    "ended_at": "2026-11-25T00:10:00Z",
-    "device": "mock_rayban_meta_gen2",
-    "total_captures": 0,
-    "retakes": 0
+  "schema_version": "1.0.0",
+  "job_id": "SAMPLE-MR-002",
+  "created_at": "2024-11-16T10:00:00.000Z",
+  "completed_at": "2024-11-16T10:50:00.000Z",
+  "technician_name": "Sarah Johnson",
+  "job_address": "456 Oak Avenue, Basement, Springfield, IL 62704",
+  "job_type": "water_damage_assessment",
+  "equipment": [
+    {
+      "capture_id": "cap-010",
+      "image_path": "captures/nameplate_010.jpg",
+      "captured_at": "2024-11-16T10:05:00.000Z",
+      "equipment_type": "Dehumidifier",
+      "manufacturer": "Dri-Eaz",
+      "model_number": "F413",
+      "serial_number": "DE2024-00891",
+      "manufacture_date": "2024",
+      "capacity": "29 GPD",
+      "confidence": 0.92,
+      "quality_scores": {
+        "blur_score": 520.0,
+        "brightness_score": 130,
+        "edge_density": 15.2
+      }
+    }
+  ],
+  "damage_assessments": [
+    {
+      "capture_id": "cap-011",
+      "image_path": "captures/damage_010.jpg",
+      "captured_at": "2024-11-16T10:15:00.000Z",
+      "damage_type": "mold",
+      "severity": "high",
+      "description": "Active mold colony visible on basement north wall behind removed drywall. Black and green growth pattern covering approximately 20 square feet. Insulation behind drywall is saturated and contaminated.",
+      "affected_materials": [
+        "drywall",
+        "insulation",
+        "framing"
+      ],
+      "affected_area": "approximately 20 sq ft",
+      "room": "basement",
+      "surface": "north wall",
+      "moisture_visible": true,
+      "mold_visible": true,
+      "safety_concerns": "Active mold — recommend respiratory protection for occupants",
+      "confidence": 0.9,
+      "quality_scores": {
+        "blur_score": 380.0,
+        "brightness_score": 85,
+        "edge_density": 11.7
+      }
+    }
+  ],
+  "notes": [
+    {
+      "capture_id": "cap-012",
+      "image_path": "captures/note_010.jpg",
+      "captured_at": "2024-11-16T10:25:00.000Z",
+      "transcribed_text": "Previous water intrusion from foundation crack was repaired 3 months ago. Homeowner reports musty smell persisted after repair. Air quality test recommended.",
+      "category": "homeowner_statement",
+      "image_context": "Foundation repair patch visible at base of wall",
+      "key_facts": [
+        "Foundation crack repaired 3 months ago",
+        "Musty smell persisted",
+        "Air quality test recommended"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "capture_id": "cap-013",
+      "image_path": null,
+      "captured_at": "2024-11-16T10:35:00.000Z",
+      "transcribed_text": "Moisture readings: north wall 45% WME, east wall 18% WME, floor slab near wall 32% WME. Drying target is below 15% WME.",
+      "category": "measurement",
+      "image_context": null,
+      "key_facts": [
+        "North wall: 45% WME",
+        "East wall: 18% WME",
+        "Floor slab: 32% WME",
+        "Target: below 15% WME"
+      ],
+      "confidence": 0.92
+    }
+  ],
+  "line_items": [
+    {
+      "item_number": 1,
+      "code": "MOLD_REMEDIATION",
+      "display_name": "Mold Remediation",
+      "description": "Professional mold removal including containment, HEPA filtration, and treatment",
+      "category": "Remediation",
+      "unit": "sq ft",
+      "unit_price": 15.0,
+      "quantity": 20.0,
+      "total": 300.0,
+      "reason": "Active mold colony on basement north wall",
+      "priority": "high",
+      "source_capture_id": "cap-011",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 2,
+      "code": "REMOVE_REPLACE_DRYWALL",
+      "display_name": "Remove & Replace Drywall",
+      "description": "Remove damaged drywall, dispose, install new drywall with tape and finish",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 4.75,
+      "quantity": 20.0,
+      "total": 95.0,
+      "reason": "Drywall contaminated with mold must be removed",
+      "priority": "high",
+      "source_capture_id": "cap-011",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 3,
+      "code": "REMOVE_REPLACE_INSULATION",
+      "display_name": "Remove & Replace Insulation",
+      "description": "Remove wet/contaminated insulation, install new batt or blown-in insulation",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 2.5,
+      "quantity": 20.0,
+      "total": 50.0,
+      "reason": "Insulation behind drywall is saturated and contaminated",
+      "priority": "high",
+      "source_capture_id": "cap-011",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 4,
+      "code": "ANTIMICROBIAL_TREATMENT",
+      "display_name": "Antimicrobial Treatment",
+      "description": "Apply EPA-registered antimicrobial solution to prevent mold/bacterial growth",
+      "category": "Remediation",
+      "unit": "sq ft",
+      "unit_price": 2.0,
+      "quantity": 40.0,
+      "total": 80.0,
+      "reason": "Treat exposed framing and surrounding area after mold removal",
+      "priority": "medium",
+      "source_capture_id": "cap-011",
+      "confidence": 0.85,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 5,
+      "code": "DEHUMIDIFIER_RENTAL",
+      "display_name": "Dehumidifier Rental",
+      "description": "Commercial dehumidifier rental for moisture control during drying",
+      "category": "Equipment Rental",
+      "unit": "day",
+      "unit_price": 85.0,
+      "quantity": 5.0,
+      "total": 425.0,
+      "reason": "High moisture readings require extended drying",
+      "priority": "medium",
+      "source_capture_id": "cap-011",
+      "confidence": 0.85,
+      "is_valid_code": true
+    }
+  ],
+  "summary": {
+    "total_captures": 4,
+    "nameplate_captures": 1,
+    "damage_captures": 1,
+    "note_captures": 2,
+    "rejected_captures": 0,
+    "total_line_items": 5,
+    "estimate_subtotal": 950.0,
+    "average_extraction_confidence": 0.9,
+    "unknown_line_item_codes": [],
+    "duration_seconds": 3000
   },
-  "captures": [],
-  "line_items": [],
-  "notes": []
+  "metadata": {
+    "app_version": "1.0.0",
+    "sdk_version": "DAT 1.0",
+    "device_model": "Ray-Ban Meta Gen 2 (Mock)",
+    "android_version": "15",
+    "gemini_model": "gemini-3.5-flash",
+    "quality_thresholds": {
+      "blur_general": 80.0,
+      "blur_nameplate": 100.0,
+      "brightness_min": 30.0,
+      "brightness_max": 240.0,
+      "framing_edge_density_min": 2.0
+    }
+  }
 }

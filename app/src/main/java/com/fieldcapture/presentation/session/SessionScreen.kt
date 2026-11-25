@@ -38,7 +38,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.fieldcapture.glasses.GlassesState
 import com.fieldcapture.presentation.components.CaptureCard
 import com.fieldcapture.presentation.components.ConnectionStatusBar
+import com.fieldcapture.presentation.components.JobControlBar
+import com.fieldcapture.presentation.components.JobRecordSummaryCard
 import com.fieldcapture.presentation.components.VoiceCommandIndicator
+import com.fieldcapture.presentation.components.shareJobRecordJson
 import com.fieldcapture.voice.VoiceCommandService.ListeningState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +59,9 @@ fun SessionScreen(
     val lastCommand by viewModel.lastCommand.collectAsState()
     val isOnline by viewModel.isOnline.collectAsState()
     val captures by viewModel.captures.collectAsState()
+    val currentJobId by viewModel.currentJobId.collectAsState()
+    val jobRecord by viewModel.jobRecord.collectAsState()
+    val exportedFilePath by viewModel.exportedFilePath.collectAsState()
 
     val audioPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -96,11 +102,17 @@ fun SessionScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // Live camera preview from Mock Device Kit / Meta DAT stream
+                JobControlBar(
+                    currentJobId = currentJobId,
+                    captureCount = captures.size,
+                    onStartJob = { tech, address -> viewModel.startJob(tech, address) },
+                    onCompleteJob = { viewModel.completeJob() }
+                )
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(190.dp)
+                        .height(170.dp)
                         .background(Color.Black),
                     contentAlignment = Alignment.Center
                 ) {
@@ -141,19 +153,32 @@ fun SessionScreen(
                     )
                 }
 
-                // Scrollable capture list
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    jobRecord?.let { completed ->
+                        item(key = "job_summary_${completed.jobId}") {
+                            JobRecordSummaryCard(
+                                jobRecord = completed,
+                                exportedFilePath = exportedFilePath,
+                                onExportJson = { viewModel.exportCompletedJob() },
+                                onShareJson = { ctx ->
+                                    viewModel.getCompletedJobJson()?.let { json ->
+                                        shareJobRecordJson(ctx, completed.jobId, json)
+                                    }
+                                }
+                            )
+                        }
+                    }
+
                     items(captures, key = { it.id }) { capture ->
                         CaptureCard(capture = capture)
                     }
                 }
 
-                // Session & review controls
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -180,7 +205,6 @@ fun SessionScreen(
                     }
                 }
 
-                // Voice listening controls (phone mic fallback)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

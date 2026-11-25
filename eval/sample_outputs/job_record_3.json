@@ -1,16 +1,293 @@
 {
-  "job_id": "00000000-0000-0000-0000-000000000003",
-  "created_at": "2026-11-25T00:00:00Z",
-  "technician_id": "tech_001",
-  "location": { "address": "", "lat": 0, "lng": 0 },
-  "session": {
-    "started_at": "2026-11-25T00:00:00Z",
-    "ended_at": "2026-11-25T00:10:00Z",
-    "device": "mock_rayban_meta_gen2",
-    "total_captures": 0,
-    "retakes": 0
+  "schema_version": "1.0.0",
+  "job_id": "SAMPLE-WD-003",
+  "created_at": "2024-11-17T14:00:00.000Z",
+  "completed_at": "2024-11-17T15:10:00.000Z",
+  "technician_name": "Mike Chen",
+  "job_address": "789 Elm Drive, Springfield, IL 62704",
+  "job_type": "water_damage_assessment",
+  "equipment": [
+    {
+      "capture_id": "cap-020",
+      "image_path": "captures/nameplate_020.jpg",
+      "captured_at": "2024-11-17T14:08:00.000Z",
+      "equipment_type": "Washing Machine",
+      "manufacturer": "Samsung",
+      "model_number": "WF45R6100AW",
+      "serial_number": "0B4N5CDJ200??1",
+      "manufacture_date": "2020",
+      "capacity": "4.5 cu ft",
+      "confidence": 0.72,
+      "quality_scores": {
+        "blur_score": 180.0,
+        "brightness_score": 110,
+        "edge_density": 9.4
+      }
+    },
+    {
+      "capture_id": "cap-021",
+      "image_path": "captures/nameplate_021.jpg",
+      "captured_at": "2024-11-17T14:15:00.000Z",
+      "equipment_type": "Furnace",
+      "manufacturer": "Carrier",
+      "model_number": "59SC5A080S17--14",
+      "serial_number": null,
+      "manufacture_date": "2018",
+      "capacity": "80000 BTU",
+      "confidence": 0.65,
+      "quality_scores": {
+        "blur_score": 140.0,
+        "brightness_score": 68,
+        "edge_density": 7.1
+      }
+    }
+  ],
+  "damage_assessments": [
+    {
+      "capture_id": "cap-022",
+      "image_path": "captures/damage_020.jpg",
+      "captured_at": "2024-11-17T14:22:00.000Z",
+      "damage_type": "water_damage",
+      "severity": "critical",
+      "description": "Washing machine supply hose burst. Standing water approximately 1 inch deep across laundry room floor. Water has migrated under wall into adjacent hallway.",
+      "affected_materials": [
+        "vinyl flooring",
+        "drywall",
+        "baseboard",
+        "subfloor"
+      ],
+      "affected_area": "approximately 80 sq ft",
+      "room": "laundry room",
+      "surface": "floor",
+      "moisture_visible": true,
+      "mold_visible": false,
+      "safety_concerns": "Standing water near electrical outlets — circuits should be de-energized",
+      "confidence": 0.92,
+      "quality_scores": {
+        "blur_score": 410.0,
+        "brightness_score": 160,
+        "edge_density": 10.8
+      }
+    },
+    {
+      "capture_id": "cap-023",
+      "image_path": "captures/damage_021.jpg",
+      "captured_at": "2024-11-17T14:30:00.000Z",
+      "damage_type": "water_damage",
+      "severity": "medium",
+      "description": "Water has migrated from laundry room through hallway. Carpet is saturated along approximately 15 linear feet. Baseboard showing early signs of wicking.",
+      "affected_materials": [
+        "carpet",
+        "carpet pad",
+        "baseboard"
+      ],
+      "affected_area": "approximately 45 sq ft",
+      "room": "hallway",
+      "surface": "floor",
+      "moisture_visible": true,
+      "mold_visible": false,
+      "safety_concerns": null,
+      "confidence": 0.88,
+      "quality_scores": {
+        "blur_score": 350.0,
+        "brightness_score": 125,
+        "edge_density": 5.9
+      }
+    },
+    {
+      "capture_id": "cap-024",
+      "image_path": "captures/damage_022.jpg",
+      "captured_at": "2024-11-17T14:40:00.000Z",
+      "damage_type": "water_damage",
+      "severity": "low",
+      "description": "Minor water migration into living room. Carpet damp along wall shared with hallway, approximately 3 feet into the room. No visible damage to walls or baseboard yet.",
+      "affected_materials": [
+        "carpet"
+      ],
+      "affected_area": "approximately 12 sq ft",
+      "room": "living room",
+      "surface": "floor",
+      "moisture_visible": true,
+      "mold_visible": false,
+      "safety_concerns": null,
+      "confidence": 0.78,
+      "quality_scores": {
+        "blur_score": 290.0,
+        "brightness_score": 145,
+        "edge_density": 4.2
+      }
+    }
+  ],
+  "notes": [
+    {
+      "capture_id": "cap-025",
+      "image_path": "captures/note_020.jpg",
+      "captured_at": "2024-11-17T14:50:00.000Z",
+      "transcribed_text": "Safety concern: water is within 6 inches of a floor-level electrical outlet in the laundry room. Recommended homeowner contact electrician before restoration work begins. Breaker for laundry circuit has been turned off.",
+      "category": "safety_concern",
+      "image_context": "Photo shows electrical outlet near floor level with visible water line approaching",
+      "key_facts": [
+        "Water within 6 inches of electrical outlet",
+        "Electrician recommended before restoration",
+        "Laundry circuit breaker turned off"
+      ],
+      "confidence": 0.91
+    }
+  ],
+  "line_items": [
+    {
+      "item_number": 1,
+      "code": "WATER_EXTRACTION",
+      "display_name": "Water Extraction",
+      "description": "Extract standing water using truck-mounted or portable extraction equipment",
+      "category": "Emergency Services",
+      "unit": "sq ft",
+      "unit_price": 3.5,
+      "quantity": 80.0,
+      "total": 280.0,
+      "reason": "Standing water across laundry room floor",
+      "priority": "high",
+      "source_capture_id": "cap-022",
+      "confidence": 0.92,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 2,
+      "code": "REMOVE_REPLACE_FLOORING",
+      "display_name": "Remove & Replace Flooring",
+      "description": "Remove damaged floor covering, prepare subfloor, install new flooring",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 8.5,
+      "quantity": 80.0,
+      "total": 680.0,
+      "reason": "Vinyl flooring buckled in laundry room",
+      "priority": "high",
+      "source_capture_id": "cap-022",
+      "confidence": 0.92,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 3,
+      "code": "REMOVE_REPLACE_BASEBOARD",
+      "display_name": "Remove & Replace Baseboard",
+      "description": "Remove damaged baseboard trim, install and paint new baseboard",
+      "category": "Repair & Replacement",
+      "unit": "linear ft",
+      "unit_price": 6.0,
+      "quantity": 30.0,
+      "total": 180.0,
+      "reason": "Baseboard damaged in laundry and hallway",
+      "priority": "medium",
+      "source_capture_id": "cap-022",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 4,
+      "code": "REMOVE_REPLACE_FLOORING",
+      "display_name": "Remove & Replace Flooring",
+      "description": "Remove damaged floor covering, prepare subfloor, install new flooring",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 8.5,
+      "quantity": 45.0,
+      "total": 382.5,
+      "reason": "Carpet saturated in hallway",
+      "priority": "medium",
+      "source_capture_id": "cap-023",
+      "confidence": 0.88,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 5,
+      "code": "STRUCTURAL_DRY_OUT",
+      "display_name": "Structural Dry-Out",
+      "description": "Monitor and manage drying of structural materials to target moisture levels",
+      "category": "Drying & Monitoring",
+      "unit": "day",
+      "unit_price": 75.0,
+      "quantity": 4.0,
+      "total": 300.0,
+      "reason": "Multi-room drying needed",
+      "priority": "high",
+      "source_capture_id": "cap-022",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 6,
+      "code": "DEHUMIDIFIER_RENTAL",
+      "display_name": "Dehumidifier Rental",
+      "description": "Commercial dehumidifier rental for moisture control during drying",
+      "category": "Equipment Rental",
+      "unit": "day",
+      "unit_price": 85.0,
+      "quantity": 4.0,
+      "total": 340.0,
+      "reason": "Humidity control for multi-room drying",
+      "priority": "high",
+      "source_capture_id": "cap-022",
+      "confidence": 0.9,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 7,
+      "code": "AIR_MOVER_RENTAL",
+      "display_name": "Air Mover Rental",
+      "description": "High-velocity air mover rental for evaporation acceleration",
+      "category": "Equipment Rental",
+      "unit": "day",
+      "unit_price": 55.0,
+      "quantity": 4.0,
+      "total": 220.0,
+      "reason": "Air circulation needed across 3 rooms",
+      "priority": "medium",
+      "source_capture_id": "cap-022",
+      "confidence": 0.85,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 8,
+      "code": "CONTENT_MANIPULATION",
+      "display_name": "Content Manipulation",
+      "description": "Move, protect, or store furniture and personal property to access damage",
+      "category": "General",
+      "unit": "room",
+      "unit_price": 150.0,
+      "quantity": 2.0,
+      "total": 300.0,
+      "reason": "Move furniture in hallway and living room to access wet carpet",
+      "priority": "medium",
+      "source_capture_id": "cap-023",
+      "confidence": 0.85,
+      "is_valid_code": true
+    }
+  ],
+  "summary": {
+    "total_captures": 6,
+    "nameplate_captures": 2,
+    "damage_captures": 3,
+    "note_captures": 1,
+    "rejected_captures": 2,
+    "total_line_items": 8,
+    "estimate_subtotal": 2682.5,
+    "average_extraction_confidence": 0.84,
+    "unknown_line_item_codes": [],
+    "duration_seconds": 4200
   },
-  "captures": [],
-  "line_items": [],
-  "notes": []
+  "metadata": {
+    "app_version": "1.0.0",
+    "sdk_version": "DAT 1.0",
+    "device_model": "Ray-Ban Meta Gen 2 (Mock)",
+    "android_version": "15",
+    "gemini_model": "gemini-3.5-flash",
+    "quality_thresholds": {
+      "blur_general": 80.0,
+      "blur_nameplate": 100.0,
+      "brightness_min": 30.0,
+      "brightness_max": 240.0,
+      "framing_edge_density_min": 2.0
+    }
+  }
 }

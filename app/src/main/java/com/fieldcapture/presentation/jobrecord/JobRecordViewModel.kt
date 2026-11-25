@@ -1,15 +1,12 @@
 package com.fieldcapture.presentation.jobrecord
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fieldcapture.domain.model.JobRecord
-import com.fieldcapture.domain.model.SessionMetadata
 import com.fieldcapture.domain.repository.CaptureRepository
 import com.fieldcapture.domain.repository.JobRecordRepository
 import com.fieldcapture.domain.usecase.GenerateJobRecordUseCase
-import com.fieldcapture.util.Constants
 import com.fieldcapture.util.JsonExporter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,17 +45,21 @@ class JobRecordViewModel @Inject constructor(
             val captures = captureRepository.observeCapturesForJob(jobId).first()
             generateJobRecordUseCase(
                 jobId = jobId,
-                technicianId = Constants.DEFAULT_TECHNICIAN_ID,
-                session = SessionMetadata(startedAt = Instant.now().toString()),
+                technicianName = "Field Technician",
                 captures = captures
             )
         }
     }
 
-    fun exportJson(context: Context) {
+    fun exportJson() {
         val current = jobRecord.value ?: return
-        jsonExporter.exportToFile(context, current)
-            .onSuccess { file -> _exportStatus.value = "Exported to ${file.name}" }
+        runCatching { jsonExporter.exportJobRecord(current) }
+            .onSuccess { file -> _exportStatus.value = file.absolutePath }
             .onFailure { err -> _exportStatus.value = "Export failed: ${err.message}" }
+    }
+
+    fun currentRecordJson(): String? {
+        val current = jobRecord.value ?: return null
+        return jsonExporter.toJsonString(current)
     }
 }

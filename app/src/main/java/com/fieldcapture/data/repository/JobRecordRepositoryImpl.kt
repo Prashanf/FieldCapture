@@ -2,14 +2,9 @@ package com.fieldcapture.data.repository
 
 import com.fieldcapture.data.local.dao.JobRecordDao
 import com.fieldcapture.data.local.entity.JobRecordEntity
-import com.fieldcapture.domain.model.JobLocation
-import com.fieldcapture.domain.model.JobNote
 import com.fieldcapture.domain.model.JobRecord
-import com.fieldcapture.domain.model.LineItem
-import com.fieldcapture.domain.model.SessionMetadata
 import com.fieldcapture.domain.repository.JobRecordRepository
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -25,7 +20,7 @@ class JobRecordRepositoryImpl @Inject constructor(
 
     override fun observeAllJobRecords(): Flow<List<JobRecord>> {
         return jobRecordDao.observeAllJobRecords().map { list ->
-            list.map { it.toDomain() }
+            list.mapNotNull { it.toDomain() }
         }
     }
 
@@ -41,42 +36,19 @@ class JobRecordRepositoryImpl @Inject constructor(
         jobRecordDao.deleteJobRecord(jobId)
     }
 
-    private fun JobRecordEntity.toDomain(): JobRecord {
-        val location = runCatching {
-            gson.fromJson(locationJson, JobLocation::class.java)
-        }.getOrDefault(JobLocation())
-        val session = runCatching {
-            gson.fromJson(sessionJson, SessionMetadata::class.java)
-        }.getOrDefault(SessionMetadata(startedAt = createdAt))
-        val lineItemsType = object : TypeToken<List<LineItem>>() {}.type
-        val lineItems: List<LineItem> = runCatching {
-            gson.fromJson<List<LineItem>>(lineItemsJson, lineItemsType)
-        }.getOrDefault(emptyList())
-        val notesType = object : TypeToken<List<JobNote>>() {}.type
-        val notes: List<JobNote> = runCatching {
-            gson.fromJson<List<JobNote>>(notesJson, notesType)
-        }.getOrDefault(emptyList())
-
-        // TODO: Also hydrate captures list from CaptureRepository or fullRecordJson
-        return JobRecord(
-            jobId = jobId,
-            createdAt = createdAt,
-            technicianId = technicianId,
-            location = location,
-            session = session,
-            captures = emptyList(),
-            lineItems = lineItems,
-            notes = notes
-        )
+    private fun JobRecordEntity.toDomain(): JobRecord? {
+        return runCatching {
+            gson.fromJson(fullRecordJson, JobRecord::class.java)
+        }.getOrNull()
     }
 
     private fun JobRecord.toEntity(): JobRecordEntity {
         return JobRecordEntity(
             jobId = jobId,
             createdAt = createdAt,
-            technicianId = technicianId,
-            locationJson = gson.toJson(location),
-            sessionJson = gson.toJson(session),
+            technicianId = technicianName,
+            locationJson = gson.toJson(mapOf("job_address" to jobAddress)),
+            sessionJson = gson.toJson(metadata),
             lineItemsJson = gson.toJson(lineItems),
             notesJson = gson.toJson(notes),
             fullRecordJson = gson.toJson(this)

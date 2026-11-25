@@ -27,7 +27,13 @@ Hands-free field capture Android application built with Kotlin, Jetpack Compose,
    `app/build.gradle.kts` exposes this via `BuildConfig.GEMINI_API_KEY` for `gemini-3.5-flash` (with `gemini-3.8-flash` fallback) vision extraction.
 4. Sync Gradle and run on an Android emulator or device (Mock Device Kit mode enabled).
 
+## Job Record Schema & Draft Pricing
+- **Schema Versioning:** Exported job records include `"schema_version": "1.0.0"` for forward/backward compatibility, capturing `equipment`, `damage_assessments` (with on-device `quality_scores`), `notes`, `line_items` (each linked back via `source_capture_id`), `summary`, and `metadata`.
+- **Draft Estimate Pricing Disclaimer:** Unit prices in `LineItemCode` (all 15 restoration codes) are **placeholder draft values** based on general industry ranges to demonstrate end-to-end estimate generation. Production pricing would integrate with Xactimate or a contractor pricing database.
+- **Sample Deliverables:** 3 sample job records covering water damage, mold remediation, and multi-room water migration are included in `samples/` and `eval/sample_outputs/`.
+
 ## Project Layout
 - `app/` — Android application source, unit tests, and instrumentation tests
+- `samples/` — 3 sample exported `JobRecord` JSON deliverables
 - `eval/` — Offline extraction evaluation script, frames directory, results CSV, report, and sample job records
 - `docs/` — Research memo, architecture diagram, and assumptions

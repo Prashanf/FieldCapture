@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "SAMPLE-WD-001",
+  "created_at": "2024-11-15T09:00:00.000Z",
+  "completed_at": "2024-11-15T09:45:00.000Z",
+  "technician_name": "John Smith",
+  "job_address": "123 Main St, Apt 4B, Springfield, IL 62704",
+  "job_type": "water_damage_assessment",
+  "equipment": [
+    {
+      "capture_id": "cap-001",
+      "image_path": "captures/nameplate_001.jpg",
+      "captured_at": "2024-11-15T09:05:00.000Z",
+      "equipment_type": "Water Heater",
+      "manufacturer": "Rheem",
+      "model_number": "XG40T06EC36U1",
+      "serial_number": "MP1234567890",
+      "manufacture_date": "2019",
+      "capacity": "40 GAL",
+      "confidence": 0.87,
+      "quality_scores": {
+        "blur_score": 450.0,
+        "brightness_score": 140,
+        "edge_density": 12.5
+      }
+    }
+  ],
+  "damage_assessments": [
+    {
+      "capture_id": "cap-002",
+      "image_path": "captures/damage_001.jpg",
+      "captured_at": "2024-11-15T09:12:00.000Z",
+      "damage_type": "water_damage",
+      "severity": "high",
+      "description": "Extensive water damage on kitchen floor. Vinyl flooring is buckled and lifting. Water staining extends approximately 8 feet from the base of the wall near the dishwasher supply line.",
+      "affected_materials": [
+        "vinyl flooring",
+        "baseboard",
+        "drywall"
+      ],
+      "affected_area": "approximately 64 sq ft",
+      "room": "kitchen",
+      "surface": "floor",
+      "moisture_visible": true,
+      "mold_visible": false,
+      "safety_concerns": null,
+      "confidence": 0.85,
+      "quality_scores": {
+        "blur_score": 320.0,
+        "brightness_score": 155,
+        "edge_density": 8.3
+      }
+    },
+    {
+      "capture_id": "cap-003",
+      "image_path": "captures/damage_002.jpg",
+      "captured_at": "2024-11-15T09:20:00.000Z",
+      "damage_type": "water_damage",
+      "severity": "medium",
+      "description": "Water staining on bathroom wall adjacent to kitchen. Lower 18 inches of drywall shows moisture wicking. No visible mold yet but conditions are favorable.",
+      "affected_materials": [
+        "drywall",
+        "baseboard"
+      ],
+      "affected_area": "approximately 24 sq ft",
+      "room": "bathroom",
+      "surface": "west wall",
+      "moisture_visible": true,
+      "mold_visible": false,
+      "safety_concerns": "Electrical outlet within 2 feet of moisture — recommend de-energizing circuit",
+      "confidence": 0.8,
+      "quality_scores": {
+        "blur_score": 280.0,
+        "brightness_score": 95,
+        "edge_density": 6.1
+      }
+    }
+  ],
+  "notes": [
+    {
+      "capture_id": "cap-004",
+      "image_path": "captures/note_001.jpg",
+      "captured_at": "2024-11-15T09:30:00.000Z",
+      "transcribed_text": "Homeowner reports the leak started approximately 48 hours ago when they noticed water pooling near the dishwasher. They turned off the water supply valve yesterday morning.",
+      "category": "homeowner_statement",
+      "image_context": "Photo shows the dishwasher supply line connection point with visible corrosion on the fitting",
+      "key_facts": [
+        "Leak started ~48 hours ago",
+        "Water noticed near dishwasher",
+        "Supply valve shut off yesterday morning",
+        "Corrosion visible on supply line fitting"
+      ],
+      "confidence": 0.88
+    }
+  ],
+  "line_items": [
+    {
+      "item_number": 1,
+      "code": "WATER_EXTRACTION",
+      "display_name": "Water Extraction",
+      "description": "Extract standing water using truck-mounted or portable extraction equipment",
+      "category": "Emergency Services",
+      "unit": "sq ft",
+      "unit_price": 3.5,
+      "quantity": 64.0,
+      "total": 224.0,
+      "reason": "Standing water on kitchen floor from burst supply line",
+      "priority": "high",
+      "source_capture_id": "cap-002",
+      "confidence": 0.85,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 2,
+      "code": "REMOVE_REPLACE_FLOORING",
+      "display_name": "Remove & Replace Flooring",
+      "description": "Remove damaged floor covering, prepare subfloor, install new flooring",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 8.5,
+      "quantity": 64.0,
+      "total": 544.0,
+      "reason": "Vinyl flooring buckled and lifting across kitchen",
+      "priority": "high",
+      "source_capture_id": "cap-002",
+      "confidence": 0.85,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 3,
+      "code": "REMOVE_REPLACE_DRYWALL",
+      "display_name": "Remove & Replace Drywall",
+      "description": "Remove damaged drywall, dispose, install new drywall with tape and finish",
+      "category": "Repair & Replacement",
+      "unit": "sq ft",
+      "unit_price": 4.75,
+      "quantity": 24.0,
+      "total": 114.0,
+      "reason": "Lower 18 inches of bathroom drywall shows moisture wicking",
+      "priority": "medium",
+      "source_capture_id": "cap-003",
+      "confidence": 0.8,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 4,
+      "code": "REMOVE_REPLACE_BASEBOARD",
+      "display_name": "Remove & Replace Baseboard",
+      "description": "Remove damaged baseboard trim, install and paint new baseboard",
+      "category": "Repair & Replacement",
+      "unit": "linear ft",
+      "unit_price": 6.0,
+      "quantity": 20.0,
+      "total": 120.0,
+      "reason": "Baseboard warped in kitchen and bathroom",
+      "priority": "medium",
+      "source_capture_id": "cap-002",
+      "confidence": 0.85,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 5,
+      "code": "STRUCTURAL_DRY_OUT",
+      "display_name": "Structural Dry-Out",
+      "description": "Monitor and manage drying of structural materials to target moisture levels",
+      "category": "Drying & Monitoring",
+      "unit": "day",
+      "unit_price": 75.0,
+      "quantity": 3.0,
+      "total": 225.0,
+      "reason": "Materials still damp, need monitored drying",
+      "priority": "high",
+      "source_capture_id": "cap-002",
+      "confidence": 0.8,
+      "is_valid_code": true
+    },
+    {
+      "item_number": 6,
+      "code": "PLUMBING_REPAIR",
+      "display_name": "Plumbing Repair",
+      "description": "Repair or replace damaged plumbing fixtures, pipes, or fittings",
+      "category": "Repair & Replacement",
+      "unit": "each",
+      "unit_price": 350.0,
+      "quantity": 1.0,
+      "total": 350.0,
+      "reason": "Corroded dishwasher supply line fitting needs replacement",
+      "priority": "high",
+      "source_capture_id": "cap-004",
+      "confidence": 0.88,
+      "is_valid_code": true
+    }
+  ],
+  "summary": {
+    "total_captures": 4,
+    "nameplate_captures": 1,
+    "damage_captures": 2,
+    "note_captures": 1,
+    "rejected_captures": 1,
+    "total_line_items": 6,
+    "estimate_subtotal": 1577.0,
+    "average_extraction_confidence": 0.85,
+    "unknown_line_item_codes": [],
+    "duration_seconds": 2700
+  },
+  "metadata": {
+    "app_version": "1.0.0",
+    "sdk_version": "DAT 1.0",
+    "device_model": "Ray-Ban Meta Gen 2 (Mock)",
+    "android_version": "15",
+    "gemini_model": "gemini-3.5-flash",
+    "quality_thresholds": {
+      "blur_general": 80.0,
+      "blur_nameplate": 100.0,
+      "brightness_min": 30.0,
+      "brightness_max": 240.0,
+      "framing_edge_density_min": 2.0
+    }
+  }
+}

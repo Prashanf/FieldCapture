@@ -9,9 +9,12 @@ import com.fieldcapture.data.local.entity.CaptureStatus
 import com.fieldcapture.domain.model.Capture
 import com.fieldcapture.domain.model.CaptureMetadata
 import com.fieldcapture.domain.model.CaptureType
+import com.fieldcapture.domain.model.JobRecord
 import com.fieldcapture.domain.model.QualityResult
 import com.fieldcapture.domain.model.VoiceCommand
 import com.fieldcapture.domain.repository.CaptureRepository
+import com.fieldcapture.domain.repository.JobRecordRepository
+import com.fieldcapture.domain.usecase.BuildJobRecordUseCase
 import com.fieldcapture.domain.usecase.CheckCaptureQualityUseCase
 import com.fieldcapture.domain.usecase.ExtractCaptureDataUseCase
 import com.fieldcapture.extraction.ExtractionMetadata
@@ -22,6 +25,7 @@ import com.fieldcapture.glasses.GlassesSessionManager
 import com.fieldcapture.glasses.GlassesState
 import com.fieldcapture.glasses.MockDeviceManager
 import com.fieldcapture.sync.ConnectivityMonitor
+import com.fieldcapture.util.JsonExporter
 import com.fieldcapture.voice.AudioFeedbackManager
 import com.fieldcapture.voice.VoiceCommandParser
 import com.fieldcapture.voice.VoiceCommandService
@@ -58,7 +62,10 @@ class SessionViewModel @Inject constructor(
     private val audioFeedbackManager: AudioFeedbackManager,
     private val checkCaptureQualityUseCase: CheckCaptureQualityUseCase,
     private val extractCaptureDataUseCase: ExtractCaptureDataUseCase,
+    private val buildJobRecordUseCase: BuildJobRecordUseCase,
     private val captureRepository: CaptureRepository,
+    private val jobRecordRepository: JobRecordRepository,
+    private val jsonExporter: JsonExporter,
     connectivityMonitor: ConnectivityMonitor
 ) : ViewModel() {
 
@@ -79,6 +86,20 @@ class SessionViewModel @Inject constructor(
 
     private val _lastCommand = MutableStateFlow<VoiceCommand?>(null)
     val lastCommand: StateFlow<VoiceCommand?> = _lastCommand.asStateFlow()
+
+    private val _currentJobId = MutableStateFlow<String?>(null)
+    val currentJobId: StateFlow<String?> = _currentJobId.asStateFlow()
+
+    private val _jobStartTime = MutableStateFlow<Long?>(null)
+    private val _technicianName = MutableStateFlow("Field Technician")
+    private val _jobAddress = MutableStateFlow<String?>(null)
+    private val _rejectedCapturesCount = MutableStateFlow(0)
+
+    private val _jobRecord = MutableStateFlow<JobRecord?>(null)
+    val jobRecord: StateFlow<JobRecord?> = _jobRecord.asStateFlow()
+
+    private val _exportedFilePath = MutableStateFlow<String?>(null)
+    val exportedFilePath: StateFlow<String?> = _exportedFilePath.asStateFlow()
 
     private var wasPreviouslyConnected = false
     private var keepVoiceListeningActive = false
@@ -104,6 +125,73 @@ class SessionViewModel @Inject constructor(
             }
             glassesSessionManager.startSession()
         }
+    }
+
+    fun startJob(technicianName: String = "Field Technician", jobAddress: String? = null) {
+        val newJobId = "JOB-${System.currentTimeMillis()}"
+        _currentJobId.value = newJobId
+        _jobStartTime.value = System.currentTimeMillis()
+        _technicianName.value = technicianName
+        _jobAddress.value = jobAddress
+        _rejectedCapturesCount.value = 0
+        _captures.value = emptyList()
+        _jobRecord.value = null
+        _exportedFilePath.value = null
+        _uiState.value = _uiState.value.copy(jobId = newJobId, errorMessage = null)
+        audioFeedbackManager.speak("Job started. Ready for captures.")
+    }
+
+    fun completeJob() {
+        val jobId = _currentJobId.value ?: return
+        val startTime = _jobStartTime.value ?: System.currentTimeMillis()
+
+        viewModelScope.launch {
+            val pendingExtractions = _captures.value.any { it.status == CaptureStatus.EXTRACTING }
+            if (pendingExtractions) {
+                audioFeedbackManager.speak("Waiting for extractions to complete.")
+                var waited = 0
+                while (_captures.value.any { it.status == CaptureStatus.EXTRACTING } && waited < 30) {
+                    delay(1000)
+                    waited++
+                }
+            }
+
+            val record = buildJobRecordUseCase.execute(
+                jobId = jobId,
+                technicianName = _technicianName.value,
+                jobAddress = _jobAddress.value,
+                captures = _captures.value,
+                jobStartTime = startTime,
+                jobEndTime = System.currentTimeMillis(),
+                rejectedCaptures = _rejectedCapturesCount.value
+            )
+
+            jobRecordRepository.saveJobRecord(record)
+            val file = jsonExporter.exportJobRecord(record)
+            _jobRecord.value = record
+            _exportedFilePath.value = file.absolutePath
+            _currentJobId.value = null
+
+            audioFeedbackManager.speak(
+                "Job complete. ${record.summary.totalCaptures} captures, " +
+                    "${record.summary.totalLineItems} line items, " +
+                    "estimated total ${String.format(Locale.US, "%.0f", record.summary.estimateSubtotal)} dollars."
+            )
+
+            Log.i(TAG, "Job exported to: ${file.absolutePath}")
+            Log.i(TAG, "JSON preview:\n${jsonExporter.toJsonString(record).take(500)}")
+        }
+    }
+
+    fun exportCompletedJob() {
+        val record = _jobRecord.value ?: return
+        val file = jsonExporter.exportJobRecord(record)
+        _exportedFilePath.value = file.absolutePath
+    }
+
+    fun getCompletedJobJson(): String? {
+        val record = _jobRecord.value ?: return null
+        return jsonExporter.toJsonString(record)
     }
 
     fun startVoiceListening() {
@@ -192,7 +280,6 @@ class SessionViewModel @Inject constructor(
 
     private suspend fun captureFrame(type: CaptureType, metadata: CaptureMetadata) {
         val resumeAfterCapture = keepVoiceListeningActive
-        // Pause voice recognition during capture/TTS so SpeechRecognizer doesn't pick up TTS audio
         voiceCommandService.stopListening()
 
         val result = glassesSessionManager.capturePhoto()
@@ -215,11 +302,11 @@ class SessionViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(errorMessage = null)
                     audioFeedbackManager.confirmCapture(type.name.lowercase())
 
-                    // Trigger Gemini AI extraction asynchronously so capture flow stays non-blocking
                     viewModelScope.launch {
                         runExtraction(capture)
                     }
                 } else {
+                    _rejectedCapturesCount.value += 1
                     val reason = qualityResult.rejectionReason ?: "poor quality"
                     _uiState.value = _uiState.value.copy(errorMessage = "Retake needed: $reason")
                     audioFeedbackManager.requestRetake(reason)

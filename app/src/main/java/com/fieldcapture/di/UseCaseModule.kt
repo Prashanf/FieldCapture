@@ -3,6 +3,7 @@ package com.fieldcapture.di
 import com.fieldcapture.domain.repository.CaptureRepository
 import com.fieldcapture.domain.repository.ExtractionRepository
 import com.fieldcapture.domain.repository.JobRecordRepository
+import com.fieldcapture.domain.usecase.BuildJobRecordUseCase
 import com.fieldcapture.domain.usecase.CheckCaptureQualityUseCase
 import com.fieldcapture.domain.usecase.ExtractCaptureDataUseCase
 import com.fieldcapture.domain.usecase.ExtractDamageUseCase
@@ -52,10 +53,15 @@ object UseCaseModule {
     fun provideMapToLineItemsUseCase(): MapToLineItemsUseCase = MapToLineItemsUseCase()
 
     @Provides
+    fun provideBuildJobRecordUseCase(
+        mapToLineItemsUseCase: MapToLineItemsUseCase
+    ): BuildJobRecordUseCase = BuildJobRecordUseCase(mapToLineItemsUseCase)
+
+    @Provides
     fun provideGenerateJobRecordUseCase(
-        mapToLineItemsUseCase: MapToLineItemsUseCase,
+        buildJobRecordUseCase: BuildJobRecordUseCase,
         jobRecordRepository: JobRecordRepository
-    ): GenerateJobRecordUseCase = GenerateJobRecordUseCase(mapToLineItemsUseCase, jobRecordRepository)
+    ): GenerateJobRecordUseCase = GenerateJobRecordUseCase(buildJobRecordUseCase, jobRecordRepository)
 
     @Provides
     fun provideProcessCaptureUseCase(

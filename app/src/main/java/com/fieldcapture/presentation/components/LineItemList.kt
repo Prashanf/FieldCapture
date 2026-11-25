@@ -10,12 +10,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.fieldcapture.domain.model.LineItem
+import com.fieldcapture.domain.model.LineItemEntry
+import java.util.Locale
 
 @Composable
 fun LineItemList(
-    lineItems: List<LineItem>,
+    lineItems: List<LineItemEntry>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -30,19 +32,36 @@ fun LineItemList(
         } else {
             lineItems.forEach { item ->
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.code.name, style = MaterialTheme.typography.labelLarge)
-                            Text(text = item.description, style = MaterialTheme.typography.bodySmall)
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${item.itemNumber}. ${item.displayName}",
+                                style = MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = String.format(Locale.US, "$%.2f", item.total),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                         Text(
-                            text = "${item.estimatedQuantity} (${item.unit})",
-                            style = MaterialTheme.typography.bodyMedium
+                            text = "${item.quantity} ${item.unit} × ${String.format(Locale.US, "$%.2f", item.unitPrice)}/${item.unit} • ${item.priority}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (item.reason.isNotBlank()) {
+                            Text(
+                                text = item.reason,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        Text(
+                            text = "Code: ${item.code}${if (!item.isValidCode) " (unrecognized)" else ""} • Source: ${item.sourceCaptureId.take(8)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
