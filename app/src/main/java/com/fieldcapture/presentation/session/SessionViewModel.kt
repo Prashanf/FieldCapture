@@ -1,6 +1,7 @@
 package com.fieldcapture.presentation.session
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fieldcapture.domain.model.Capture
@@ -11,11 +12,14 @@ import com.fieldcapture.domain.usecase.ProcessCaptureUseCase
 import com.fieldcapture.glasses.CameraStreamManager
 import com.fieldcapture.glasses.GlassesSessionManager
 import com.fieldcapture.glasses.GlassesState
+import com.fieldcapture.glasses.MockDeviceManager
 import com.fieldcapture.sync.ConnectivityMonitor
 import com.fieldcapture.voice.VoiceCommandCallback
 import com.fieldcapture.voice.VoiceCommandService
+import com.meta.wearable.dat.camera.types.StreamState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +37,7 @@ data class SessionUiState(
 @HiltViewModel
 class SessionViewModel @Inject constructor(
     private val glassesSessionManager: GlassesSessionManager,
+    private val mockDeviceManager: MockDeviceManager,
     private val cameraStreamManager: CameraStreamManager,
     private val voiceCommandService: VoiceCommandService,
     private val processCaptureUseCase: ProcessCaptureUseCase,
@@ -44,6 +49,8 @@ class SessionViewModel @Inject constructor(
     val uiState: StateFlow<SessionUiState> = _uiState.asStateFlow()
 
     val glassesState: StateFlow<GlassesState> = glassesSessionManager.state
+    val streamState: StateFlow<StreamState?> = glassesSessionManager.streamState
+    val cameraFrames: SharedFlow<Bitmap> = glassesSessionManager.frames
     val latestFrame: StateFlow<Bitmap?> = cameraStreamManager.latestFrame
     val isListening: StateFlow<Boolean> = voiceCommandService.isListening
 
@@ -72,9 +79,25 @@ class SessionViewModel @Inject constructor(
         })
     }
 
-    fun connectMockGlasses() {
-        glassesSessionManager.initializeSdk()
-        glassesSessionManager.connect()
+    fun initializeSession(useMock: Boolean = true) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(errorMessage = null)
+            if (useMock) {
+                mockDeviceManager.enableMockDevice()
+                val setupResult = mockDeviceManager.pairAndSetup()
+                if (setupResult.isFailure) {
+                    val errMsg = setupResult.exceptionOrNull()?.message ?: "Mock device setup failed"
+                    Log.e(TAG, errMsg)
+                    _uiState.value = _uiState.value.copy(errorMessage = errMsg)
+                    return@launch
+                }
+            }
+            glassesSessionManager.startSession()
+        }
+    }
+
+    fun stopSession() {
+        glassesSessionManager.stopSession()
     }
 
     fun toggleVoiceListening() {
@@ -123,10 +146,19 @@ class SessionViewModel @Inject constructor(
                         noteText = command.text
                     )
                 }
-                is VoiceCommand.Unknown -> {
-                    // TODO: Provide audio/visual feedback for unrecognized commands
-                }
+                is VoiceCommand.Unknown -> Unit
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        voiceCommandService.setCallback(null)
+        glassesSessionManager.cleanup()
+        mockDeviceManager.disable()
+    }
+
+    companion object {
+        private const val TAG = "SessionViewModel"
     }
 }

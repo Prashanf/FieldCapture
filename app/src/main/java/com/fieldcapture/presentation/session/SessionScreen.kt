@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,12 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.fieldcapture.domain.model.CaptureType
-import com.fieldcapture.presentation.components.CaptureCard
+import com.fieldcapture.glasses.GlassesState
 import com.fieldcapture.presentation.components.ConnectionStatusBar
-import com.fieldcapture.presentation.components.VoiceCommandIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,10 +39,14 @@ fun SessionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val glassesState by viewModel.glassesState.collectAsState()
+    val streamState by viewModel.streamState.collectAsState()
     val latestFrame by viewModel.latestFrame.collectAsState()
-    val isListening by viewModel.isListening.collectAsState()
     val isOnline by viewModel.isOnline.collectAsState()
     val captures by viewModel.captures.collectAsState()
+
+    val isSessionActive = glassesState is GlassesState.Connected ||
+        glassesState is GlassesState.Connecting ||
+        glassesState is GlassesState.Paused
 
     Scaffold(
         topBar = {
@@ -67,10 +68,11 @@ fun SessionScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // Live camera preview from Mock Device Kit / Meta DAT stream
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(180.dp)
+                        .weight(1f)
                         .background(Color.Black),
                     contentAlignment = Alignment.Center
                 ) {
@@ -78,73 +80,64 @@ fun SessionScreen(
                     if (frame != null) {
                         Image(
                             bitmap = frame.asImageBitmap(),
-                            contentDescription = "Mock glasses camera stream",
+                            contentDescription = "Glasses camera preview",
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
                         Text(
-                            text = "Mock Glasses Camera Preview",
+                            text = "Tap Start Session to preview mock glasses feed",
                             color = Color.White,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
 
-                VoiceCommandIndicator(
-                    isListening = isListening,
-                    lastCommandText = uiState.lastCommand
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = { viewModel.connectMockGlasses() },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Connect Mock")
-                    }
-                    OutlinedButton(
-                        onClick = { viewModel.toggleVoiceListening() },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(if (isListening) "Stop Mic" else "Start Mic")
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = { viewModel.triggerManualCapture(CaptureType.NAMEPLATE) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Nameplate")
-                    }
-                    OutlinedButton(
-                        onClick = { viewModel.triggerManualCapture(CaptureType.DAMAGE) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Damage")
-                    }
-                    Button(
-                        onClick = { onNavigateToReview(uiState.jobId) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Review (${captures.size})")
+                // Connection + stream status summary
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Session: ${glassesState::class.simpleName}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Stream: ${streamState?.name ?: "IDLE"}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    val errorText = uiState.errorMessage ?: (glassesState as? GlassesState.Error)?.message
+                    if (!errorText.isNullOrBlank()) {
+                        Text(
+                            text = "Error: $errorText",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                // Start / Stop session controls
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(captures, key = { it.id }) { capture ->
-                        CaptureCard(capture = capture)
+                    Button(
+                        onClick = {
+                            if (isSessionActive) {
+                                viewModel.stopSession()
+                            } else {
+                                viewModel.initializeSession(useMock = true)
+                            }
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(if (isSessionActive) "Stop Session" else "Start Session")
+                    }
+
+                    OutlinedButton(
+                        onClick = { onNavigateToReview(uiState.jobId) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Review (${captures.size})")
                     }
                 }
             }

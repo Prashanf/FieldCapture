@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.fieldcapture"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
@@ -34,13 +34,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
@@ -65,16 +67,16 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Hilt DI
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Room DB
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
 
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.10.0")
@@ -89,13 +91,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.google.code.gson:gson:2.11.0")
 
-    // Meta Wearables DAT SDK 1.0.x (placeholder version from gradle.properties)
+    // Meta Wearables DAT SDK 1.0.x (from gradle.properties)
     implementation("com.meta.wearable:mwdat-core:$metaDatVersion")
     implementation("com.meta.wearable:mwdat-camera:$metaDatVersion")
-    implementation("com.meta.wearable:mwdat-device:$metaDatVersion")
-    implementation("com.meta.wearable:mwdat-mock:$metaDatVersion")
-    implementation("com.meta.wearable:mwdat-state:$metaDatVersion")
-    implementation("com.meta.wearable:mwdat-media:$metaDatVersion")
+    implementation("com.meta.wearable:mwdat-mockdevice:$metaDatVersion")
 
     // Unit & Instrumentation Tests
     testImplementation("junit:junit:4.13.2")

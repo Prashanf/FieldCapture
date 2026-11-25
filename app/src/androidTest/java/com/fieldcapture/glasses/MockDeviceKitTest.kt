@@ -2,6 +2,7 @@ package com.fieldcapture.glasses
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,12 +11,13 @@ import org.junit.runner.RunWith
 class MockDeviceKitTest {
 
     @Test
-    fun mockDeviceManagerInitializesCleanly() {
+    fun mockDeviceManagerInitializesAndPairsCleanly() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val mockDeviceManager = MockDeviceManager(context)
-        val result = mockDeviceManager.setupMockDevice()
+        mockDeviceManager.enableMockDevice()
+        val result = mockDeviceManager.pairAndSetup()
         assertTrue(result.isSuccess)
         assertTrue(mockDeviceManager.isConfigured())
-        // TODO: Add Mock Device Kit frame injection and CameraStreamManager verification tests
+        mockDeviceManager.disable()
     }
 }

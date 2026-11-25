@@ -3,17 +3,21 @@ package com.fieldcapture
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.fieldcapture.glasses.GlassesSessionManager
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 /**
- * Application entry point for FieldCapture, enabling Hilt DI and custom WorkManager initialization.
+ * Application entry point for FieldCapture, enabling Hilt DI, DAT SDK init, and WorkManager.
  */
 @HiltAndroidApp
 class FieldCaptureApp : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var glassesSessionManager: GlassesSessionManager
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -22,6 +26,6 @@ class FieldCaptureApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        // TODO: Initialize Mock Device Kit / Meta DAT SDK lifecycle hooks and sync scheduler if needed
+        glassesSessionManager.initialize()
     }
 }
