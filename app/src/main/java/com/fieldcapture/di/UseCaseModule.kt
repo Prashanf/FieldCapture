@@ -4,6 +4,7 @@ import com.fieldcapture.domain.repository.CaptureRepository
 import com.fieldcapture.domain.repository.ExtractionRepository
 import com.fieldcapture.domain.repository.JobRecordRepository
 import com.fieldcapture.domain.usecase.CheckCaptureQualityUseCase
+import com.fieldcapture.domain.usecase.ExtractCaptureDataUseCase
 import com.fieldcapture.domain.usecase.ExtractDamageUseCase
 import com.fieldcapture.domain.usecase.ExtractNameplateUseCase
 import com.fieldcapture.domain.usecase.GenerateJobRecordUseCase
@@ -11,6 +12,7 @@ import com.fieldcapture.domain.usecase.MapToLineItemsUseCase
 import com.fieldcapture.domain.usecase.ParseNoteUseCase
 import com.fieldcapture.domain.usecase.ProcessCaptureUseCase
 import com.fieldcapture.domain.usecase.SyncCapturesUseCase
+import com.fieldcapture.extraction.ExtractionService
 import com.fieldcapture.quality.ImageQualityAnalyzer
 import dagger.Module
 import dagger.Provides
@@ -25,6 +27,11 @@ object UseCaseModule {
     fun provideCheckCaptureQualityUseCase(
         imageQualityAnalyzer: ImageQualityAnalyzer
     ): CheckCaptureQualityUseCase = CheckCaptureQualityUseCase(imageQualityAnalyzer)
+
+    @Provides
+    fun provideExtractCaptureDataUseCase(
+        extractionService: ExtractionService
+    ): ExtractCaptureDataUseCase = ExtractCaptureDataUseCase(extractionService)
 
     @Provides
     fun provideExtractNameplateUseCase(
@@ -53,28 +60,20 @@ object UseCaseModule {
     @Provides
     fun provideProcessCaptureUseCase(
         checkCaptureQualityUseCase: CheckCaptureQualityUseCase,
-        extractNameplateUseCase: ExtractNameplateUseCase,
-        extractDamageUseCase: ExtractDamageUseCase,
-        parseNoteUseCase: ParseNoteUseCase,
+        extractCaptureDataUseCase: ExtractCaptureDataUseCase,
         captureRepository: CaptureRepository
     ): ProcessCaptureUseCase = ProcessCaptureUseCase(
         checkCaptureQualityUseCase = checkCaptureQualityUseCase,
-        extractNameplateUseCase = extractNameplateUseCase,
-        extractDamageUseCase = extractDamageUseCase,
-        parseNoteUseCase = parseNoteUseCase,
+        extractCaptureDataUseCase = extractCaptureDataUseCase,
         captureRepository = captureRepository
     )
 
     @Provides
     fun provideSyncCapturesUseCase(
         captureRepository: CaptureRepository,
-        extractNameplateUseCase: ExtractNameplateUseCase,
-        extractDamageUseCase: ExtractDamageUseCase,
-        parseNoteUseCase: ParseNoteUseCase
+        extractCaptureDataUseCase: ExtractCaptureDataUseCase
     ): SyncCapturesUseCase = SyncCapturesUseCase(
         captureRepository = captureRepository,
-        extractNameplateUseCase = extractNameplateUseCase,
-        extractDamageUseCase = extractDamageUseCase,
-        parseNoteUseCase = parseNoteUseCase
+        extractCaptureDataUseCase = extractCaptureDataUseCase
     )
 }

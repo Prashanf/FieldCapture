@@ -4,7 +4,7 @@ object Constants {
     // TODO: Load Gemini API key securely via BuildConfig / local.properties
     const val GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
     const val GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/"
-    const val GEMINI_MODEL = "gemini-1.5-flash"
+    const val GEMINI_MODEL = "gemini-2.0-flash"
 
     const val DEFAULT_DEVICE_NAME = "mock_rayban_meta_gen2"
     const val DEFAULT_TECHNICIAN_ID = "tech_001"

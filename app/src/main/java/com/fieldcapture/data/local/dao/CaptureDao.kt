@@ -26,6 +26,9 @@ interface CaptureDao {
     @Query("UPDATE captures SET status = :status WHERE id = :id")
     suspend fun updateStatus(id: String, status: CaptureStatus)
 
+    @Query("UPDATE captures SET extractionJson = :extractionJson, status = :status WHERE id = :id")
+    suspend fun updateExtraction(id: String, extractionJson: String?, status: CaptureStatus)
+
     @Query("DELETE FROM captures WHERE id = :id")
     suspend fun deleteCapture(id: String)
 }

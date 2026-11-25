@@ -20,7 +20,11 @@ Hands-free field capture Android application built with Kotlin, Jetpack Compose,
 <!-- TODO: Expand with final architecture diagram, tools used, known limitations, and future work -->
 1. Open `FieldCapture/` in Android Studio.
 2. Meta DAT SDK `1.0.1` resolves from Maven Central (`metaDatVersion=1.0.1` in `gradle.properties`); Developer Mode manifest metadata (`APPLICATION_ID="0"`, `CLIENT_TOKEN="AR|0|1"`) is pre-configured.
-3. Add your Gemini API key in `local.properties` (or `Constants.kt` for local dev).
+3. Add your free Gemini API key (from [Google AI Studio](https://aistudio.google.com/apikey)) to `FieldCapture/local.properties` (gitignored):
+   ```properties
+   GEMINI_API_KEY=your_key_here
+   ```
+   `app/build.gradle.kts` exposes this via `BuildConfig.GEMINI_API_KEY` for `gemini-2.0-flash` vision extraction.
 4. Sync Gradle and run on an Android emulator or device (Mock Device Kit mode enabled).
 
 ## Project Layout

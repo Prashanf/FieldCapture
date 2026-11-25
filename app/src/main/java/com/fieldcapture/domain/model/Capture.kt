@@ -1,6 +1,7 @@
 package com.fieldcapture.domain.model
 
 import com.fieldcapture.data.local.entity.CaptureStatus
+import com.fieldcapture.extraction.ExtractionResult
 import java.time.Instant
 import java.util.UUID
 
@@ -12,7 +13,7 @@ data class Capture(
     val imagePath: String? = null,
     val imageBytes: ByteArray? = null,
     val metadata: CaptureMetadata = CaptureMetadata(),
-    val status: CaptureStatus = CaptureStatus.PENDING,
+    val status: CaptureStatus = CaptureStatus.CAPTURED,
     val qualityResult: QualityResult? = null,
     val extractionResult: ExtractionResult? = null
 ) {

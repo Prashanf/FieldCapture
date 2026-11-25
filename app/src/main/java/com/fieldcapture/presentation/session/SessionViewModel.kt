@@ -13,6 +13,10 @@ import com.fieldcapture.domain.model.QualityResult
 import com.fieldcapture.domain.model.VoiceCommand
 import com.fieldcapture.domain.repository.CaptureRepository
 import com.fieldcapture.domain.usecase.CheckCaptureQualityUseCase
+import com.fieldcapture.domain.usecase.ExtractCaptureDataUseCase
+import com.fieldcapture.extraction.ExtractionMetadata
+import com.fieldcapture.extraction.ExtractionResult
+import com.fieldcapture.extraction.NameplateExtraction
 import com.fieldcapture.glasses.CameraStreamManager
 import com.fieldcapture.glasses.GlassesSessionManager
 import com.fieldcapture.glasses.GlassesState
@@ -53,6 +57,7 @@ class SessionViewModel @Inject constructor(
     private val voiceCommandParser: VoiceCommandParser,
     private val audioFeedbackManager: AudioFeedbackManager,
     private val checkCaptureQualityUseCase: CheckCaptureQualityUseCase,
+    private val extractCaptureDataUseCase: ExtractCaptureDataUseCase,
     private val captureRepository: CaptureRepository,
     connectivityMonitor: ConnectivityMonitor
 ) : ViewModel() {
@@ -171,10 +176,13 @@ class SessionViewModel @Inject constructor(
                         noteText = command.text,
                         voiceCommandRaw = rawText
                     ),
-                    status = CaptureStatus.PENDING
+                    status = CaptureStatus.CAPTURED
                 )
                 addCapture(capture)
                 audioFeedbackManager.noteRecorded()
+                viewModelScope.launch {
+                    runExtraction(capture)
+                }
             }
             is VoiceCommand.Unknown -> {
                 audioFeedbackManager.commandNotRecognized()
@@ -199,12 +207,18 @@ class SessionViewModel @Inject constructor(
                         imagePath = imagePath,
                         imageBytes = imageBytes,
                         metadata = metadata,
-                        status = CaptureStatus.PENDING,
-                        qualityResult = qualityResult
+                        status = CaptureStatus.CAPTURED,
+                        qualityResult = qualityResult,
+                        extractionResult = null
                     )
                     addCapture(capture)
                     _uiState.value = _uiState.value.copy(errorMessage = null)
                     audioFeedbackManager.confirmCapture(type.name.lowercase())
+
+                    // Trigger Gemini AI extraction asynchronously so capture flow stays non-blocking
+                    viewModelScope.launch {
+                        runExtraction(capture)
+                    }
                 } else {
                     val reason = qualityResult.rejectionReason ?: "poor quality"
                     _uiState.value = _uiState.value.copy(errorMessage = "Retake needed: $reason")
@@ -226,6 +240,72 @@ class SessionViewModel @Inject constructor(
                     voiceCommandService.startListening()
                 }
             }
+        }
+    }
+
+    private suspend fun runExtraction(capture: Capture) {
+        updateCaptureStatus(capture.id, CaptureStatus.EXTRACTING)
+
+        val extractionMetadata = ExtractionMetadata(
+            room = capture.metadata.room,
+            surface = capture.metadata.surface,
+            spokenText = capture.metadata.noteText,
+            captureTimestamp = capture.timestamp
+        )
+
+        val result = extractCaptureDataUseCase.execute(
+            imageBytes = capture.imageBytes,
+            captureType = capture.type,
+            metadata = extractionMetadata
+        )
+
+        result.fold(
+            onSuccess = { extractionResult ->
+                updateCaptureWithExtraction(capture.id, extractionResult, CaptureStatus.EXTRACTED)
+                Log.d(
+                    TAG,
+                    "Extraction complete for ${capture.type}: confidence=${extractionResult.overallConfidence}"
+                )
+                if (capture.type == CaptureType.NAMEPLATE &&
+                    extractionResult is NameplateExtraction &&
+                    extractionResult.error == null
+                ) {
+                    val mfg = extractionResult.manufacturer ?: "unknown"
+                    audioFeedbackManager.speak(
+                        "Nameplate extracted. $mfg ${extractionResult.equipmentType ?: "equipment"}"
+                    )
+                }
+            },
+            onFailure = { error ->
+                Log.e(TAG, "Extraction failed for ${capture.id}", error)
+                updateCaptureStatus(capture.id, CaptureStatus.EXTRACTION_FAILED)
+            }
+        )
+    }
+
+    private fun updateCaptureStatus(captureId: String, status: CaptureStatus) {
+        _captures.value = _captures.value.map { capture ->
+            if (capture.id == captureId) capture.copy(status = status) else capture
+        }
+        viewModelScope.launch {
+            captureRepository.updateCaptureStatus(captureId, status)
+        }
+    }
+
+    private fun updateCaptureWithExtraction(
+        captureId: String,
+        result: ExtractionResult,
+        status: CaptureStatus
+    ) {
+        _captures.value = _captures.value.map { capture ->
+            if (capture.id == captureId) {
+                capture.copy(status = status, extractionResult = result)
+            } else {
+                capture
+            }
+        }
+        viewModelScope.launch {
+            captureRepository.updateExtraction(captureId, result, status)
         }
     }
 

@@ -1,9 +1,10 @@
 package com.fieldcapture.data.local.entity
 
 enum class CaptureStatus {
-    PENDING,      // Captured, waiting for quality check
-    PROCESSING,   // Being sent to AI for extraction
-    COMPLETED,    // Extraction done
-    FAILED,       // Extraction failed
-    QUEUED        // Offline — queued for later processing
+    CAPTURED,           // Image saved, not yet sent to AI
+    EXTRACTING,         // Currently being processed by Gemini
+    EXTRACTED,          // AI extraction complete
+    EXTRACTION_FAILED,  // AI extraction failed (will retry)
+    QUEUED,             // Waiting in offline queue (Phase 6)
+    SYNCED              // Uploaded to backend (Phase 6)
 }

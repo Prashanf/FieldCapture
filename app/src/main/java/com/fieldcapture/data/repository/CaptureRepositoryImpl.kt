@@ -8,6 +8,10 @@ import com.fieldcapture.domain.model.CaptureMetadata
 import com.fieldcapture.domain.model.CaptureType
 import com.fieldcapture.domain.model.QualityResult
 import com.fieldcapture.domain.repository.CaptureRepository
+import com.fieldcapture.extraction.DamageExtraction
+import com.fieldcapture.extraction.ExtractionResult
+import com.fieldcapture.extraction.NameplateExtraction
+import com.fieldcapture.extraction.NoteExtraction
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -37,9 +41,17 @@ class CaptureRepositoryImpl @Inject constructor(
         captureDao.updateStatus(id, status)
     }
 
+    override suspend fun updateExtraction(
+        id: String,
+        result: ExtractionResult,
+        status: CaptureStatus
+    ): Result<Unit> = runCatching {
+        captureDao.updateExtraction(id, gson.toJson(result), status)
+    }
+
     override suspend fun getPendingCaptures(): List<Capture> {
         return captureDao.getCapturesByStatus(
-            listOf(CaptureStatus.PENDING, CaptureStatus.QUEUED, CaptureStatus.FAILED)
+            listOf(CaptureStatus.CAPTURED, CaptureStatus.EXTRACTION_FAILED, CaptureStatus.QUEUED)
         ).map { it.toDomain() }
     }
 
@@ -48,6 +60,7 @@ class CaptureRepositoryImpl @Inject constructor(
     }
 
     private fun CaptureEntity.toDomain(): Capture {
+        val captureType = CaptureType.valueOf(type)
         val quality = qualityJson?.let {
             runCatching { gson.fromJson(it, QualityResult::class.java) }.getOrNull()
         }
@@ -55,14 +68,23 @@ class CaptureRepositoryImpl @Inject constructor(
             runCatching { gson.fromJson(it, CaptureMetadata::class.java) }.getOrNull()
         } ?: CaptureMetadata(noteText = noteText)
 
+        val extraction: ExtractionResult? = extractionJson?.let { json ->
+            runCatching {
+                when (captureType) {
+                    CaptureType.NAMEPLATE -> gson.fromJson(json, NameplateExtraction::class.java)
+                    CaptureType.DAMAGE -> gson.fromJson(json, DamageExtraction::class.java)
+                    CaptureType.NOTE -> gson.fromJson(json, NoteExtraction::class.java)
+                }
+            }.getOrNull()
+        }
+
         val epochMillis = timestamp.toLongOrNull()
             ?: runCatching { Instant.parse(timestamp).toEpochMilli() }.getOrElse { System.currentTimeMillis() }
 
-        // TODO: Deserialize polymorphic ExtractionResult from extractionJson
         return Capture(
             id = id,
             jobId = jobId,
-            type = CaptureType.valueOf(type),
+            type = captureType,
             timestamp = epochMillis,
             imagePath = imagePath,
             metadata = if (parsedMetadata.noteText == null && noteText != null) {
@@ -72,7 +94,7 @@ class CaptureRepositoryImpl @Inject constructor(
             },
             status = status,
             qualityResult = quality,
-            extractionResult = null
+            extractionResult = extraction
         )
     }
 

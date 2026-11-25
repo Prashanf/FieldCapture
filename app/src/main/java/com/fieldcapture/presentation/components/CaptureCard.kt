@@ -14,14 +14,17 @@ import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.fieldcapture.data.local.entity.CaptureStatus
 import com.fieldcapture.domain.model.Capture
 import com.fieldcapture.domain.model.CaptureType
 import java.text.SimpleDateFormat
@@ -105,6 +108,37 @@ fun CaptureCard(
             if (capture.qualityResult != null) {
                 Spacer(modifier = Modifier.height(6.dp))
                 QualityIndicator(quality = capture.qualityResult)
+            }
+
+            when {
+                capture.status == CaptureStatus.EXTRACTING -> {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp
+                        )
+                        Text(
+                            text = "Extracting with Gemini...",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+                capture.status == CaptureStatus.EXTRACTION_FAILED -> {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Extraction failed — queued for retry",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFFC62828)
+                    )
+                }
+                capture.extractionResult != null -> {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ExtractionResultCard(result = capture.extractionResult)
+                }
             }
         }
     }

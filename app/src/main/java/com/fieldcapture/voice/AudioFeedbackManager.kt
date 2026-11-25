@@ -59,7 +59,7 @@ class AudioFeedbackManager @Inject constructor(
         speak("Connection lost. Reconnecting.")
     }
 
-    private fun speak(text: String) {
+    fun speak(text: String) {
         if (isTtsReady) {
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, text.hashCode().toString())
         }
