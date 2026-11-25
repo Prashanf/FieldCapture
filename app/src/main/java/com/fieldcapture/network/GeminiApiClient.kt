@@ -28,8 +28,10 @@ class GeminiApiClient @Inject constructor() {
         .build()
 
     private val gson = Gson()
-    private val baseUrl =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    private val modelEndpoints = listOf(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
+    )
 
     companion object {
         private const val TAG = "GeminiApiClient"
@@ -85,48 +87,55 @@ class GeminiApiClient @Inject constructor() {
         val requestBody = gson.toJson(requestJson)
             .toRequestBody("application/json".toMediaType())
 
-        val url = "$baseUrl?key=$apiKey"
         var lastException: Exception? = null
 
-        for (attempt in 0 until MAX_RETRIES) {
-            try {
-                val request = Request.Builder()
-                    .url(url)
-                    .post(requestBody)
-                    .build()
+        for (baseUrl in modelEndpoints) {
+            val url = "$baseUrl?key=$apiKey"
+            for (attempt in 0 until MAX_RETRIES) {
+                try {
+                    val request = Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .build()
 
-                client.newCall(request).execute().use { response ->
-                    val responseBody = response.body?.string().orEmpty()
-                    when {
-                        response.isSuccessful -> {
-                            val text = extractTextFromResponse(responseBody)
-                            return@withContext if (text != null) {
-                                Result.success(text)
-                            } else {
-                                Result.failure(IOException("Failed to parse Gemini response: $responseBody"))
+                    client.newCall(request).execute().use { response ->
+                        val responseBody = response.body?.string().orEmpty()
+                        when {
+                            response.isSuccessful -> {
+                                val text = extractTextFromResponse(responseBody)
+                                return@withContext if (text != null) {
+                                    Result.success(text)
+                                } else {
+                                    Result.failure(IOException("Failed to parse Gemini response: $responseBody"))
+                                }
+                            }
+                            response.code == 429 -> {
+                                Log.w(TAG, "Rate limited (429) on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES")
+                                lastException = IOException("Rate limited: ${response.code}")
+                                if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
+                            }
+                            response.code in 500..599 -> {
+                                Log.w(TAG, "Server error (${response.code}) on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES")
+                                lastException = IOException("Server error: ${response.code}")
+                                if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
+                            }
+                            response.code == 404 -> {
+                                Log.w(TAG, "Model unavailable (404) at $baseUrl; trying fallback model")
+                                lastException = IOException("Model not found (404): $responseBody")
+                                break
+                            }
+                            else -> {
+                                return@withContext Result.failure(
+                                    IOException("API error ${response.code}: $responseBody")
+                                )
                             }
                         }
-                        response.code == 429 -> {
-                            Log.w(TAG, "Rate limited (429), attempt ${attempt + 1}/$MAX_RETRIES")
-                            lastException = IOException("Rate limited: ${response.code}")
-                            if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
-                        }
-                        response.code in 500..599 -> {
-                            Log.w(TAG, "Server error (${response.code}), attempt ${attempt + 1}/$MAX_RETRIES")
-                            lastException = IOException("Server error: ${response.code}")
-                            if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
-                        }
-                        else -> {
-                            return@withContext Result.failure(
-                                IOException("API error ${response.code}: $responseBody")
-                            )
-                        }
                     }
+                } catch (e: IOException) {
+                    Log.e(TAG, "Network error on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES", e)
+                    lastException = e
+                    if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
                 }
-            } catch (e: IOException) {
-                Log.e(TAG, "Network error, attempt ${attempt + 1}/$MAX_RETRIES", e)
-                lastException = e
-                if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
             }
         }
 

@@ -24,7 +24,7 @@ Hands-free field capture Android application built with Kotlin, Jetpack Compose,
    ```properties
    GEMINI_API_KEY=your_key_here
    ```
-   `app/build.gradle.kts` exposes this via `BuildConfig.GEMINI_API_KEY` for `gemini-2.0-flash` vision extraction.
+   `app/build.gradle.kts` exposes this via `BuildConfig.GEMINI_API_KEY` for `gemini-3.5-flash` (with `gemini-3.8-flash` fallback) vision extraction.
 4. Sync Gradle and run on an Android emulator or device (Mock Device Kit mode enabled).
 
 ## Project Layout

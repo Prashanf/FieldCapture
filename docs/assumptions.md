@@ -7,3 +7,4 @@
 3. **Offline-First Capture Queue:** Captures are saved locally in Room first and synced via WorkManager when connectivity is available.
 4. **Minimum SDK 29:** `com.meta.wearable:mwdat-camera:1.0.1` declares `minSdkVersion 29`, so `minSdk` is set to `29` (Android 10+).
 5. **Kotlin 2.2.20 / Hilt 2.57.2 / Room 2.7.2:** `mwdat-*:1.0.1` and its transitive `kotlinx-coroutines:1.11.0` are compiled with Kotlin 2.2 metadata, requiring Kotlin `2.2.20`, KSP `2.2.20-2.0.4`, Hilt `2.57.2`, and Room `2.7.2` for metadata and KSP2 compatibility.
+6. **Gemini Model Endpoint (`gemini-3.5-flash` / `gemini-3.8-flash`):** `gemini-2.0-flash` and `gemini-2.5-flash` return HTTP `404 NOT_FOUND` on the Gemini Developer API for new keys, so `GeminiApiClient` targets `gemini-3.5-flash` with fallback to `gemini-3.8-flash`.
