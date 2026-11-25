@@ -4,13 +4,14 @@ import com.fieldcapture.data.local.dao.CaptureDao
 import com.fieldcapture.data.local.entity.CaptureEntity
 import com.fieldcapture.data.local.entity.CaptureStatus
 import com.fieldcapture.domain.model.Capture
+import com.fieldcapture.domain.model.CaptureMetadata
 import com.fieldcapture.domain.model.CaptureType
 import com.fieldcapture.domain.model.QualityResult
 import com.fieldcapture.domain.repository.CaptureRepository
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.Instant
 import javax.inject.Inject
 
 class CaptureRepositoryImpl @Inject constructor(
@@ -38,7 +39,7 @@ class CaptureRepositoryImpl @Inject constructor(
 
     override suspend fun getPendingCaptures(): List<Capture> {
         return captureDao.getCapturesByStatus(
-            listOf(CaptureStatus.PENDING, CaptureStatus.FAILED)
+            listOf(CaptureStatus.PENDING, CaptureStatus.QUEUED, CaptureStatus.FAILED)
         ).map { it.toDomain() }
     }
 
@@ -50,23 +51,28 @@ class CaptureRepositoryImpl @Inject constructor(
         val quality = qualityJson?.let {
             runCatching { gson.fromJson(it, QualityResult::class.java) }.getOrNull()
         }
-        val metadataType = object : TypeToken<Map<String, String>>() {}.type
-        val metadata: Map<String, String> = metadataJson?.let {
-            runCatching { gson.fromJson<Map<String, String>>(it, metadataType) }.getOrNull()
-        } ?: emptyMap()
+        val parsedMetadata = metadataJson?.let {
+            runCatching { gson.fromJson(it, CaptureMetadata::class.java) }.getOrNull()
+        } ?: CaptureMetadata(noteText = noteText)
+
+        val epochMillis = timestamp.toLongOrNull()
+            ?: runCatching { Instant.parse(timestamp).toEpochMilli() }.getOrElse { System.currentTimeMillis() }
 
         // TODO: Deserialize polymorphic ExtractionResult from extractionJson
         return Capture(
             id = id,
             jobId = jobId,
             type = CaptureType.valueOf(type),
-            timestampIso = timestamp,
+            timestamp = epochMillis,
             imagePath = imagePath,
-            noteText = noteText,
+            metadata = if (parsedMetadata.noteText == null && noteText != null) {
+                parsedMetadata.copy(noteText = noteText)
+            } else {
+                parsedMetadata
+            },
             status = status,
-            quality = quality,
-            extraction = null,
-            metadata = metadata
+            qualityResult = quality,
+            extractionResult = null
         )
     }
 
@@ -76,10 +82,10 @@ class CaptureRepositoryImpl @Inject constructor(
             jobId = jobId,
             type = type.name,
             imagePath = imagePath,
-            noteText = noteText,
+            noteText = metadata.noteText,
             status = status,
-            qualityJson = quality?.let { gson.toJson(it) },
-            extractionJson = extraction?.let { gson.toJson(it) },
+            qualityJson = qualityResult?.let { gson.toJson(it) },
+            extractionJson = extractionResult?.let { gson.toJson(it) },
             metadataJson = gson.toJson(metadata),
             timestamp = timestampIso
         )

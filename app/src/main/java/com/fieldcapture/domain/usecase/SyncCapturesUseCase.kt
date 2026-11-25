@@ -16,7 +16,7 @@ class SyncCapturesUseCase @Inject constructor(
         var syncedCount = 0
         for (capture in pending) {
             captureRepository.updateCaptureStatus(capture.id, CaptureStatus.PROCESSING)
-            // TODO: Execute extraction based on capture.type and mark UPLOADED or FAILED
+            // TODO: Execute extraction based on capture.type and mark COMPLETED or FAILED
             syncedCount++
         }
         syncedCount

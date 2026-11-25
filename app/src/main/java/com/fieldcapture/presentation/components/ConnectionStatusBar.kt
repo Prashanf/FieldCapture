@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,19 +24,29 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.fieldcapture.glasses.GlassesState
+import com.fieldcapture.voice.VoiceCommandService.ListeningState
 
 @Composable
 fun ConnectionStatusBar(
     glassesState: GlassesState,
+    listeningState: ListeningState,
     isOnline: Boolean,
     modifier: Modifier = Modifier
 ) {
     val (statusColor, glassesLabel) = when (glassesState) {
-        is GlassesState.Disconnected -> Color(0xFF9E9E9E) to "Glasses: Disconnected"
-        is GlassesState.Connecting -> Color(0xFFFFA000) to "Glasses: Connecting..."
-        is GlassesState.Connected -> Color(0xFF2E7D32) to "Glasses: Connected"
-        is GlassesState.Paused -> Color(0xFF1976D2) to "Glasses: Paused"
+        is GlassesState.Disconnected -> Color(0xFF9E9E9E) to "Disconnected"
+        is GlassesState.Connecting -> Color(0xFFFFC107) to "Connecting..."
+        is GlassesState.Connected -> Color(0xFF2E7D32) to "Connected"
+        is GlassesState.Paused -> Color(0xFFFFC107) to "Paused"
         is GlassesState.Error -> Color(0xFFC62828) to "Error: ${glassesState.message}"
+    }
+
+    val isMicActive = listeningState == ListeningState.LISTENING || listeningState == ListeningState.PROCESSING
+    val micLabel = when (listeningState) {
+        ListeningState.IDLE -> "Idle"
+        ListeningState.LISTENING -> "Listening"
+        ListeningState.PROCESSING -> "Processing"
+        ListeningState.ERROR -> "Mic Error"
     }
 
     Surface(
@@ -46,7 +60,10 @@ fun ConnectionStatusBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
                 Box(
                     modifier = Modifier
                         .size(10.dp)
@@ -54,12 +71,28 @@ fun ConnectionStatusBar(
                         .background(statusColor)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = glassesLabel, style = MaterialTheme.typography.labelMedium)
+                Text(
+                    text = glassesLabel,
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1
+                )
             }
-            Text(
-                text = if (isOnline) "Online" else "Offline",
-                style = MaterialTheme.typography.labelMedium
-            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = if (isMicActive) Icons.Default.Mic else Icons.Default.MicOff,
+                    contentDescription = micLabel,
+                    tint = if (isMicActive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = micLabel, style = MaterialTheme.typography.labelMedium)
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = if (isOnline) "Online" else "Offline",
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
     }
 }

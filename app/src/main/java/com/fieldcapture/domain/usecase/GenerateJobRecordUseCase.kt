@@ -27,9 +27,9 @@ class GenerateJobRecordUseCase @Inject constructor(
         val notes = captures
             .filter { it.type == CaptureType.NOTE }
             .map { capture ->
-                val noteData = capture.extraction as? ExtractionResult.NoteData
+                val noteData = capture.extractionResult as? ExtractionResult.NoteData
                 JobNote(
-                    text = capture.noteText.orEmpty(),
+                    text = capture.metadata.noteText.orEmpty(),
                     structured = noteData?.structuredFields ?: emptyMap(),
                     timestamp = capture.timestampIso
                 )

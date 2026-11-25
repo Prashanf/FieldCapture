@@ -59,14 +59,14 @@ class JsonExporter @Inject constructor() {
     }
 
     private fun Capture.toSchemaMap(): Map<String, Any?> {
-        val qualityMap = quality?.let {
+        val qualityMap = qualityResult?.let {
             mapOf(
                 "blur_score" to it.blurScore,
                 "brightness" to it.brightness,
                 "is_acceptable" to it.isAcceptable
             )
         }
-        val extractionMap = extraction?.let { ext ->
+        val extractionMap = extractionResult?.let { ext ->
             val fields: Map<String, Any?> = when (ext) {
                 is ExtractionResult.NameplateData -> mapOf(
                     "make" to ext.make,

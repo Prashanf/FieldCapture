@@ -1,16 +1,21 @@
 package com.fieldcapture.presentation.session
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,10 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fieldcapture.glasses.GlassesState
+import com.fieldcapture.presentation.components.CaptureCard
 import com.fieldcapture.presentation.components.ConnectionStatusBar
+import com.fieldcapture.presentation.components.VoiceCommandIndicator
+import com.fieldcapture.voice.VoiceCommandService.ListeningState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,16 +47,30 @@ fun SessionScreen(
     onNavigateToReview: (String) -> Unit,
     viewModel: SessionViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val glassesState by viewModel.glassesState.collectAsState()
     val streamState by viewModel.streamState.collectAsState()
     val latestFrame by viewModel.latestFrame.collectAsState()
+    val listeningState by viewModel.listeningState.collectAsState()
+    val lastCommand by viewModel.lastCommand.collectAsState()
     val isOnline by viewModel.isOnline.collectAsState()
     val captures by viewModel.captures.collectAsState()
+
+    val audioPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            viewModel.startVoiceListening()
+        }
+    }
 
     val isSessionActive = glassesState is GlassesState.Connected ||
         glassesState is GlassesState.Connecting ||
         glassesState is GlassesState.Paused
+
+    val isVoiceActive = listeningState == ListeningState.LISTENING ||
+        listeningState == ListeningState.PROCESSING
 
     Scaffold(
         topBar = {
@@ -60,19 +84,23 @@ fun SessionScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            ConnectionStatusBar(glassesState = glassesState, isOnline = isOnline)
+            ConnectionStatusBar(
+                glassesState = glassesState,
+                listeningState = listeningState,
+                isOnline = isOnline
+            )
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // Live camera preview from Mock Device Kit / Meta DAT stream
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .height(190.dp)
                         .background(Color.Black),
                     contentAlignment = Alignment.Center
                 ) {
@@ -93,51 +121,93 @@ fun SessionScreen(
                     }
                 }
 
-                // Connection + stream status summary
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                VoiceCommandIndicator(
+                    listeningState = listeningState,
+                    lastRecognizedText = uiState.lastRecognizedText,
+                    lastCommand = lastCommand
+                )
+
+                Text(
+                    text = "Stream: ${streamState?.name ?: "IDLE"} • Captures: ${captures.size}",
+                    style = MaterialTheme.typography.labelMedium
+                )
+
+                val errorText = uiState.errorMessage ?: (glassesState as? GlassesState.Error)?.message
+                if (!errorText.isNullOrBlank()) {
                     Text(
-                        text = "Session: ${glassesState::class.simpleName}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "Stream: ${streamState?.name ?: "IDLE"}",
+                        text = "Error: $errorText",
+                        color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall
                     )
-                    val errorText = uiState.errorMessage ?: (glassesState as? GlassesState.Error)?.message
-                    if (!errorText.isNullOrBlank()) {
-                        Text(
-                            text = "Error: $errorText",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                }
+
+                // Scrollable capture list
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(captures, key = { it.id }) { capture ->
+                        CaptureCard(capture = capture)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                // Session & review controls
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { viewModel.initializeSession(useMock = true) },
+                        enabled = !isSessionActive,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Start Session")
+                    }
+                    OutlinedButton(
+                        onClick = { viewModel.stopSession() },
+                        enabled = isSessionActive,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Stop")
+                    }
+                    OutlinedButton(
+                        onClick = { onNavigateToReview(uiState.jobId) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Review (${captures.size})")
+                    }
+                }
 
-                // Start / Stop session controls
+                // Voice listening controls (phone mic fallback)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(
                         onClick = {
-                            if (isSessionActive) {
-                                viewModel.stopSession()
+                            val hasPermission = ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.RECORD_AUDIO
+                            ) == PackageManager.PERMISSION_GRANTED
+                            if (hasPermission) {
+                                viewModel.startVoiceListening()
                             } else {
-                                viewModel.initializeSession(useMock = true)
+                                audioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                             }
                         },
+                        enabled = !isVoiceActive,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(if (isSessionActive) "Stop Session" else "Start Session")
+                        Text("Start Listening")
                     }
-
                     OutlinedButton(
-                        onClick = { onNavigateToReview(uiState.jobId) },
+                        onClick = { viewModel.stopVoiceListening() },
+                        enabled = isVoiceActive,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Review (${captures.size})")
+                        Text("Stop Listen")
                     }
                 }
             }
