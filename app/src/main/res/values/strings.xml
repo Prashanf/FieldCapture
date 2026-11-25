@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FieldCapture</string>
+    <string name="session_title">Walk-Through Session</string>
+    <string name="review_title">Review Captures</string>
+    <string name="job_record_title">Job Record</string>
+    <string name="voice_listening">Listening for commands…</string>
+    <string name="voice_idle">Voice idle</string>
+    <string name="glasses_disconnected">Glasses disconnected</string>
+    <string name="glasses_connected">Mock Glasses connected</string>
+    <string name="error_quality_blurry">Image is too blurry. Please hold steady and retake.</string>
+    <string name="error_quality_dark">Image is too dark. Improve lighting and retake.</string>
+</resources>

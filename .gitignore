@@ -1,0 +1,40 @@
+# Android / Gradle
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+.gradle/
+build/
+local.properties
+
+# IntelliJ / Android Studio
+*.iml
+.idea/
+captures/
+.navigation/
+.externalNativeBuild/
+.cxx/
+
+# Secrets / Keys
+*.jks
+*.keystore
+secrets.properties
+
+# Evaluation raw frames (large binary images)
+eval/test_frames/**
+!eval/test_frames/.gitkeep
+!eval/test_frames/**/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db

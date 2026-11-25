@@ -1,0 +1,16 @@
+{
+  "job_id": "00000000-0000-0000-0000-000000000003",
+  "created_at": "2026-11-25T00:00:00Z",
+  "technician_id": "tech_001",
+  "location": { "address": "", "lat": 0, "lng": 0 },
+  "session": {
+    "started_at": "2026-11-25T00:00:00Z",
+    "ended_at": "2026-11-25T00:10:00Z",
+    "device": "mock_rayban_meta_gen2",
+    "total_captures": 0,
+    "retakes": 0
+  },
+  "captures": [],
+  "line_items": [],
+  "notes": []
+}
