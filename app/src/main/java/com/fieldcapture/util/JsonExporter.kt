@@ -62,7 +62,7 @@ class JsonExporter @Inject constructor() {
         val qualityMap = qualityResult?.let {
             mapOf(
                 "blur_score" to it.blurScore,
-                "brightness" to it.brightness,
+                "brightness" to it.brightnessScore,
                 "is_acceptable" to it.isAcceptable
             )
         }

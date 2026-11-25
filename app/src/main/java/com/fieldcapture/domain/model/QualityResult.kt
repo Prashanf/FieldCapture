@@ -1,14 +1,13 @@
 package com.fieldcapture.domain.model
 
 data class QualityResult(
+    val isAcceptable: Boolean,
     val blurScore: Double,
-    val brightness: Int,
-    val textRegionPercent: Double = 0.0,
+    val brightnessScore: Int,
+    val edgeDensity: Double,
     val isBlurry: Boolean,
     val isDark: Boolean,
-    val isOverexposed: Boolean = false,
-    val isBadlyFramed: Boolean
-) {
-    val isAcceptable: Boolean
-        get() = !isBlurry && !isDark && !isOverexposed && !isBadlyFramed
-}
+    val isOverexposed: Boolean,
+    val isBadlyFramed: Boolean,
+    val rejectionReason: String?
+)

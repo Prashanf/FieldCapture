@@ -9,8 +9,10 @@ import com.fieldcapture.data.local.entity.CaptureStatus
 import com.fieldcapture.domain.model.Capture
 import com.fieldcapture.domain.model.CaptureMetadata
 import com.fieldcapture.domain.model.CaptureType
+import com.fieldcapture.domain.model.QualityResult
 import com.fieldcapture.domain.model.VoiceCommand
 import com.fieldcapture.domain.repository.CaptureRepository
+import com.fieldcapture.domain.usecase.CheckCaptureQualityUseCase
 import com.fieldcapture.glasses.CameraStreamManager
 import com.fieldcapture.glasses.GlassesSessionManager
 import com.fieldcapture.glasses.GlassesState
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
@@ -49,6 +52,7 @@ class SessionViewModel @Inject constructor(
     private val voiceCommandService: VoiceCommandService,
     private val voiceCommandParser: VoiceCommandParser,
     private val audioFeedbackManager: AudioFeedbackManager,
+    private val checkCaptureQualityUseCase: CheckCaptureQualityUseCase,
     private val captureRepository: CaptureRepository,
     connectivityMonitor: ConnectivityMonitor
 ) : ViewModel() {
@@ -186,17 +190,27 @@ class SessionViewModel @Inject constructor(
         val result = glassesSessionManager.capturePhoto()
         result.fold(
             onSuccess = { imageBytes ->
-                val imagePath = saveImageToFile(imageBytes, type)
-                val capture = Capture(
-                    jobId = _uiState.value.jobId,
-                    type = type,
-                    imagePath = imagePath,
-                    imageBytes = imageBytes,
-                    metadata = metadata,
-                    status = CaptureStatus.PENDING
-                )
-                addCapture(capture)
-                audioFeedbackManager.confirmCapture(type.name.lowercase())
+                val qualityResult = checkCaptureQualityUseCase.execute(imageBytes, type)
+                if (qualityResult.isAcceptable) {
+                    val imagePath = saveImageToFile(imageBytes, type)
+                    val capture = Capture(
+                        jobId = _uiState.value.jobId,
+                        type = type,
+                        imagePath = imagePath,
+                        imageBytes = imageBytes,
+                        metadata = metadata,
+                        status = CaptureStatus.PENDING,
+                        qualityResult = qualityResult
+                    )
+                    addCapture(capture)
+                    _uiState.value = _uiState.value.copy(errorMessage = null)
+                    audioFeedbackManager.confirmCapture(type.name.lowercase())
+                } else {
+                    val reason = qualityResult.rejectionReason ?: "poor quality"
+                    _uiState.value = _uiState.value.copy(errorMessage = "Retake needed: $reason")
+                    audioFeedbackManager.requestRetake(reason)
+                    logQualityRejection(type, qualityResult)
+                }
             },
             onFailure = { error ->
                 Log.w(TAG, "Capture failed: ${error.message}")
@@ -214,6 +228,19 @@ class SessionViewModel @Inject constructor(
             }
         }
     }
+
+    private fun logQualityRejection(type: CaptureType, result: QualityResult) {
+        Log.w("QualityCheck", buildString {
+            append("REJECTED ${type.name}: ")
+            append("blur=${result.blurScore.format(1)}, ")
+            append("brightness=${result.brightnessScore}, ")
+            append("edges=${result.edgeDensity.format(1)}%, ")
+            append("reason=${result.rejectionReason}")
+        })
+    }
+
+    private fun Double.format(decimals: Int): String =
+        String.format(Locale.US, "%.${decimals}f", this)
 
     private suspend fun addCapture(capture: Capture) {
         _captures.value = _captures.value + capture
