@@ -1,5 +1,7 @@
 # FieldCapture Demo Video Script (5 Minutes Max)
 
+> **Recorded Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/13XdZDxWriiBYlHyolZaSANX7PsDozu6r/view?usp=sharing)
+
 ## Pre-Recording Checklist
 - Android phone (`API 29+`) with latest **FieldCapture** debug APK installed (`GEMINI_API_KEY_1..3` compiled from `local.properties`).
 - Test props within walking distance:

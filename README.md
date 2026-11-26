@@ -6,6 +6,10 @@
 
 FieldCapture is an Android (Kotlin + Jetpack Compose) application built on Meta's Device Access Toolkit (DAT SDK `1.0.1`) using the Mock Device Kit. As a technician inspects a damaged property, continuous voice commands trigger frame capture, on-device image quality gating, and structured vision extraction via the Google Gemini API. Offline-resilient local storage (Room + WorkManager) queues captures when connectivity drops and exports a versioned JSON `JobRecord` (`schema_version: 1.0.0`) mapped to 15 restoration line-item codes.
 
+## Demo Video
+- **Full Walkthrough Video (Google Drive):** [Watch the FieldCapture Demo](https://drive.google.com/file/d/13XdZDxWriiBYlHyolZaSANX7PsDozu6r/view?usp=sharing)
+- See [`docs/demo_script.md`](docs/demo_script.md) for the scripted flow (session setup, nameplate & damage voice captures, quality/offline recovery, and Job Record JSON export).
+
 ---
 
 ## Quick Start (< 10 minutes)
@@ -181,7 +185,7 @@ Our primary benchmark evaluates **30 genuine phone camera photographs** (`eval/t
 - [`docs/architecture.md`](docs/architecture.md) — Original Mermaid system architecture diagram
 - [`docs/assumptions.md`](docs/assumptions.md) — Technical & SDK compatibility assumptions
 - [`docs/research_memo.md`](docs/research_memo.md) — 1-page research memo on Meta AI glasses, DAT SDK findings, and hardware roadmap
-- [`docs/demo_script.md`](docs/demo_script.md) — 5-minute phone walk-through demo script
+- [`docs/demo_script.md`](docs/demo_script.md) — 5-minute phone walk-through demo script ([Recorded Demo Video](https://drive.google.com/file/d/13XdZDxWriiBYlHyolZaSANX7PsDozu6r/view?usp=sharing))
 - [`eval/eval_report.md`](eval/eval_report.md) — Live 30-capture real-world benchmark report
 
 ---
