@@ -151,17 +151,23 @@ Clear, bright captures (`85.0%`) dramatically outperform medium/hard captures (`
 
 ---
 
-## API Reliability & Fallback Architecture
+## API Reliability, Latency & Fallback Architecture
 
-### Observed Issues & Live Key Rotation Behavior
-During the 30-frame benchmark (plus earlier emulator testing), Google AI Studio free-tier limits (`20` RPD/key/model on `gemini-3.5-flash` & `gemini-3.8-flash`) caused:
-- **`503 Server Unavailable`** and **`SocketTimeoutException`** (>60s) on `gemini-3.5-flash` during frames `REAL-NP-008..013`, triggering `3×2` retries that consumed `3.5`/`3.8` daily quota across keys `1..3`.
-- Switching/falling back to **`gemini-3.5-flash-lite`** (added as 3rd endpoint in `GeminiApiClient.DEFAULT_MODEL_ENDPOINTS`) completed the remaining **23 frames in 1m 53s** with **zero errors or timeouts**.
+### Observed Latency & Reliability Issues (Measured)
+Testing both the Android emulator and the 30-frame real-capture suite exposed a significant real-world API bottleneck on the free tier (`20` RPD/key/model):
+- **Baseline `gemini-3.5-flash` latency (~12.3s):** Under healthy conditions, a single vision extraction takes **~12.3 seconds** (directly observed in emulator logs). This is fast enough for asynchronous background processing, though noticeable if a technician waits for readback.
+- **`503` Spikes & `60s` Timeout Cascades (2–3+ min/frame):** During peak-load instability on `gemini-3.5-flash` and `gemini-3.8-flash` (`REAL-DMG-005` on emulator; `REAL-NP-008..013` on real photos), requests hit HTTP `503 Server Unavailable` and OkHttp `SocketTimeoutException` (`readTimeout = 60s`). Because each model retries up to `3` times with backoff (`1s`, `2s`, `4s`), a single stalled frame blocked for **2–3+ minutes** before failing over, stretched the 30-frame `3.5-flash` batch to **24m 2s**, and amplified retry consumption (`up to 6 calls per frame`) until daily quota (`20` RPD × `3` keys) was prematurely exhausted.
+- **Fast Fallback (`gemini-3.5-flash-lite` at ~2–3s/image):** Falling back to `gemini-3.5-flash-lite` completed the remaining **23 frames cleanly in `1m 53s` total** (including `1.5s` inter-call sleeps and Gradle/Robolectric startup) with **zero errors or timeouts**, while maintaining strong field extraction quality (`0.78` line-item F1, `100%` note category, `83.3%` dark nameplate read on `REAL-NP-012`).
 
-### Current Mitigation: 3-Key Rotation + 3-Model Fallback
-- Supports `N` API keys via `local.properties` (`GEMINI_API_KEY_1..N`) and `BuildConfig.GEMINI_API_KEYS`.
-- Rotates immediately with **zero backoff delay** on HTTP `429`, while retrying `503`/I/O errors on the same key with backoff (`1s`, `2s`, `4s`).
-- Fallback order: `gemini-3.5-flash` → `gemini-3.8-flash` → `gemini-3.5-flash-lite`.
+| Model Endpoint | Healthy Latency | Stalled / Peak-Load Behavior | Tradeoff |
+|---|---|---|---|
+| `gemini-3.5-flash` *(primary)* | `~12.3s` / image | Frequent `503`s & `60s` read timeouts (`2–3+ min` w/ retries) | Highest detail, slowest & unstable under load |
+| `gemini-3.8-flash` *(fallback 1)* | `~10–15s` / image | Shares peak-load `503`s & separate `20` RPD free-tier bucket | Secondary fallback before lite |
+| `gemini-3.5-flash-lite` *(fallback 2)* | **`~2–3s` / image** | Zero `503`s/timeouts observed across 23 frames (`1m 53s` batch) | Much faster & more reliable; minor OCR sensitivity on dim glare |
+
+### Current Mitigation & Recommended Client Tuning
+- **Implemented Resilience:** Supports `N` API keys via `local.properties` (`GEMINI_API_KEY_1..N`) and `BuildConfig.GEMINI_API_KEYS`, rotating immediately with **zero backoff delay** on HTTP `429` (`AllKeysExhaustedException` only after all keys/models exhaust). `503`/I/O errors retry on the same key (`1s`, `2s`, `4s` backoff), and failed/timed-out captures fall back to `gemini-3.8-flash` → `gemini-3.5-flash-lite` or queue asynchronously in Room for `ExtractionQueueWorker` sync.
+- **Recommended Next Fix:** Lower OkHttp `readTimeout` from `60s` to `20–25s` and cap `503` retries at `1` per model so stalled primary calls fail over to `gemini-3.5-flash-lite` in `<25s` instead of blocking 2–3 minutes and burning retry quota.
 
 ### Future Architecture: On-Device VLM Fallback
 - **Recommended Model:** Google **Gemma 3 4B (INT4 quantized)** via MediaPipe LLM Inference API (~`2.5 GB`, `8–15s` per image on Snapdragon 8 Gen 2+) vs **Qwen2.5-VL 3B (INT4)** (`~1.8 GB`, lower OCR fidelity).

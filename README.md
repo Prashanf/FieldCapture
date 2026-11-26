@@ -116,8 +116,9 @@ Three deterministic checks in `ImageQualityAnalyzer` run on-device before any ne
 - **`FramingAnalyzer`:** Minimum Sobel edge density **`2.0`** to catch lens obstructions or blank wall frames.
 
 ### AI Extraction & API Resilience
-- **Direct OkHttp REST Client (`GeminiApiClient`):** Targets **`gemini-3.5-flash`** with automatic fallback to **`gemini-3.8-flash`**, requesting structured JSON with per-field confidence scores.
+- **Direct OkHttp REST Client (`GeminiApiClient`):** Targets **`gemini-3.5-flash`** with automatic fallback to **`gemini-3.8-flash`** and **`gemini-3.5-flash-lite`**, requesting structured JSON with per-field confidence scores.
 - **Multi-Key Rotation:** Supports `N` API keys configured in `local.properties` (`GEMINI_API_KEY_1..N`). On HTTP `429 RESOURCE_EXHAUSTED`, `GeminiApiClient` rotates to the next key immediately with **zero backoff**, reserving exponential backoff (`1s`, `2s`, `4s`) for transient `503`/network errors. Throws `AllKeysExhaustedException` only after all keys and models are exhausted.
+- **Known API Latency & Reliability Issue:** Under healthy conditions, `gemini-3.5-flash` takes **`~12.3s`** per image, whereas peak-load **`503` spikes and `60s` read timeouts** can stall a single frame for **2–3+ minutes** across retries and burn multiple quota calls per capture (in contrast, `gemini-3.5-flash-lite` responds in **`~2–3s`** per image with zero observed timeouts across 23 frames). Extractions run asynchronously so techs are never blocked while walking, and any timed-out/failed capture queues automatically for WorkManager sync.
 - **Offline Queue (`Room` + `WorkManager`):** `ConnectivityObserver` monitors network availability while `ExtractionQueueWorker` (`@HiltWorker`) and `SyncManager` drain `PENDING` captures once connectivity returns.
 
 ### Line Item Mapping & Draft Pricing Disclaimer
