@@ -152,3 +152,41 @@ Based on evaluation results, we adjusted thresholds from initial values:
 4. **Severity calibration:** Fine-tune severity boundaries in the prompt with more examples. The critical/high boundary is especially fuzzy.
 5. **Confidence recalibration:** Apply Platt scaling to Gemini's confidence scores to improve calibration, especially in the 0.5–0.7 range.
 6. **Multi-shot extraction:** For nameplates, send the same image twice and take the consensus. Reduces random OCR errors.
+
+---
+
+## Real Image Evaluation Results
+
+### Test Set
+- 10 damage/mold photographs from the **U.S. EPA Mold Image Library** (public domain, downloaded to `app/src/androidTest/assets/eval_images/`)
+- 2 note-context photographs from EPA (`note_condensation.jpg`, `note_crawlspace.jpg`)
+- 3 synthetic nameplate bitmaps programmatically generated on-device (`SyntheticNameplateGenerator` — tests the end-to-end bitmap → JPEG → Gemini extraction code path rather than real field OCR)
+- **Source:** <https://epa.gov/mold/mold-image-library> (documented in [`eval/real_test_images.md`](real_test_images.md))
+- **Execution Environment:** `RealPipelineEvalTest` running on Android Emulator (`Medium_Phone_API_36.1`) against `ExtractionService` + `GeminiApiClient` (`gemini-3.5-flash` primary / `gemini-3.8-flash` fallback)
+- **Raw Output:** Saved in [`eval/real_eval_results.json`](real_eval_results.json)
+
+### Damage Extraction Results (Real EPA Images)
+
+| Test ID | Image | Expected Type | Got Type | Type Match | Expected Severity | Got Severity | Severity Match | Line Item Recall | Confidence |
+|---------|-------|---------------|----------|------------|-------------------|--------------|----------------|------------------|------------|
+| `REAL-DMG-001` | `dmg_mold_drywall_sink.jpg` | `mold` | `water_damage` | No | `medium` | `low` | No | 33% (`1/3`) | 0.89 |
+| `REAL-DMG-002` | `dmg_mold_wall_cavity.jpg` | `mold` | `mold` | Yes | `high` | `medium` | No | 75% (`3/4`) | 0.94 |
+| `REAL-DMG-003` | `dmg_mold_bathtub.jpg` | `mold` | `mold` | Yes | `high` | `medium` | No | 100% (`3/3`) | 0.91 |
+| `REAL-DMG-004` | `dmg_water_stain_ceiling.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `medium` | Yes | 50% (`1/2`) | 0.92 |
+| `REAL-DMG-005` | `dmg_water_stain_wood.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `low` | No | 100% (`2/2`) | 0.91 |
+| `REAL-DMG-006` | `dmg_mold_grout.jpg` | `mold` | `mold` | Yes | `low` | `medium` | No | 100% (`1/1`) | 0.93 |
+| `REAL-DMG-007` | `dmg_moisture_wall.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `medium` | Yes | 50% (`1/2`) | 0.89 |
+| `REAL-DMG-008` | `dmg_ceiling_tiles.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `high` | No | 0% (`0/1`) | 0.88 |
+| `REAL-DMG-009` | `dmg_mold_concrete.jpg` | `mold` | *Error: HTTP 503* | N/A | `medium` | — | N/A | N/A | — |
+| `REAL-DMG-010` | `dmg_foundation_wet.jpg` | `water_damage` | *Error: timeout* | N/A | `high` | — | N/A | N/A | — |
+
+### Note-Context & Synthetic Nameplate Execution Status
+- **`REAL-NOTE-001` (`note_condensation.jpg`) & `REAL-NOTE-002` (`note_crawlspace.jpg`):** Failed due to upstream HTTP `503` and HTTP `429` (`RESOURCE_EXHAUSTED` after reaching the Google AI Studio free-tier limit of `20` requests/day per model across `gemini-3.5-flash` retries and `gemini-3.8-flash` fallback).
+- **`SYN-NP-001`–`SYN-NP-003` (`SyntheticNameplateGenerator`):** All 3 synthetic `800x500` JPEG nameplates were generated cleanly on-device; live API calls hit the same `503`/`429` (`20` RPD free-tier daily quota) limit immediately following the damage/note run.
+
+### Key Observations from Real Image Testing
+1. **Strong damage-type classification on real photos (7/8 = 87.5% of completed frames; 70% across all 10):** Gemini accurately distinguished `mold` vs. `water_damage` across varied EPA photographs. The single type miss (`REAL-DMG-001`, sink area) classified the scene as `water_damage` while still recommending `ANTIMICROBIAL_TREATMENT`.
+2. **Severity remains subjective (2/8 = 25.0% exact match among completed frames; 20% overall):** Every severity mismatch differed by one adjacent tier (`low` vs `medium` or `medium` vs `high`), confirming that strict exact-string severity scoring understates practical usefulness unless bounded/anchored in the prompt.
+3. **Line-item recommendations are practically useful even when approximate (7/8 = 87.5% hit rate on completed frames, 63.5% avg recall):** On `REAL-DMG-008` (`big_pic78.jpg`), Gemini identified exterior brick/masonry and a downspout rather than acoustic ceiling tiles (whereas `big_pic77.jpg` in `REAL-DMG-004` depicted ceiling tiles), highlighting why visual verification of ground-truth captions against the underlying source files matters.
+4. **Quota amplification with dual-model retries:** Having 3 retries on `gemini-3.5-flash` plus 3 fallback retries on `gemini-3.8-flash` can consume up to 6 API calls per frame when the endpoint returns transient `503`s, exhausting the 20 requests/day Free Tier quota (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`) during batch evaluations.
+
