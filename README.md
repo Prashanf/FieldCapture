@@ -23,14 +23,16 @@ FieldCapture is an Android (Kotlin + Jetpack Compose) application built on Meta'
    cd FieldCapture
    ```
 
-2. **Add your Gemini API key(s) in `FieldCapture/local.properties` (gitignored):**
-   ```properties
-   GEMINI_API_KEY_1=your_first_key_here
-   # Optional additional keys for zero-backoff rotation on HTTP 429 limits:
-   GEMINI_API_KEY_2=your_second_key_here
-   GEMINI_API_KEY_3=your_third_key_here
-   ```
-   *(Single `GEMINI_API_KEY=...` is also supported; `app/build.gradle.kts` exposes all keys via `BuildConfig.GEMINI_API_KEYS` and keeps `BuildConfig.GEMINI_API_KEY` for compatibility.)*
+2. **Configure a Gemini API key (either in Settings UI or `local.properties`):**
+   - **Option A (In-App Settings UI — Recommended for Evaluators):** Launch the app with empty `local.properties`, tap the **⚙️ Settings** gear icon on `SessionScreen`, paste your key from [Google AI Studio](https://aistudio.google.com/apikey), tap **Save** and **Test Key** (`EncryptedSharedPreferences` AES-256-GCM).
+   - **Option B (`local.properties`):** Copy `local.properties.example` to `FieldCapture/local.properties` (gitignored):
+     ```properties
+     GEMINI_API_KEY_1=your_first_key_here
+     # Optional additional keys for zero-backoff rotation on HTTP 429 limits:
+     # GEMINI_API_KEY_2=your_second_key_here
+     # GEMINI_API_KEY_3=your_third_key_here
+     ```
+     `ApiKeyManager` prioritizes any key saved in Settings first and falls back to `BuildConfig.GEMINI_API_KEYS` (`gemini-3.5-flash-lite` primary with `gemini-3.5-flash` / `gemini-3.8-flash` fallback).
 
 3. **Open, build, and install:**
    - Open `FieldCapture/` in Android Studio, let Gradle sync (`mwdat-*:1.0.1` resolves from Maven Central; Developer Mode metadata is pre-configured in `AndroidManifest.xml`), select your device, and click **Run**.
@@ -88,9 +90,9 @@ flowchart TD
 - `com.fieldcapture.extraction` — `ExtractionService`, `ExtractionPrompts`, `ExtractionResult`
 - `com.fieldcapture.network` — `GeminiApiClient` (multi-key rotation + backoff), `ConnectivityObserver`
 - `com.fieldcapture.domain` — Models (`JobRecord`, `LineItemCode`, `Capture`, `VoiceCommand`), repositories, and use cases (`ProcessCaptureUseCase`, `MapToLineItemsUseCase`, `BuildJobRecordUseCase`, `GenerateJobRecordUseCase`, `SyncCapturesUseCase`)
-- `com.fieldcapture.data` — Room database (`FieldCaptureDatabase`), DAOs, entities (`CaptureStatus`), repository implementations
+- `com.fieldcapture.data` — Room database (`FieldCaptureDatabase`), DAOs, entities (`CaptureStatus`), `ApiKeyManager` (`EncryptedSharedPreferences` AES-256-GCM), repository implementations
 - `com.fieldcapture.sync` — `SyncManager`, `ExtractionQueueWorker`, `SyncWorker`, `SyncScheduler`, `ConnectivityMonitor`
-- `com.fieldcapture.presentation` — Jetpack Compose UI (`SessionScreen`, `ReviewScreen`, `JobRecordScreen`, `AppNavigation`, shared cards/bars)
+- `com.fieldcapture.presentation` — Jetpack Compose UI (`SessionScreen`, `SettingsScreen`, `ReviewScreen`, `JobRecordScreen`, `AppNavigation`, shared cards/bars)
 - `com.fieldcapture.eval` — `EvalRunner`, `ProgrammaticTestImageGenerator` (+ `androidTest` `SyntheticNameplateGenerator`, `RealPipelineEvalTest`)
 
 ### Capture Pipeline Flow

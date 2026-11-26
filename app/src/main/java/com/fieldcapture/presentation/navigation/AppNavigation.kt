@@ -9,11 +9,13 @@ import androidx.navigation.navArgument
 import com.fieldcapture.presentation.jobrecord.JobRecordScreen
 import com.fieldcapture.presentation.review.ReviewScreen
 import com.fieldcapture.presentation.session.SessionScreen
+import com.fieldcapture.presentation.settings.SettingsScreen
 
 object Routes {
     const val SESSION = "session"
     const val REVIEW = "review/{jobId}"
     const val JOB_RECORD = "job_record/{jobId}"
+    const val SETTINGS = "settings"
 
     fun review(jobId: String) = "review/$jobId"
     fun jobRecord(jobId: String) = "job_record/$jobId"
@@ -31,6 +33,17 @@ fun AppNavigation() {
             SessionScreen(
                 onNavigateToReview = { jobId ->
                     navController.navigate(Routes.review(jobId))
+                },
+                onNavigateToSettings = {
+                    navController.navigate(Routes.SETTINGS)
+                }
+            )
+        }
+
+        composable(Routes.SETTINGS) {
+            SettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

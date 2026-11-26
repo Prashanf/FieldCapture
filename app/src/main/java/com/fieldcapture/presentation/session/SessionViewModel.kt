@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fieldcapture.data.local.ApiKeyManager
 import com.fieldcapture.data.local.entity.CaptureStatus
 import com.fieldcapture.domain.model.Capture
 import com.fieldcapture.domain.model.CaptureMetadata
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
@@ -70,11 +72,16 @@ class SessionViewModel @Inject constructor(
     private val jobRecordRepository: JobRecordRepository,
     private val jsonExporter: JsonExporter,
     private val connectivityObserver: ConnectivityObserver,
-    private val syncManager: SyncManager
+    private val syncManager: SyncManager,
+    apiKeyManager: ApiKeyManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionUiState())
     val uiState: StateFlow<SessionUiState> = _uiState.asStateFlow()
+
+    val hasApiKey: StateFlow<Boolean> = apiKeyManager.activeKeyFlow
+        .map { !it.isNullOrBlank() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), apiKeyManager.hasAnyKey())
 
     val glassesState: StateFlow<GlassesState> = glassesSessionManager.state
     val streamState: StateFlow<StreamState?> = glassesSessionManager.streamState

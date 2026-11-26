@@ -23,7 +23,14 @@ captures/
 # Secrets / Keys
 *.jks
 *.keystore
+*.pem
+*.key
 secrets.properties
+keystore.properties
+*.bak
+
+# Personal phone test pulls / captures
+eval/phone_run/
 
 # Evaluation raw frames (large binary images)
 eval/test_frames/**

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Prashant Sharma. All Rights Reserved.
+ * This code is submitted as part of a technical assessment and may not be
+ * used, copied, or distributed without explicit written permission.
+ */
 package com.fieldcapture.extraction
 
 import android.util.Log

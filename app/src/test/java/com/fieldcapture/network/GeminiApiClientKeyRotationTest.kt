@@ -1,6 +1,8 @@
 package com.fieldcapture.network
 
 import android.app.Application
+import android.content.Context
+import com.fieldcapture.data.local.ApiKeyManager
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -12,6 +14,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -144,5 +147,43 @@ class GeminiApiClientKeyRotationTest {
         assertTrue(result.isSuccess)
         assertEquals(listOf("k1", "k1"), requestedKeys)
         assertEquals(0, client.currentKeyIndex())
+    }
+
+    @Test
+    fun `uses user-saved ApiKeyManager key ahead of BuildConfig and rotates on 429`() = runTest {
+        val context: Context = RuntimeEnvironment.getApplication()
+        val prefs = context.getSharedPreferences("rotation_mgr_${System.nanoTime()}", Context.MODE_PRIVATE)
+        val manager = ApiKeyManager(prefs = prefs, buildConfigKeysProvider = { listOf("dev_key_fallback") })
+        manager.saveUserKey("user_key_primary")
+
+        val requestedKeys = mutableListOf<String?>()
+        val mockOkHttp = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val key = chain.request().url.queryParameter("key")
+                requestedKeys += key
+                val (code, body) = if (key == "user_key_primary") {
+                    429 to """{"error":{"code":429}}"""
+                } else {
+                    200 to """{"candidates":[{"content":{"parts":[{"text":"{\"source\":\"fallback\"}"}]}}]}"""
+                }
+                Response.Builder()
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(code)
+                    .message("OK")
+                    .body(body.toResponseBody("application/json".toMediaType()))
+                    .build()
+            }
+            .build()
+
+        val client = GeminiApiClient(
+            keyProvider = { manager.getAllAvailableKeys() },
+            modelEndpoints = listOf("https://example.test/models/primary:generateContent"),
+            client = mockOkHttp
+        )
+
+        val result = client.analyzeImage(prompt = "extract")
+        assertTrue(result.isSuccess)
+        assertEquals(listOf("user_key_primary", "dev_key_fallback"), requestedKeys)
     }
 }

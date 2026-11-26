@@ -46,7 +46,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // TODO: Configure release signing and ProGuard rules if needed
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -120,6 +123,9 @@ dependencies {
     implementation("com.meta.wearable:mwdat-core:$metaDatVersion")
     implementation("com.meta.wearable:mwdat-camera:$metaDatVersion")
     implementation("com.meta.wearable:mwdat-mockdevice:$metaDatVersion")
+
+    // Security (EncryptedSharedPreferences AES-256-GCM)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Unit & Instrumentation Tests
     testImplementation("junit:junit:4.13.2")

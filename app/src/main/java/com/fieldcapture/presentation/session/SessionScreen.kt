@@ -16,12 +16,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -49,10 +55,12 @@ import com.fieldcapture.voice.VoiceCommandService.ListeningState
 @Composable
 fun SessionScreen(
     onNavigateToReview: (String) -> Unit,
+    onNavigateToSettings: () -> Unit = {},
     viewModel: SessionViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+    val hasApiKey by viewModel.hasApiKey.collectAsState()
     val glassesState by viewModel.glassesState.collectAsState()
     val streamState by viewModel.streamState.collectAsState()
     val latestFrame by viewModel.latestFrame.collectAsState()
@@ -83,7 +91,15 @@ fun SessionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("FieldCapture Session") }
+                title = { Text("FieldCapture Session") },
+                actions = {
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "API Settings"
+                        )
+                    }
+                }
             )
         }
     ) { padding ->
@@ -97,6 +113,30 @@ fun SessionScreen(
                 listeningState = listeningState,
                 isOnline = isOnline
             )
+
+            if (!hasApiKey) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "No Gemini API key configured",
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        TextButton(onClick = onNavigateToSettings) {
+                            Text("Enter Key")
+                        }
+                    }
+                }
+            }
 
             OfflineIndicator(
                 isOnline = isOnline,

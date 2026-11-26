@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2026 Prashant Sharma. All Rights Reserved.
+ * This code is submitted as part of a technical assessment and may not be
+ * used, copied, or distributed without explicit written permission.
+ */
 package com.fieldcapture.di
 
 import android.util.Log
-import com.fieldcapture.BuildConfig
+import com.fieldcapture.data.local.ApiKeyManager
 import com.fieldcapture.extraction.ExtractionService
 import com.fieldcapture.network.GeminiApiClient
 import dagger.Module
@@ -16,12 +21,12 @@ object ExtractionModule {
 
     @Provides
     @Singleton
-    fun provideGeminiApiClient(): GeminiApiClient {
-        val keys = GeminiApiClient.parseKeys(
-            BuildConfig.GEMINI_API_KEYS.ifBlank { BuildConfig.GEMINI_API_KEY }
-        )
-        Log.i("ExtractionModule", "GeminiApiClient initialized with ${keys.size} API key(s)")
-        return GeminiApiClient(apiKeys = keys)
+    fun provideGeminiApiClient(
+        apiKeyManager: ApiKeyManager
+    ): GeminiApiClient {
+        val keys = apiKeyManager.getAllAvailableKeys()
+        Log.i("ExtractionModule", "GeminiApiClient initialized via ApiKeyManager (${keys.size} key(s))")
+        return GeminiApiClient(apiKeyManager = apiKeyManager)
     }
 
     @Provides

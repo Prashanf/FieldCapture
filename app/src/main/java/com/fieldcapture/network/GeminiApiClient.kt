@@ -1,8 +1,14 @@
+/*
+ * Copyright (c) 2026 Prashant Sharma. All Rights Reserved.
+ * This code is submitted as part of a technical assessment and may not be
+ * used, copied, or distributed without explicit written permission.
+ */
 package com.fieldcapture.network
 
 import android.util.Base64
 import android.util.Log
 import com.fieldcapture.BuildConfig
+import com.fieldcapture.data.local.ApiKeyManager
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -20,20 +26,41 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Gemini Vision API client with automatic multi-key rotation on HTTP 429 rate limits,
- * exponential backoff retries on transient 5xx/network errors, and primary/fallback models.
+ * Gemini Vision API client with [ApiKeyManager] integration (user-entered key > BuildConfig keys),
+ * automatic multi-key rotation on HTTP 429 rate limits, exponential backoff retries on transient
+ * 5xx/network errors, and three-model fallback.
  */
 @Singleton
-class GeminiApiClient(
-    apiKeys: List<String>,
+class GeminiApiClient internal constructor(
+    private val keyProvider: () -> List<String>,
     private val modelEndpoints: List<String> = DEFAULT_MODEL_ENDPOINTS,
     private val client: OkHttpClient = defaultOkHttpClient()
 ) {
     /**
-     * Default constructor loading configured keys from [BuildConfig.GEMINI_API_KEYS]
-     * (falling back to [BuildConfig.GEMINI_API_KEY]).
+     * Primary Hilt constructor pulling keys dynamically from [ApiKeyManager]
+     * (user EncryptedSharedPreferences key first, BuildConfig keys second).
      */
     @Inject
+    constructor(apiKeyManager: ApiKeyManager) : this(
+        keyProvider = { apiKeyManager.getAllAvailableKeys() }
+    )
+
+    /**
+     * Constructor with static key list (used in unit tests and custom rotation setups).
+     */
+    constructor(
+        apiKeys: List<String>,
+        modelEndpoints: List<String> = DEFAULT_MODEL_ENDPOINTS,
+        client: OkHttpClient = defaultOkHttpClient()
+    ) : this(
+        keyProvider = { normalizeKeys(apiKeys) },
+        modelEndpoints = modelEndpoints,
+        client = client
+    )
+
+    /**
+     * Fallback constructor loading keys from BuildConfig directly.
+     */
     constructor() : this(
         apiKeys = parseKeys(
             BuildConfig.GEMINI_API_KEYS.ifBlank { BuildConfig.GEMINI_API_KEY }
@@ -44,11 +71,6 @@ class GeminiApiClient(
      * Backward-compatible constructor accepting a single key or comma-separated keys.
      */
     constructor(apiKey: String) : this(apiKeys = parseKeys(apiKey))
-
-    private val apiKeys: List<String> = apiKeys
-        .map { it.trim() }
-        .filter { it.isNotBlank() }
-        .distinct()
 
     private val gson = Gson()
     private val currentKeyIndex = AtomicInteger(0)
@@ -66,11 +88,10 @@ class GeminiApiClient(
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
         )
 
-        fun parseKeys(raw: String): List<String> =
-            raw.split(",")
-                .map { it.trim() }
-                .filter { it.isNotBlank() }
-                .distinct()
+        fun normalizeKeys(keys: List<String>): List<String> =
+            keys.map { it.trim() }.filter { it.isNotBlank() }.distinct()
+
+        fun parseKeys(raw: String): List<String> = normalizeKeys(raw.split(","))
 
         fun defaultOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -79,23 +100,62 @@ class GeminiApiClient(
             .build()
     }
 
-    /** Number of distinct API keys configured for rotation. */
-    fun keyCount(): Int = apiKeys.size
+    /** Number of distinct API keys currently available across user + BuildConfig storage. */
+    fun keyCount(): Int = keyProvider().size
 
-    /** Current active key index (wrapped modulo [keyCount]). */
-    fun currentKeyIndex(): Int = if (apiKeys.isEmpty()) 0 else currentKeyIndex.get() % apiKeys.size
+    /** Current active key index (wrapped modulo current [keyCount]). */
+    fun currentKeyIndex(): Int {
+        val count = keyProvider().size
+        return if (count == 0) 0 else currentKeyIndex.get() % count
+    }
 
-    private fun activeKey(): String = apiKeys[currentKeyIndex.get() % apiKeys.size]
+    private fun activeKey(keys: List<String>): String = keys[currentKeyIndex.get() % keys.size]
 
-    private fun advanceKey(): Int {
-        val next = currentKeyIndex.incrementAndGet() % apiKeys.size
-        Log.w(TAG, "Rotating API key to index $next (of ${apiKeys.size})")
+    private fun advanceKey(keys: List<String>): Int {
+        val next = currentKeyIndex.incrementAndGet() % keys.size
+        Log.w(TAG, "Rotating API key to index $next (of ${keys.size})")
         return next
+    }
+
+    /**
+     * Performs a lightweight test request against Gemini using a specific [apiKey].
+     */
+    suspend fun testApiKey(apiKey: String): Result<String> = withContext(Dispatchers.IO) {
+        val trimmed = apiKey.trim()
+        if (trimmed.isBlank()) {
+            return@withContext Result.failure(IllegalArgumentException("API key is empty"))
+        }
+
+        val testPayload = gson.toJson(
+            mapOf("contents" to listOf(mapOf("parts" to listOf(mapOf("text" to "Reply OK")))))
+        ).toRequestBody("application/json".toMediaType())
+
+        val endpoint = modelEndpoints.first()
+        val request = Request.Builder()
+            .url("$endpoint?key=$trimmed")
+            .post(testPayload)
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string().orEmpty()
+                when {
+                    response.isSuccessful -> Result.success("Key valid ✓")
+                    response.code == 429 -> Result.success("Key valid ✓ (daily free-tier quota currently reached)")
+                    response.code == 400 || response.code == 401 || response.code == 403 ->
+                        Result.failure(IOException("Key invalid ✗ (HTTP ${response.code})"))
+                    else -> Result.failure(IOException("HTTP ${response.code}: ${body.take(120)}"))
+                }
+            }
+        } catch (e: IOException) {
+            Result.failure(e)
+        }
     }
 
     /**
      * Send an optional image + text prompt to Gemini Vision API and return raw JSON text.
      *
+     * - Dynamically fetches keys via [keyProvider] (user Settings key > BuildConfig keys).
      * - On HTTP 429 with multiple keys: rotates immediately to the next key with zero backoff.
      * - On HTTP 5xx or transient [IOException]: retries on the same key with exponential backoff.
      * - On HTTP 404: falls back to the next model endpoint.
@@ -105,9 +165,10 @@ class GeminiApiClient(
         mimeType: String = "image/jpeg",
         prompt: String
     ): Result<String> = withContext(Dispatchers.IO) {
+        val apiKeys = keyProvider()
         if (apiKeys.isEmpty()) {
             return@withContext Result.failure(
-                IllegalStateException("Gemini API key not configured. Add GEMINI_API_KEY_1..N to local.properties")
+                IllegalStateException("No Gemini API key configured. Open Settings (gear icon) to enter your key.")
             )
         }
 
@@ -151,8 +212,8 @@ class GeminiApiClient(
             var rotationsOnModel = 0
 
             while (retriesOnSameKey < MAX_RETRIES) {
-                val keyIdx = currentKeyIndex()
-                val apiKey = activeKey()
+                val keyIdx = currentKeyIndex.get() % apiKeys.size
+                val apiKey = activeKey(apiKeys)
                 val url = "$baseUrl?key=$apiKey"
 
                 try {
@@ -177,16 +238,14 @@ class GeminiApiClient(
                                 lastException = IOException("Rate limited: ${response.code}")
                                 if (apiKeys.size > 1 && rotationsOnModel < apiKeys.size - 1) {
                                     rotationsOnModel++
-                                    advanceKey()
-                                    // Zero backoff latency when switching to a fresh key
+                                    advanceKey(apiKeys)
                                     continue
                                 } else if (apiKeys.size == 1 && retriesOnSameKey < MAX_RETRIES - 1) {
                                     delay(RETRY_DELAYS[retriesOnSameKey])
                                     retriesOnSameKey++
                                 } else {
                                     if (apiKeys.size > 1) {
-                                        // Advance index past exhausted key before trying next model/request
-                                        advanceKey()
+                                        advanceKey(apiKeys)
                                     }
                                     break
                                 }
