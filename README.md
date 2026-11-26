@@ -32,8 +32,15 @@ Hands-free field capture Android application built with Kotlin, Jetpack Compose,
 - **Draft Estimate Pricing Disclaimer:** Unit prices in `LineItemCode` (all 15 restoration codes) are **placeholder draft values** based on general industry ranges to demonstrate end-to-end estimate generation. Production pricing would integrate with Xactimate or a contractor pricing database.
 - **Sample Deliverables:** 3 sample job records covering water damage, mold remediation, and multi-room water migration are included in `samples/` and `eval/sample_outputs/`.
 
+## Evaluation (40-Frame Benchmark)
+- **Ground Truth Dataset:** `eval/ground_truth.json` defines 40 annotated captures (`15` nameplate, `15` damage, `10` voice notes) with per-field ground truth and difficulty labels (`easy`, `medium`, `hard`).
+- **Evaluation Framework:** `com.fieldcapture.eval.EvalRunner` computes per-field exact/fuzzy accuracy (case/whitespace normalization, `?` wildcards, 1-char OCR tolerance), line-item precision/recall/F1, confidence calibration buckets, accuracy by difficulty, and the top 5 worst failures.
+- **Automated Pipeline Verification:** `com.fieldcapture.eval.ProgrammaticTestImageGenerator` renders synthetic JPEG frames using Android `Canvas`/`Paint` so `EvalRunnerTest` verifies the extraction and scoring pipeline end-to-end offline.
+- **Full Evaluation with Real Images:** To run the full evaluation, place test images in `eval/test_set/` matching the filenames in `eval/ground_truth.json` and run the evaluation script/runner (`EvalRunner` via unit/instrumented test) against `ExtractionService`.
+- **Report:** See [`eval/eval_report.md`](eval/eval_report.md) for field-level accuracy tables, confidence calibration analysis, quality threshold tuning, and the 5 worst failures with root-cause mitigations.
+
 ## Project Layout
-- `app/` — Android application source, unit tests, and instrumentation tests
+- `app/` — Android application source (`com.fieldcapture.eval`, extraction, quality, voice, glasses, sync), unit tests, and instrumentation tests
 - `samples/` — 3 sample exported `JobRecord` JSON deliverables
-- `eval/` — Offline extraction evaluation script, frames directory, results CSV, report, and sample job records
+- `eval/` — 40-frame `ground_truth.json`, `test_set/` directory structure, `eval_report.md`, `eval_results.csv`, `eval_runner.py`, and `sample_outputs/`
 - `docs/` — Research memo, architecture diagram, and assumptions
