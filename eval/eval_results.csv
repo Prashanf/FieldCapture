@@ -1,1 +1,120 @@
 frame_path,category,field,expected,predicted,confidence,correct
+NAMEPLATE,NAMEPLATE,equipment_type,"Air Fryer","Air Fryer",1.0,true
+NAMEPLATE,NAMEPLATE,manufacturer,"USHA","USHA",1.0,true
+NAMEPLATE,NAMEPLATE,model_number,"iChef Smart Air Fryer 4.5L","iChef Smart Air Fryer 4.5L",0.95,true
+NAMEPLATE,NAMEPLATE,serial_number,"ED0225K05179","ED0225K05179",1.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,capacity,"4.5L","4.5L",0.95,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Mechanical Backlit Gaming Keyboard","Mechanical Backlit Gaming Keyboard",0.95,true
+NAMEPLATE,NAMEPLATE,manufacturer,"Ant Esports","Ant Esports",0.95,true
+NAMEPLATE,NAMEPLATE,model_number,"SCORPION MK20","MK1000",0.95,false
+NAMEPLATE,NAMEPLATE,serial_number,"AESCMK20RSW0626","AESCMK20RSW0626",0.9,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"2026","2026",0.9,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",1.0,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Mouse","Computer Mouse",1.0,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Logitech","Logitech",1.0,true
+NAMEPLATE,NAMEPLATE,model_number,"M-U0026","M90",1.0,false
+NAMEPLATE,NAMEPLATE,serial_number,"2435APCH9K68","2435APCH9K68",1.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Wireless Keyboard","Wireless Keyboard",1.0,true
+NAMEPLATE,NAMEPLATE,manufacturer,"Dell","DELL",1.0,true
+NAMEPLATE,NAMEPLATE,model_number,"WK118","WK118",1.0,true
+NAMEPLATE,NAMEPLATE,serial_number,"CN-047TV0-LO300-018-K0WK-A00","CN-047TV0-LO300-018-K0WK-A00",0.95,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"Jan.2020","Jan.2020",1.0,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",1.0,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Power Strip","Power Strip",0.95,true
+NAMEPLATE,NAMEPLATE,manufacturer,"Portronics","PORTRONICS",0.99,true
+NAMEPLATE,NAMEPLATE,model_number,"Power Plate 10","Power Plate10",0.95,false
+NAMEPLATE,NAMEPLATE,serial_number,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,capacity,"1500W Max","1500W Max",0.95,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Travel Adapter","Travel Adapter",1.0,true
+NAMEPLATE,NAMEPLATE,manufacturer,"Samsung","SAMSUNG",1.0,true
+NAMEPLATE,NAMEPLATE,model_number,"EP-TA20IBE","EP-TA20IBE",1.0,true
+NAMEPLATE,NAMEPLATE,serial_number,"R37K96K2H31RC3","R37K96K2H31RC3",1.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"2018.09.06","2018.09.06",1.0,true
+NAMEPLATE,NAMEPLATE,capacity,"9.0V 1.67A / 5.0V 2.0A","null",1.0,false
+NAMEPLATE,NAMEPLATE,equipment_type,"Refrigerator","Refrigerator",1.0,true
+NAMEPLATE,NAMEPLATE,manufacturer,"Samsung","SAMSUNG",1.0,true
+NAMEPLATE,NAMEPLATE,model_number,"RR23H2H35HS/HL/2026","RR23H2H35HS/HL/2026",0.95,true
+NAMEPLATE,NAMEPLATE,serial_number,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"2026","null",0.0,false
+NAMEPLATE,NAMEPLATE,capacity,"215 liters","215 liters",0.95,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Refrigerator","Energy Rating Label",0.5,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Samsung","null",0.0,false
+NAMEPLATE,NAMEPLATE,model_number,"RR23H2H35HS/HL/2026","null",0.0,false
+NAMEPLATE,NAMEPLATE,serial_number,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"2026","null",0.0,false
+NAMEPLATE,NAMEPLATE,capacity,"215 liters","null",0.0,false
+NAMEPLATE,NAMEPLATE,equipment_type,"Kurta Set","null",0.1,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Nawab Parker","null",0.2,false
+NAMEPLATE,NAMEPLATE,model_number,"KS-20142","2138 ????? ?ST",0.4,false
+NAMEPLATE,NAMEPLATE,serial_number,"NP123173","MP??????",0.3,false
+NAMEPLATE,NAMEPLATE,manufacture_date,"null","null",0.1,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",0.1,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Mouse","Computer Mouse",0.95,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Logitech","Logitech",0.95,true
+NAMEPLATE,NAMEPLATE,model_number,"M-U0026","M90",0.9,false
+NAMEPLATE,NAMEPLATE,serial_number,"2435APCH9K68","2438APC7HBK9?",0.75,false
+NAMEPLATE,NAMEPLATE,manufacture_date,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Mechanical Backlit Gaming Keyboard","Keyboard",0.9,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Ant Esports","Ant Esports",0.95,true
+NAMEPLATE,NAMEPLATE,model_number,"SCORPION MK20","SCORPION MK20",0.9,true
+NAMEPLATE,NAMEPLATE,serial_number,"AESCMK20RSW0626","AESCMK20RSW0626",0.9,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"2026","2026",0.8,true
+NAMEPLATE,NAMEPLATE,capacity,"null","null",0.0,true
+NAMEPLATE,NAMEPLATE,equipment_type,"Wireless Keyboard","Monitor / Docking Station",0.6,false
+NAMEPLATE,NAMEPLATE,manufacturer,"Dell","DELL",0.95,true
+NAMEPLATE,NAMEPLATE,model_number,"WK118","047TV0",0.9,false
+NAMEPLATE,NAMEPLATE,serial_number,"CN-047TV0-LO300-018-K0WK-A00","CN-047TV0-LO300-018-KOWK-A00",0.85,true
+NAMEPLATE,NAMEPLATE,manufacture_date,"Jan.2020","Jan. 2020",0.9,false
+NAMEPLATE,NAMEPLATE,capacity,"null","null",0.0,true
+DAMAGE,DAMAGE,damage_type,"water_damage","other",0.85,false
+DAMAGE,DAMAGE,severity,"low","low",0.95,true
+DAMAGE,DAMAGE,affected_materials,"paint, drywall","drywall",0.95,true
+DAMAGE,DAMAGE,damage_type,"water_damage","other",0.85,false
+DAMAGE,DAMAGE,severity,"low","low",0.9,true
+DAMAGE,DAMAGE,affected_materials,"paint, drywall","drywall",0.9,true
+DAMAGE,DAMAGE,damage_type,"mold","water_damage",0.85,false
+DAMAGE,DAMAGE,severity,"medium","medium",0.8,true
+DAMAGE,DAMAGE,affected_materials,"drywall, paint","drywall, paint",0.85,true
+DAMAGE,DAMAGE,damage_type,"water_damage","structural",0.9,false
+DAMAGE,DAMAGE,severity,"low","low",0.95,true
+DAMAGE,DAMAGE,affected_materials,"paint, drywall","drywall",0.95,true
+DAMAGE,DAMAGE,damage_type,"water_damage","other",0.8,false
+DAMAGE,DAMAGE,severity,"medium","low",0.9,false
+DAMAGE,DAMAGE,affected_materials,"drywall, paint","drywall",0.9,true
+DAMAGE,DAMAGE,damage_type,"structural","structural",0.9,true
+DAMAGE,DAMAGE,severity,"medium","low",0.9,false
+DAMAGE,DAMAGE,affected_materials,"ceiling drywall, paint","ceiling drywall",0.9,true
+DAMAGE,DAMAGE,damage_type,"water_damage","structural",0.9,false
+DAMAGE,DAMAGE,severity,"medium","low",0.9,false
+DAMAGE,DAMAGE,affected_materials,"ceiling drywall, paint","drywall",0.9,true
+DAMAGE,DAMAGE,damage_type,"structural","water_damage",0.85,false
+DAMAGE,DAMAGE,severity,"low","low",0.8,true
+DAMAGE,DAMAGE,affected_materials,"paint, drywall","drywall",0.9,true
+DAMAGE,DAMAGE,damage_type,"mold","water_damage",0.9,false
+DAMAGE,DAMAGE,severity,"medium","medium",0.8,true
+DAMAGE,DAMAGE,affected_materials,"drywall, plumbing","drywall, cabinet interior",0.85,true
+DAMAGE,DAMAGE,damage_type,"structural","other",0.85,false
+DAMAGE,DAMAGE,severity,"low","low",0.9,true
+DAMAGE,DAMAGE,affected_materials,"paint","drywall, paint",0.9,true
+DAMAGE,DAMAGE,damage_type,"mold","water_damage",0.85,false
+DAMAGE,DAMAGE,severity,"medium","low",0.8,false
+DAMAGE,DAMAGE,affected_materials,"plumbing, drywall","cabinet wall, plumbing fixtures",0.75,true
+DAMAGE,DAMAGE,damage_type,"structural","water_damage",0.85,false
+DAMAGE,DAMAGE,severity,"medium","low",0.8,false
+DAMAGE,DAMAGE,affected_materials,"ceiling drywall","ceiling drywall",0.85,true
+DAMAGE,DAMAGE,damage_type,"structural","other",0.9,false
+DAMAGE,DAMAGE,severity,"low","low",0.95,true
+DAMAGE,DAMAGE,affected_materials,"drywall, paint","drywall",0.9,true
+NOTE,NOTE,category,"observation","observation",0.99,true
+NOTE,NOTE,key_facts,"marble tile floor; dry; no buckling","Marble tile floor was inspected; Tiles appear dry; Grout appears dry and intact; No buckling of the floor tiles observed",0.99,true
+NOTE,NOTE,category,"observation","observation",0.99,true
+NOTE,NOTE,key_facts,"sink trap inspected; flexible drain pipe; no active dripping","Inspected sink trap; Inspected flexible drain pipe under counter; No active dripping observed",0.99,true
+NOTE,NOTE,category,"measurement","measurement",0.95,true
+NOTE,NOTE,key_facts,"12% WME; upper wall; normal dry baseline","Moisture meter reading is 12 percent WME; Reading is within normal dry baseline; Upper wall area tested",0.98,true
+NOTE,NOTE,category,"safety_concern","safety_concern",1.0,true
+NOTE,NOTE,key_facts,"check drain hose clamp; clear cleaning bottles","Safety concern identified regarding the drain setup; Drain hose clamp tightness needs to be checked; Cleaning bottles/items need to be cleared before servicing the trap",0.99,false

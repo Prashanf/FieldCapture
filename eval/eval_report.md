@@ -4,241 +4,165 @@
 
 | Metric | Value |
 |--------|-------|
-| Test Set Size | 40 frames |
-| Nameplate Frames | 15 |
-| Damage Frames | 15 |
-| Note Frames | 10 |
-| Gemini Model | gemini-3.5-flash |
-| Evaluation Date | 2024-11-17 |
+| Test Set Size | **30 real phone camera photos** (`4000×2252` JPEG) |
+| Nameplate Frames | 13 (`REAL-NP-001` – `REAL-NP-013`, 12 equipment + 1 negative control) |
+| Damage Frames | 13 (`REAL-DMG-001` – `REAL-DMG-013`) |
+| Note Frames | 4 (`REAL-NOTE-001` – `REAL-NOTE-004`) |
+| Models Evaluated | `gemini-3.5-flash` (initial frames) + `gemini-3.5-flash-lite` (fallback completion across 3 rotated keys) |
+| Evaluation Date | 2026-11-27 |
 
-> **Preliminary Evaluation Note:** Ground truth annotations live in `eval/ground_truth.json` (40 frames). End-to-end extraction runner mechanics and fuzzy/metric scoring are verified via programmatic Android `Canvas`/`Paint` images (`ProgrammaticTestImageGenerator` + `EvalRunnerTest`), while the baseline accuracy/calibration figures below reflect realistic preliminary performance of `gemini-3.5-flash` on the 40-frame benchmark structure.
+> **All-Real Dataset Note:** All 30 frames in [`eval/ground_truth.json`](ground_truth.json) (`eval/test_set/real_captures/`) are genuine physical photographs captured directly on the phone camera — no downloaded stock/EPA images or mocked extraction outputs are used in these metrics. Raw per-frame quality scores, model responses, and aggregated metrics are saved in [`eval/real_eval_results.json`](real_eval_results.json) and [`eval/eval_results.csv`](eval_results.csv).
 
 ## Methodology
 
 ### Test Set Construction
-- 15 nameplate images spanning 11 manufacturers and 7 equipment types
-- 15 damage images covering water damage (12), mold (2), and mixed (1) across 10 rooms
-- 10 note captures with spoken text covering 4 categories (`homeowner_statement`, `measurement`, `safety_concern`, `observation`)
-- Difficulty distribution: 10 easy, 15 medium, 15 hard
-- Ground truth annotated manually with exact field values in `eval/ground_truth.json`
+- **13 nameplate/label photos:** Usha Air Fryer, Ant Esports Scorpion MK20 Keyboard, Logitech M90 Mouse, Nawab Parker packaging label (negative control), Dell WK118 Wireless Keyboard, Portronics Power Plate 10 (low-contrast embossed black-on-black), Samsung Travel Adapter `EP-TA20IBE`, Samsung Refrigerator BEE energy plate — including **5 bright vs. dim/motion-blurry retake pairs** (`REAL-NP-009` – `REAL-NP-013`).
+- **13 damage/inspection scenes:** Peeling/blistered wall paint, wall corner staining, window sill paint flaking, open ceiling holes, hairline cracks, and bright/dim under-sink plumbing enclosures.
+- **4 note-context captures:** Intact marble tile floor, under-sink P-trap check, upper wall moisture baseline, and dim under-sink clamp safety note paired with spoken transcripts.
+- **Difficulty distribution:** 10 `easy`, 9 `medium`, 11 `hard`.
+- Images were EXIF-normalized (`1280px` max side) to match mobile upload sizing and executed through FieldCapture's production `ImageQualityAnalyzer`, `ExtractionService`, `GeminiApiClient` (3-key rotation), and `EvalRunner`.
 
-### Evaluation Process
-1. Each test image is sent to Gemini with the same prompts used in production (`ExtractionPrompts`)
-2. Extracted fields compared to ground truth using fuzzy matching (case-insensitive, whitespace-normalized, `?` wildcard matching, 1-character tolerance for OCR on strings > 5 chars)
-3. Line item suggestions evaluated using precision, recall, and F1 score
-4. Confidence scores binned into 0.1-wide buckets for calibration analysis
-
-## Results
-
-### Nameplate Extraction Accuracy
-
-| Field | Accuracy (Exact) | Accuracy (Fuzzy) | Avg Confidence |
-|-------|------------------|-------------------|----------------|
-| equipment_type | 93.3% (14/15) | 93.3% (14/15) | 0.91 |
-| manufacturer | 86.7% (13/15) | 93.3% (14/15) | 0.88 |
-| model_number | 60.0% (9/15) | 73.3% (11/15) | 0.72 |
-| serial_number | 46.7% (7/15) | 60.0% (9/15) | 0.58 |
-| manufacture_date | 80.0% (12/15) | 80.0% (12/15) | 0.82 |
-| capacity | 86.7% (13/15) | 86.7% (13/15) | 0.85 |
-
-**Key Findings:**
-- Equipment type and manufacturer are reliably extracted (>90% fuzzy)
-- Model numbers drop to 73% due to complex alphanumeric strings with dashes and special characters
-- Serial numbers are the weakest field (60% fuzzy) — these are long, dense strings often in small print or poor contrast
-- Confidence scores correlate well with accuracy: serial number has the lowest avg confidence (0.58), matching its low accuracy
-
-### Damage Assessment Accuracy
-
-| Field | Accuracy | Avg Confidence |
-|-------|----------|----------------|
-| damage_type | 93.3% (14/15) | 0.89 |
-| severity | 66.7% (10/15) | 0.73 |
-| affected_materials (any match) | 86.7% (13/15) | 0.81 |
-
-**Line Item Suggestion Quality:**
-
-| Metric | Value |
-|--------|-------|
-| Average Recall | 78.3% |
-| Average Precision | 71.2% |
-| Average F1 Score | 0.74 |
-
-- Recall (78%) means the AI suggests ~4 out of 5 needed line items
-- Precision (71%) means ~7 out of 10 suggestions are actually needed
-- Common false positives: `STRUCTURAL_DRY_OUT` and `DEHUMIDIFIER_RENTAL` suggested even for minor damage
-- Common misses: `CONTENT_MANIPULATION` often missed (requires spatial reasoning about furniture)
-
-### Note Extraction Accuracy
-
-| Field | Accuracy | Avg Confidence |
-|-------|----------|----------------|
-| category | 80.0% (8/10) | 0.84 |
-| key_facts (any match) | 90.0% (9/10) | 0.87 |
-
-Notes are the most reliably extracted type — spoken text is well-structured and the AI mainly cleans up grammar and categorizes.
-
-### Confidence Calibration
-
-| Confidence Range | Count | Predicted Accuracy | Actual Accuracy | Calibration Error |
-|------------------|-------|--------------------|-----------------|-------------------|
-| 0.9 - 1.0 | 42 | 0.95 | 0.92 | 0.03 |
-| 0.8 - 0.9 | 38 | 0.85 | 0.81 | 0.04 |
-| 0.7 - 0.8 | 25 | 0.75 | 0.68 | 0.07 |
-| 0.6 - 0.7 | 18 | 0.65 | 0.56 | 0.09 |
-| 0.5 - 0.6 | 12 | 0.55 | 0.42 | 0.13 |
-| < 0.5 | 8 | 0.35 | 0.25 | 0.10 |
-
-**Key Finding:** Confidence is slightly optimistic (the model is more confident than it should be), especially in the 0.5–0.7 range. The calibration error averages 0.077. This means when the model says "0.7 confidence" it's actually right about 68% of the time — close but not perfect.
-
-### Accuracy by Difficulty
-
-| Difficulty | Frames | Avg Accuracy | Avg Confidence |
-|------------|--------|--------------|----------------|
-| Easy | 10 | 91.2% | 0.90 |
-| Medium | 15 | 78.4% | 0.79 |
-| Hard | 15 | 61.8% | 0.63 |
-
-Hard frames (dim lighting, faded labels, angled shots) predictably perform worse. Quality checks catch some of these, but not all — a photo can be sharp and well-lit but still have a faded label.
-
-## 5 Worst Failures
-
-### 1. NP-010: York AC — Weathered Outdoor Label
-- **Expected:** `model=TCHD36S41S1A`, `serial=N1M4523186`
-- **Got:** `model=TCHD36S4?S?A` (confidence 0.35), `serial=null` (confidence 0.0)
-- **Root Cause:** Sun-bleached label with UV degradation. Multiple characters illegible. The AI correctly used `?` for uncertain characters but couldn't read enough to be useful.
-- **Mitigation:** Pre-process image with contrast enhancement before sending to API. Also prompt the AI to attempt multiple readings and vote.
-
-### 2. DMG-009: Wide-Angle Multi-Room Damage
-- **Expected:** `severity=high`, line items include `CONTENT_MANIPULATION`
-- **Got:** `severity=medium` (confidence 0.65), missed `CONTENT_MANIPULATION`
-- **Root Cause:** Wide-angle shot makes damage look smaller than it is. The AI assessed based on the visible area in the frame without accounting for perspective. `CONTENT_MANIPULATION` requires reasoning about furniture placement, which the AI doesn't do well from a single photo.
-- **Mitigation:** Prompt the tech to specify area estimate verbally. Add a "wide angle" flag and adjust severity assessment.
-
-### 3. NP-004: Samsung Washer — Dim + Slight Blur
-- **Expected:** `serial=0B4N5CDJ200481`
-- **Got:** `serial=0B4N5CDJ200??1` (confidence 0.42)
-- **Root Cause:** Combination of dim lighting AND slight motion blur. Each alone might be acceptable, but together they push the serial number below readability. Quality check passed (`blur=85`, `brightness=45`) because thresholds are individually lenient.
-- **Mitigation:** Add a combined quality score that is stricter when BOTH blur and brightness are marginal. Currently each is checked independently.
-
-### 4. DMG-007: Crawl Space Pipe Burst
-- **Expected:** `severity=critical`
-- **Got:** `severity=high` (confidence 0.60)
-- **Root Cause:** Flashlight-only illumination creates harsh shadows and uneven exposure. The AI can see the burst pipe but underestimates severity because the illuminated area is small. "Critical" vs "high" is a subjective boundary.
-- **Mitigation:** Clarify severity scale definitions in the prompt. Add a "confined space" context flag when the tech reports being in a crawl space.
-
-### 5. NOTE-008: Mold Smell Without Visible Mold
-- **Expected:** `key_facts` include `"recommend exploratory cut"`
-- **Got:** `key_facts` missed `"recommend exploratory cut"` (extracted only `"musty odor"` and `"no visible mold"`)
-- **Root Cause:** "Recommend exploratory cut" is a professional recommendation, not a fact observed in the image. The AI extracted observations but dropped the actionable recommendation.
-- **Mitigation:** Adjust the note prompt to explicitly ask for "action items" or "recommendations" as a separate field.
-
-## Quality Threshold Tuning
-
-Based on evaluation results, we adjusted thresholds from initial values:
-
-| Threshold | Initial | Final | Reason |
-|-----------|---------|-------|--------|
-| BLUR_GENERAL | 100.0 | 80.0 | Too many false rejections in field conditions |
-| BLUR_NAMEPLATE | 120.0 | 100.0 | Reduced, but kept stricter than general |
-| BRIGHTNESS_MIN | 40 | 30 | Crawl spaces and under-sink photos were rejected too often |
-| BRIGHTNESS_MAX | 230 | 240 | Slight overexposure from work lights still readable |
-| FRAMING_EDGE_MIN | 3.0 | 2.0 | Low-contrast damage (water stains) has fewer edges |
-
-## Recommendations for Improvement
-
-1. **Multi-frame capture:** Take 3 frames per voice command, pick the best quality. Would improve nameplate accuracy by ~10%.
-2. **Contrast enhancement:** Pre-process images with adaptive histogram equalization before sending to API. Would help with faded labels.
-3. **Combined quality score:** Currently each quality metric is independent. A combined score with interaction effects (`blur x brightness`) would better predict extraction accuracy.
-4. **Severity calibration:** Fine-tune severity boundaries in the prompt with more examples. The critical/high boundary is especially fuzzy.
-5. **Confidence recalibration:** Apply Platt scaling to Gemini's confidence scores to improve calibration, especially in the 0.5–0.7 range.
-6. **Multi-shot extraction:** For nameplates, send the same image twice and take the consensus. Reduces random OCR errors.
+### On-Device Quality Gate Results (`ImageQualityAnalyzer`)
+| Category | Passed | Rejected | Primary Rejection Reasons |
+|----------|--------|----------|-------------------------|
+| Nameplates (`13`) | `9/13` (`69.2%`) | `4/13` | `too blurry` (`29.5` on `REAL-NP-010`), `too dark` (`bright 7–16` on `REAL-NP-009/012/013`) |
+| Damage (`13`) | `9/13` (`69.2%`) | `4/13` | `badly framed` (`edge 0.8–1.9% < 2.0%` on plain painted walls), `too blurry` (`58.0` on `REAL-DMG-006`) |
+| Notes (`4`) | `3/4` (`75.0%`) | `1/4` | `badly framed` (`edge 0.9%` on plain upper wall `REAL-NOTE-003`) |
+| **Total (`30`)** | **`21/30` (`70.0%`)** | **`9/30` (`30.0%`)** | Catching dark/blurry labels accurately prevented downstream hallucinations |
 
 ---
 
-## Real Image Evaluation Results
+## Live Extraction Results
 
-### Test Set
-- 10 damage/mold photographs from the **U.S. EPA Mold Image Library** (public domain, downloaded to `app/src/androidTest/assets/eval_images/`)
-- 2 note-context photographs from EPA (`note_condensation.jpg`, `note_crawlspace.jpg`)
-- 3 synthetic nameplate bitmaps programmatically generated on-device (`SyntheticNameplateGenerator` — tests the end-to-end bitmap → JPEG → Gemini extraction code path rather than real field OCR)
-- **Source:** <https://epa.gov/mold/mold-image-library> (documented in [`eval/real_test_images.md`](real_test_images.md))
-- **Execution Environment:** `RealPipelineEvalTest` running on Android Emulator (`Medium_Phone_API_36.1`) against `ExtractionService` + `GeminiApiClient` (`gemini-3.5-flash` primary / `gemini-3.8-flash` fallback)
-- **Raw Output:** Saved in [`eval/real_eval_results.json`](real_eval_results.json)
+### Overall Pipeline Outcome
+- **API Completion:** **30 / 30 frames** returned valid JSON from Gemini (`29` domain extractions + `1` clean negative-control rejection `"error": "not_a_nameplate"` on `REAL-NP-004` Nawab Parker garment box).
 
-### Damage Extraction Results (Real EPA Images)
+### Nameplate Extraction Accuracy (`12` valid nameplate captures)
 
-| Test ID | Image | Expected Type | Got Type | Type Match | Expected Severity | Got Severity | Severity Match | Line Item Recall | Confidence |
-|---------|-------|---------------|----------|------------|-------------------|--------------|----------------|------------------|------------|
-| `REAL-DMG-001` | `dmg_mold_drywall_sink.jpg` | `mold` | `water_damage` | No | `medium` | `low` | No | 33% (`1/3`) | 0.89 |
-| `REAL-DMG-002` | `dmg_mold_wall_cavity.jpg` | `mold` | `mold` | Yes | `high` | `medium` | No | 75% (`3/4`) | 0.94 |
-| `REAL-DMG-003` | `dmg_mold_bathtub.jpg` | `mold` | `mold` | Yes | `high` | `medium` | No | 100% (`3/3`) | 0.91 |
-| `REAL-DMG-004` | `dmg_water_stain_ceiling.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `medium` | Yes | 50% (`1/2`) | 0.92 |
-| `REAL-DMG-005` | `dmg_water_stain_wood.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `low` | No | 100% (`2/2`) | 0.91 |
-| `REAL-DMG-006` | `dmg_mold_grout.jpg` | `mold` | `mold` | Yes | `low` | `medium` | No | 100% (`1/1`) | 0.93 |
-| `REAL-DMG-007` | `dmg_moisture_wall.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `medium` | Yes | 50% (`1/2`) | 0.89 |
-| `REAL-DMG-008` | `dmg_ceiling_tiles.jpg` | `water_damage` | `water_damage` | Yes | `medium` | `high` | No | 0% (`0/1`) | 0.88 |
-| `REAL-DMG-009` | `dmg_mold_concrete.jpg` | `mold` | *Error: HTTP 503* | N/A | `medium` | — | N/A | N/A | — |
-| `REAL-DMG-010` | `dmg_foundation_wet.jpg` | `water_damage` | *Error: timeout* | N/A | `high` | — | N/A | N/A | — |
+| Field | Accuracy (Exact) | Accuracy (Fuzzy) | Avg Confidence |
+|-------|------------------|-------------------|----------------|
+| `manufacturer` | 83.3% (10/12) | **83.3% (10/12)** | 0.83 |
+| `serial_number` | 75.0% (9/12) | **83.3% (10/12)** | 0.64 |
+| `capacity` | 83.3% (10/12) | **83.3% (10/12)** | 0.50 |
+| `manufacture_date` | 75.0% (9/12) | **75.0% (9/12)** | 0.39 |
+| `equipment_type` | 50.0% (6/12) | **50.0% (6/12)** | 0.83 |
+| `model_number` | 41.7% (5/12) | **41.7% (5/12)** | 0.83 |
 
-### Note-Context & Synthetic Nameplate Execution Status
-- **`REAL-NOTE-001` (`note_condensation.jpg`) & `REAL-NOTE-002` (`note_crawlspace.jpg`):** Failed due to upstream HTTP `503` and HTTP `429` (`RESOURCE_EXHAUSTED` after reaching the Google AI Studio free-tier limit of `20` requests/day per model across `gemini-3.5-flash` retries and `gemini-3.8-flash` fallback).
-- **`SYN-NP-001`–`SYN-NP-003` (`SyntheticNameplateGenerator`):** All 3 synthetic `800x500` JPEG nameplates were generated cleanly on-device; live API calls hit the same `503`/`429` (`20` RPD free-tier daily quota) limit immediately following the damage/note run.
+**Key Findings:**
+- `manufacturer` (`83.3%`) and `serial_number` (`83.3%` fuzzy, `75.0%` exact) performed well on clear plates (`Usha`, `Dell`, `Samsung`, `Logitech`, `Ant Esports`) and even read embossed black-on-black `Portronics Power Plate10` (`REAL-NP-006`).
+- `model_number` scored `41.7%` primarily because consumer hardware labels often print **two** identifiers (e.g., `M90` vs `M/N: M-U0026`, `SCORPION MK20` vs `PRODUCT CODE: MK1000`), and the model captured the alternate string in `model_number` vs `additional_specs`.
+- Dark/blurry retakes degraded sharply: `REAL-NP-009` (`bright=8`) returned `null` across fields (`conf=0.10`), `REAL-NP-010` (`blur=29.5`) garbled `"2138 ????? ?ST"`, and dim LED glare (`REAL-NP-011`) caused a 5-char serial misread (`2438APC7HBK9?`).
 
-### Key Observations from Real Image Testing
-1. **Strong damage-type classification on real photos (7/8 = 87.5% of completed frames; 70% across all 10):** Gemini accurately distinguished `mold` vs. `water_damage` across varied EPA photographs. The single type miss (`REAL-DMG-001`, sink area) classified the scene as `water_damage` while still recommending `ANTIMICROBIAL_TREATMENT`.
-2. **Severity remains subjective (2/8 = 25.0% exact match among completed frames; 20% overall):** Every severity mismatch differed by one adjacent tier (`low` vs `medium` or `medium` vs `high`), confirming that strict exact-string severity scoring understates practical usefulness unless bounded/anchored in the prompt.
-3. **Line-item recommendations are practically useful even when approximate (7/8 = 87.5% hit rate on completed frames, 63.5% avg recall):** On `REAL-DMG-008` (`big_pic78.jpg`), Gemini identified exterior brick/masonry and a downspout rather than acoustic ceiling tiles (whereas `big_pic77.jpg` in `REAL-DMG-004` depicted ceiling tiles), highlighting why visual verification of ground-truth captions against the underlying source files matters.
-4. **Quota amplification with dual-model retries:** Having 3 retries on `gemini-3.5-flash` plus 3 fallback retries on `gemini-3.8-flash` can consume up to 6 API calls per frame when the endpoint returns transient `503`s, exhausting the 20 requests/day Free Tier quota (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`) during batch evaluations.
+### Damage Assessment Accuracy (`13` frames)
+
+| Field | Accuracy (Fuzzy) | Avg Confidence |
+|-------|------------------|----------------|
+| `affected_materials` (any match) | **100.0% (13/13)** | 0.88 |
+| `severity` | **61.5% (8/13)** | 0.87 |
+| `damage_type` | **7.7% (1/13)** | 0.87 |
+
+**Line Item Suggestion Quality (`13` damage frames):**
+
+| Metric | Value |
+|--------|-------|
+| Average Recall | **83.3%** |
+| Average Precision | **79.5%** |
+| Average F1 Score | **0.78** |
+
+- `affected_materials` (`100%`) and line-item suggestions (`0.78` F1, `83.3%` recall) remained strong even on mild indoor wear.
+- `damage_type` exact-string agreement dropped to `7.7%` because the vision model conservatively classified minor wall scuffs/repairs as `"other"` (`severity="low"`) and ceiling openings as `"structural"`, whereas ground-truth assumptions had expected `"water_damage"`.
+
+### Note Extraction Accuracy (`4` frames)
+
+| Field | Accuracy (Fuzzy) | Avg Confidence |
+|-------|------------------|----------------|
+| `category` | **100.0% (4/4)** | 0.98 |
+| `key_facts` (any match) | **75.0% (3/4)** | 0.99 |
+
+- Spoken metadata transcripts categorized cleanly (`observation`, `measurement`, `safety_concern`). The single `key_facts` miss (`REAL-NOTE-004`) extracted full semantic facts (`"Drain hose clamp tightness needs to be checked"`) phrased more verbosely than the ground-truth substring `"check drain hose clamp"`.
+
+### Confidence Calibration (`EvalRunner` 6 Buckets)
+
+| Confidence Range | Field Count | Predicted Confidence | Actual Accuracy | Calibration Gap |
+|------------------|-------------|----------------------|-----------------|-----------------|
+| `0.9 - 1.0` | 75 | 0.95 | 0.76 | +0.19 |
+| `0.8 - 0.9` | 18 | 0.83 | 0.44 | +0.39 |
+| `0.7 - 0.8` | 2 | 0.75 | 0.50 | +0.25 |
+| `0.6 - 0.7` | 1 | 0.60 | 0.00 | +0.60 |
+| `0.5 - 0.6` | 1 | 0.50 | 0.00 | +0.50 |
+| `< 0.5` | 22 | 0.05 | 0.59 | -0.54 |
+
+- **Finding:** High-confidence predictions (`0.8–1.0`) are over-confident (`0.95` predicted vs `0.76` actual accuracy), driven by taxonomy disagreements (`"other"` vs `"water_damage"`, `"Computer Mouse"` vs `"Mouse"`, `"M90"` vs `"M-U0026"`). Meanwhile the `< 0.5` bucket appears under-confident because optional `null` nameplate fields (`capacity`, `manufacture_date`) carry `0.0` confidence even when `null == null` matches ground truth.
+
+### Accuracy by Difficulty
+
+| Difficulty | Frames | Avg Field Accuracy |
+|------------|--------|--------------------|
+| Easy | 10 | **85.0%** |
+| Medium | 9 | **62.1%** |
+| Hard | 11 | **54.0%** |
+
+Clear, bright captures (`85.0%`) dramatically outperform medium/hard captures (`62.1%` / `54.0%`), validating the value of paired bright vs dim testing.
+
+---
+
+## 5 Worst Failures (Measured from Live Run)
+
+### 1. `REAL-NP-010`: Motion-Blurry Packaging Label (`20261126_235349.jpg`)
+- **Expected:** `model=KS-20142`, `serial=NP123173`
+- **Got:** `model="2138 ????? ?ST"`, `serial="MP??????"` (conf `0.20`), `manufacturer=null`
+- **Root Cause:** Heavy hand motion blur pushed Laplacian variance down to `29.5` (below `100.0`). Bypassing the quality gate caused Gemini to output wildcards and partial misreads.
+- **Mitigation:** Enforced automatically in production by `BlurDetector` (`29.5 < 100.0` triggers spoken retake).
+
+### 2. `REAL-NP-009`: Under-Exposed Refrigerator BEE Label (`20261126_235224.jpg`)
+- **Expected:** `manufacturer=Samsung`, `model=RR23H2H35HS/HL/2026`, `capacity=215 liters`
+- **Got:** All four fields returned `null` (`conf=0.10`), `equipment_type="Energy Rating Label"`
+- **Root Cause:** Mean brightness dropped to `8` (and blur `54.1`) in dark shadow, collapsing printed text contrast.
+- **Mitigation:** Caught by `BrightnessAnalyzer` (`8 < 30`) + `BlurDetector`; prompt tech to turn on flash/work light.
+
+### 3. `REAL-NP-011`: Dim Mouse Label with Red Optical Glare (`20261126_235438.jpg`)
+- **Expected:** `serial=2435APCH9K68`
+- **Got:** `serial="2438APC7HBK9?"` (conf `0.80` — 5-char OCR drift)
+- **Root Cause:** Marginally passed both individual thresholds (`blur=129.9 >= 100.0`, `bright=42 >= 30`), while red optical LED bloom lowered local serial-number contrast.
+- **Mitigation:** Add a combined low-light + marginal-sharpness gate (`blur < 150 && brightness < 50`) to warn techs on dark handheld plates.
+
+### 4. `REAL-NP-003` & `REAL-NP-002`: Dual Model/Part Numbers (`M90`/`M-U0026` & `SCORPION MK20`/`MK1000`)
+- **Expected:** `model=M-U0026` (`REAL-NP-003`), `model=SCORPION MK20` (`REAL-NP-002`)
+- **Got:** `model="M90"` (`conf=1.0`), `model="MK1000"` (`conf=0.95`) — alternate code still extracted into `additional_specs`
+- **Root Cause:** Labels carry both a series name (`M90`, `SCORPION MK20`) and a regulatory/product code (`M/N: M-U0026`, `PRODUCT CODE: MK1000`).
+- **Mitigation:** Include secondary regulatory codes cleanly in fuzzy alias matching and refine `nameplatePrompt()` guidance on series vs part codes.
+
+### 5. `REAL-DMG-004` / `007` / `010` & `REAL-NOTE-003`: Low-Contrast White Drywall Framing Rejections
+- **Observed:** `FramingAnalyzer` rejected plain white/cream walls (`edge=0.8%–1.9% < 2.0%`), despite Gemini cleanly recognizing ceiling holes and wall scuffs (`0.78` line-item F1).
+- **Root Cause:** `FRAMING_EDGE_MIN = 2.0%` assumes textured damage across the center `60%`, over-rejecting localized blemishes on smooth painted walls.
+- **Mitigation:** Lower `FRAMING_EDGE_MIN` from `2.0` to `0.5–1.0` for `DAMAGE` captures (or evaluate local max grid cell edge density).
+
+---
+
+## Quality Threshold Tuning Summary
+
+| Threshold | Current Value | Field Behavior on Real 30-Frame Set | Recommended Next Tuning |
+|-----------|---------------|--------------------------------------|-------------------------|
+| `BLUR_THRESHOLD_NAMEPLATE` | `100.0` | Caught severe blur (`29.5`, `54.1`) cleanly; bright plates measured `880–7708` | Keep `100.0` + add combined warning when `blur < 150` & `brightness < 50` |
+| `BLUR_THRESHOLD_GENERAL` | `80.0` | Caught smooth blurry frames (`37.3`, `58.0`) | Keep `80.0` |
+| `BRIGHTNESS_MIN` | `30` | Caught unusable dark shots (`7`, `8`, `16`); dim-but-readable shots scored `38–49` | Keep `30` |
+| `BRIGHTNESS_MAX` | `240` | Bright white walls peaked at `181` (zero false overexposure rejections) | Keep `240` |
+| `FRAMING_EDGE_MIN` | `2.0` | Over-rejected clean painted drywall defects (`0.8–1.9%`) | Lower to **`0.5–1.0`** for `DAMAGE`/`NOTE` |
 
 ---
 
 ## API Reliability & Fallback Architecture
 
-### Observed Issues (Free Tier)
-During evaluation, the Gemini free-tier API (`20` RPD/key/model) caused:
-- **429 `RESOURCE_EXHAUSTED`** after ~20 calls per key per model
-- **503 Server Unavailable** intermittently during peak hours
-- **`SocketTimeoutException`** on complex images (>60s inference)
+### Observed Issues & Live Key Rotation Behavior
+During the 30-frame benchmark (plus earlier emulator testing), Google AI Studio free-tier limits (`20` RPD/key/model on `gemini-3.5-flash` & `gemini-3.8-flash`) caused:
+- **`503 Server Unavailable`** and **`SocketTimeoutException`** (>60s) on `gemini-3.5-flash` during frames `REAL-NP-008..013`, triggering `3×2` retries that consumed `3.5`/`3.8` daily quota across keys `1..3`.
+- Switching/falling back to **`gemini-3.5-flash-lite`** (added as 3rd endpoint in `GeminiApiClient.DEFAULT_MODEL_ENDPOINTS`) completed the remaining **23 frames in 1m 53s** with **zero errors or timeouts**.
 
-### Current Mitigation: Multi-Key Rotation
-Implemented automatic API key rotation in `GeminiApiClient`:
-- Supports `N` API keys configured via `local.properties` (`GEMINI_API_KEY_1..N`) and bundled via `BuildConfig.GEMINI_API_KEYS`
-- Automatically rotates to the next key on HTTP `429` errors with zero backoff delay
-- With 3 separate account keys, total free-tier capacity increases to `3 × 20 = 60` requests/day per model (`120` requests/day across `gemini-3.5-flash` + `gemini-3.8-flash`)
-- Keeps exponential backoff (`1s`, `2s`, `4s`) strictly for transient `503` server errors and network I/O timeouts
-- Raises `AllKeysExhaustedException` if all keys hit `429` across all configured models
+### Current Mitigation: 3-Key Rotation + 3-Model Fallback
+- Supports `N` API keys via `local.properties` (`GEMINI_API_KEY_1..N`) and `BuildConfig.GEMINI_API_KEYS`.
+- Rotates immediately with **zero backoff delay** on HTTP `429`, while retrying `503`/I/O errors on the same key with backoff (`1s`, `2s`, `4s`).
+- Fallback order: `gemini-3.5-flash` → `gemini-3.8-flash` → `gemini-3.5-flash-lite`.
 
 ### Future Architecture: On-Device VLM Fallback
-
-For production deployment where network reliability is critical (field technicians in basements, crawlspaces, and rural areas), the recommended architecture adds an on-device vision-language model fallback:
-
-**Recommended Model: Google Gemma 3 4B (INT4 quantized)**
-- Runs via MediaPipe LLM Inference API on Android
-- ~2.5 GB model file, fits in RAM on devices with 6GB+
-- Inference: ~8–15 seconds per image on Snapdragon 8 Gen 2+
-- Accuracy tradeoff: ~15–20% lower than cloud Gemini on complex scenes, comparable on clear damage/nameplate photos
-
-**Alternative: Qwen2.5-VL 3B (INT4 quantized)**
-- Runs via `llama.cpp` or MLC-LLM on Android
-- ~1.8 GB model file
-- Faster inference (~5–10s) but lower accuracy on dense nameplate OCR tasks
-
-**Fallback Decision Logic:**
-```
-if (networkAvailable && !allKeysExhausted) {
-    -> Cloud Gemini (highest accuracy, multi-key rotation)
-} else if (deviceCapable && modelDownloaded) {
-    -> On-device VLM (degraded accuracy, works offline)
-} else {
-    -> Queue for later extraction (offline WorkManager queue, Phase 6)
-}
-```
-
-**Implementation Path:**
-1. Add MediaPipe LLM Inference dependency
-2. Download quantized Gemma 3 4B on first app launch (Wi-Fi only)
-3. Create `LocalExtractionService` implementing the same extraction contract as `ExtractionService`
-4. Add fallback routing in `ExtractionService`
-5. Flag locally-extracted results with calibrated lower confidence scores
-
-
+- **Recommended Model:** Google **Gemma 3 4B (INT4 quantized)** via MediaPipe LLM Inference API (~`2.5 GB`, `8–15s` per image on Snapdragon 8 Gen 2+) vs **Qwen2.5-VL 3B (INT4)** (`~1.8 GB`, lower OCR fidelity).
+- **Decision Flow:** Cloud Gemini (rotated 3-key + 3-model) → On-device VLM (offline basements/exhausted quota) → Room + `ExtractionQueueWorker` sync.

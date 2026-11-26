@@ -1,1 +1,2334 @@
-[{"extractionResult":{"damage_type":"water_damage","severity":"low","affected_materials":["drywall","baseboard","carpet"],"line_items":["PAINT_PRIME_WALLS","ANTIMICROBIAL_TREATMENT","STRUCTURAL_DRY_OUT"],"overall_confidence":0.89},"fieldMatches":{"damage_type":false,"severity":false,"line_item_recall":true},"filename":"dmg_mold_drywall_sink.jpg","groundTruth":{"damage_type":"mold","severity":"medium","affected_materials":["drywall"],"expected_line_items":["MOLD_REMEDIATION","REMOVE_REPLACE_DRYWALL","ANTIMICROBIAL_TREATMENT"]},"lineItemRecall":0.3333333333333333,"success":true,"testId":"REAL-DMG-001","type":"DAMAGE"},{"extractionResult":{"damage_type":"mold","severity":"medium","affected_materials":["drywall","baseboard","carpet"],"line_items":["MOLD_REMEDIATION","REMOVE_REPLACE_DRYWALL","REMOVE_REPLACE_BASEBOARD","ANTIMICROBIAL_TREATMENT","REMOVE_REPLACE_FLOORING"],"overall_confidence":0.94},"fieldMatches":{"damage_type":true,"severity":false,"line_item_recall":true},"filename":"dmg_mold_wall_cavity.jpg","groundTruth":{"damage_type":"mold","severity":"high","affected_materials":["drywall","insulation"],"expected_line_items":["MOLD_REMEDIATION","REMOVE_REPLACE_DRYWALL","REMOVE_REPLACE_INSULATION","ANTIMICROBIAL_TREATMENT"]},"lineItemRecall":0.75,"success":true,"testId":"REAL-DMG-002","type":"DAMAGE"},{"extractionResult":{"damage_type":"mold","severity":"medium","affected_materials":["wood paneling","drywall"],"line_items":["MOLD_REMEDIATION","REMOVE_REPLACE_DRYWALL","ANTIMICROBIAL_TREATMENT","PLUMBING_REPAIR"],"overall_confidence":0.91},"fieldMatches":{"damage_type":true,"severity":false,"line_item_recall":true},"filename":"dmg_mold_bathtub.jpg","groundTruth":{"damage_type":"mold","severity":"high","affected_materials":["drywall","subfloor"],"expected_line_items":["MOLD_REMEDIATION","ANTIMICROBIAL_TREATMENT","PLUMBING_REPAIR"]},"lineItemRecall":1.0,"success":true,"testId":"REAL-DMG-003","type":"DAMAGE"},{"extractionResult":{"damage_type":"water_damage","severity":"medium","affected_materials":["ceiling tile","acoustic tile"],"line_items":["CEILING_REPAIR","ANTIMICROBIAL_TREATMENT"],"overall_confidence":0.92},"fieldMatches":{"damage_type":true,"severity":true,"line_item_recall":true},"filename":"dmg_water_stain_ceiling.jpg","groundTruth":{"damage_type":"water_damage","severity":"medium","affected_materials":["ceiling drywall","paint"],"expected_line_items":["CEILING_REPAIR","PAINT_PRIME_WALLS"]},"lineItemRecall":0.5,"success":true,"testId":"REAL-DMG-004","type":"DAMAGE"},{"extractionResult":{"damage_type":"water_damage","severity":"low","affected_materials":["wood framing"],"line_items":["STRUCTURAL_DRY_OUT","AIR_MOVER_RENTAL","DEHUMIDIFIER_RENTAL","ANTIMICROBIAL_TREATMENT"],"overall_confidence":0.91},"fieldMatches":{"damage_type":true,"severity":false,"line_item_recall":true},"filename":"dmg_water_stain_wood.jpg","groundTruth":{"damage_type":"water_damage","severity":"medium","affected_materials":["wood"],"expected_line_items":["STRUCTURAL_DRY_OUT","DEHUMIDIFIER_RENTAL"]},"lineItemRecall":1.0,"success":true,"testId":"REAL-DMG-005","type":"DAMAGE"},{"extractionResult":{"damage_type":"mold","severity":"medium","affected_materials":["drywall","cabinetry","plumbing"],"line_items":["MOLD_REMEDIATION","REMOVE_REPLACE_DRYWALL","ANTIMICROBIAL_TREATMENT","PLUMBING_REPAIR"],"overall_confidence":0.93},"fieldMatches":{"damage_type":true,"severity":false,"line_item_recall":true},"filename":"dmg_mold_grout.jpg","groundTruth":{"damage_type":"mold","severity":"low","affected_materials":["grout"],"expected_line_items":["ANTIMICROBIAL_TREATMENT"]},"lineItemRecall":1.0,"success":true,"testId":"REAL-DMG-006","type":"DAMAGE"},{"extractionResult":{"damage_type":"water_damage","severity":"medium","affected_materials":["drywall","framing","content/boxes"],"line_items":["CONTENT_MANIPULATION","REMOVE_REPLACE_DRYWALL","STRUCTURAL_DRY_OUT","ANTIMICROBIAL_TREATMENT","AIR_MOVER_RENTAL","DEHUMIDIFIER_RENTAL"],"overall_confidence":0.89},"fieldMatches":{"damage_type":true,"severity":true,"line_item_recall":true},"filename":"dmg_moisture_wall.jpg","groundTruth":{"damage_type":"water_damage","severity":"medium","affected_materials":["drywall","paint"],"expected_line_items":["REMOVE_REPLACE_DRYWALL","PAINT_PRIME_WALLS"]},"lineItemRecall":0.5,"success":true,"testId":"REAL-DMG-007","type":"DAMAGE"},{"extractionResult":{"damage_type":"water_damage","severity":"high","affected_materials":["brick","masonry","downspout"],"line_items":["PLUMBING_REPAIR","ANTIMICROBIAL_TREATMENT"],"overall_confidence":0.88},"fieldMatches":{"damage_type":true,"severity":false,"line_item_recall":false},"filename":"dmg_ceiling_tiles.jpg","groundTruth":{"damage_type":"water_damage","severity":"medium","affected_materials":["ceiling tiles"],"expected_line_items":["CEILING_REPAIR"]},"lineItemRecall":0.0,"success":true,"testId":"REAL-DMG-008","type":"DAMAGE"},{"errorMessage":"Server error: 503","fieldMatches":{},"filename":"dmg_mold_concrete.jpg","groundTruth":{"damage_type":"mold","severity":"medium","affected_materials":["concrete","paint"],"expected_line_items":["MOLD_REMEDIATION","ANTIMICROBIAL_TREATMENT","PAINT_PRIME_WALLS"]},"success":false,"testId":"REAL-DMG-009","type":"DAMAGE"},{"errorMessage":"timeout","fieldMatches":{},"filename":"dmg_foundation_wet.jpg","groundTruth":{"damage_type":"water_damage","severity":"high","affected_materials":["foundation","insulation"],"expected_line_items":["WATER_EXTRACTION","REMOVE_REPLACE_INSULATION","MOLD_REMEDIATION","STRUCTURAL_DRY_OUT"]},"success":false,"testId":"REAL-DMG-010","type":"DAMAGE"},{"errorMessage":"Server error: 503","fieldMatches":{},"filename":"note_condensation.jpg","groundTruth":{"category":"observation","key_facts":["condensation on windows","high humidity","check ventilation"]},"success":false,"testId":"REAL-NOTE-001","type":"NOTE"},{"errorMessage":"Rate limited: 429","fieldMatches":{},"filename":"note_crawlspace.jpg","groundTruth":{"category":"observation","key_facts":["crawlspace inspected","vapor barrier in place","no visible mold","well drained"]},"success":false,"testId":"REAL-NOTE-002","type":"NOTE"}]
+{
+  "totalFrames": 30,
+  "successfulExtractions": 29,
+  "failedExtractions": 1,
+  "nameplateFieldAccuracy": {
+    "equipment_type": 0.5,
+    "manufacturer": 0.8333333333333334,
+    "model_number": 0.4166666666666667,
+    "serial_number": 0.8333333333333334,
+    "manufacture_date": 0.75,
+    "capacity": 0.8333333333333334
+  },
+  "damageFieldAccuracy": {
+    "damage_type": 0.07692307692307693,
+    "severity": 0.6153846153846154,
+    "affected_materials": 1.0
+  },
+  "noteFieldAccuracy": {
+    "category": 1.0,
+    "key_facts": 0.75
+  },
+  "accuracyByDifficulty": {
+    "easy": 0.85,
+    "hard": 0.54,
+    "medium": 0.6206896551724138
+  },
+  "confidenceCalibration": [
+    {
+      "confidenceRange": "0.9 - 1.0",
+      "predictedAccuracy": 0.9515999999999997,
+      "actualAccuracy": 0.76,
+      "count": 75
+    },
+    {
+      "confidenceRange": "0.8 - 0.9",
+      "predictedAccuracy": 0.8305555555555555,
+      "actualAccuracy": 0.4444444444444444,
+      "count": 18
+    },
+    {
+      "confidenceRange": "0.7 - 0.8",
+      "predictedAccuracy": 0.75,
+      "actualAccuracy": 0.5,
+      "count": 2
+    },
+    {
+      "confidenceRange": "0.6 - 0.7",
+      "predictedAccuracy": 0.6,
+      "actualAccuracy": 0.0,
+      "count": 1
+    },
+    {
+      "confidenceRange": "0.5 - 0.6",
+      "predictedAccuracy": 0.5,
+      "actualAccuracy": 0.0,
+      "count": 1
+    },
+    {
+      "confidenceRange": "\u003c 0.5",
+      "predictedAccuracy": 0.05454545454545456,
+      "actualAccuracy": 0.5909090909090909,
+      "count": 22
+    }
+  ],
+  "lineItemResults": [
+    {
+      "testId": "REAL-DMG-001",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "REMOVE_REPLACE_DRYWALL",
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 0.5,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-002",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1Score": 1.0
+    },
+    {
+      "testId": "REAL-DMG-003",
+      "expectedCodes": [
+        "MOLD_REMEDIATION",
+        "ANTIMICROBIAL_TREATMENT",
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "STRUCTURAL_DRY_OUT",
+        "ANTIMICROBIAL_TREATMENT",
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 0.6666666666666666,
+      "precision": 0.6666666666666666,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-004",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "REMOVE_REPLACE_DRYWALL",
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 0.5,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-005",
+      "expectedCodes": [
+        "REMOVE_REPLACE_DRYWALL",
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 0.5,
+      "precision": 1.0,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-006",
+      "expectedCodes": [
+        "CEILING_REPAIR",
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "CEILING_REPAIR"
+      ],
+      "recall": 0.5,
+      "precision": 1.0,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-007",
+      "expectedCodes": [
+        "CEILING_REPAIR",
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "CEILING_REPAIR",
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1Score": 1.0
+    },
+    {
+      "testId": "REAL-DMG-008",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "MOLD_REMEDIATION",
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 0.5,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-009",
+      "expectedCodes": [
+        "PLUMBING_REPAIR",
+        "ANTIMICROBIAL_TREATMENT",
+        "MOLD_REMEDIATION"
+      ],
+      "actualCodes": [
+        "PLUMBING_REPAIR",
+        "STRUCTURAL_DRY_OUT",
+        "ANTIMICROBIAL_TREATMENT"
+      ],
+      "recall": 0.6666666666666666,
+      "precision": 0.6666666666666666,
+      "f1Score": 0.6666666666666666
+    },
+    {
+      "testId": "REAL-DMG-010",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1Score": 1.0
+    },
+    {
+      "testId": "REAL-DMG-011",
+      "expectedCodes": [
+        "PLUMBING_REPAIR",
+        "ANTIMICROBIAL_TREATMENT"
+      ],
+      "actualCodes": [
+        "PLUMBING_REPAIR",
+        "STRUCTURAL_DRY_OUT"
+      ],
+      "recall": 0.5,
+      "precision": 0.5,
+      "f1Score": 0.5
+    },
+    {
+      "testId": "REAL-DMG-012",
+      "expectedCodes": [
+        "CEILING_REPAIR"
+      ],
+      "actualCodes": [
+        "CEILING_REPAIR"
+      ],
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1Score": 1.0
+    },
+    {
+      "testId": "REAL-DMG-013",
+      "expectedCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "actualCodes": [
+        "PAINT_PRIME_WALLS"
+      ],
+      "recall": 1.0,
+      "precision": 1.0,
+      "f1Score": 1.0
+    }
+  ],
+  "fieldResults": [
+    {
+      "fieldName": "equipment_type",
+      "expected": "Air Fryer",
+      "actual": "Air Fryer",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "USHA",
+      "actual": "USHA",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "iChef Smart Air Fryer 4.5L",
+      "actual": "iChef Smart Air Fryer 4.5L",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "ED0225K05179",
+      "actual": "ED0225K05179",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": "4.5L",
+      "actual": "4.5L",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Mechanical Backlit Gaming Keyboard",
+      "actual": "Mechanical Backlit Gaming Keyboard",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Ant Esports",
+      "actual": "Ant Esports",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "SCORPION MK20",
+      "actual": "MK1000",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "AESCMK20RSW0626",
+      "actual": "AESCMK20RSW0626",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "2026",
+      "actual": "2026",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Mouse",
+      "actual": "Computer Mouse",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Logitech",
+      "actual": "Logitech",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "M-U0026",
+      "actual": "M90",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "2435APCH9K68",
+      "actual": "2435APCH9K68",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Wireless Keyboard",
+      "actual": "Wireless Keyboard",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Dell",
+      "actual": "DELL",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "WK118",
+      "actual": "WK118",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "CN-047TV0-LO300-018-K0WK-A00",
+      "actual": "CN-047TV0-LO300-018-K0WK-A00",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "Jan.2020",
+      "actual": "Jan.2020",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Power Strip",
+      "actual": "Power Strip",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Portronics",
+      "actual": "PORTRONICS",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.99,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "Power Plate 10",
+      "actual": "Power Plate10",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": "1500W Max",
+      "actual": "1500W Max",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Travel Adapter",
+      "actual": "Travel Adapter",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Samsung",
+      "actual": "SAMSUNG",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "EP-TA20IBE",
+      "actual": "EP-TA20IBE",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "R37K96K2H31RC3",
+      "actual": "R37K96K2H31RC3",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "2018.09.06",
+      "actual": "2018.09.06",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": "9.0V 1.67A / 5.0V 2.0A",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Refrigerator",
+      "actual": "Refrigerator",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Samsung",
+      "actual": "SAMSUNG",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "RR23H2H35HS/HL/2026",
+      "actual": "RR23H2H35HS/HL/2026",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "2026",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": "215 liters",
+      "actual": "215 liters",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Refrigerator",
+      "actual": "Energy Rating Label",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.5,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Samsung",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "RR23H2H35HS/HL/2026",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "2026",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": "215 liters",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Kurta Set",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.1,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Nawab Parker",
+      "actual": null,
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.2,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "KS-20142",
+      "actual": "2138 ????? ?ST",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.4,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "NP123173",
+      "actual": "MP??????",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.3,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.1,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.1,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Mouse",
+      "actual": "Computer Mouse",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Logitech",
+      "actual": "Logitech",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "M-U0026",
+      "actual": "M90",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "2435APCH9K68",
+      "actual": "2438APC7HBK9?",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.75,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Mechanical Backlit Gaming Keyboard",
+      "actual": "Keyboard",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Ant Esports",
+      "actual": "Ant Esports",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "SCORPION MK20",
+      "actual": "SCORPION MK20",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "AESCMK20RSW0626",
+      "actual": "AESCMK20RSW0626",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "2026",
+      "actual": "2026",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.8,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "equipment_type",
+      "expected": "Wireless Keyboard",
+      "actual": "Monitor / Docking Station",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.6,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacturer",
+      "expected": "Dell",
+      "actual": "DELL",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "model_number",
+      "expected": "WK118",
+      "actual": "047TV0",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "serial_number",
+      "expected": "CN-047TV0-LO300-018-K0WK-A00",
+      "actual": "CN-047TV0-LO300-018-KOWK-A00",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.85,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "manufacture_date",
+      "expected": "Jan.2020",
+      "actual": "Jan. 2020",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "capacity",
+      "expected": null,
+      "actual": null,
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.0,
+      "captureType": "NAMEPLATE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "water_damage",
+      "actual": "other",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "paint, drywall",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "water_damage",
+      "actual": "other",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "paint, drywall",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "mold",
+      "actual": "water_damage",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "medium",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "drywall, paint",
+      "actual": "drywall, paint",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "water_damage",
+      "actual": "structural",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "paint, drywall",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "water_damage",
+      "actual": "other",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "low",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "drywall, paint",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "structural",
+      "actual": "structural",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "low",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "ceiling drywall, paint",
+      "actual": "ceiling drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "water_damage",
+      "actual": "structural",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "low",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "ceiling drywall, paint",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "structural",
+      "actual": "water_damage",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "paint, drywall",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "mold",
+      "actual": "water_damage",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "medium",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "drywall, plumbing",
+      "actual": "drywall, cabinet interior",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "structural",
+      "actual": "other",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "paint",
+      "actual": "drywall, paint",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "mold",
+      "actual": "water_damage",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "low",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "plumbing, drywall",
+      "actual": "cabinet wall, plumbing fixtures",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.75,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "structural",
+      "actual": "water_damage",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "medium",
+      "actual": "low",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.8,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "ceiling drywall",
+      "actual": "ceiling drywall",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.85,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "damage_type",
+      "expected": "structural",
+      "actual": "other",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "severity",
+      "expected": "low",
+      "actual": "low",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "affected_materials",
+      "expected": "drywall, paint",
+      "actual": "drywall",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.9,
+      "captureType": "DAMAGE"
+    },
+    {
+      "fieldName": "category",
+      "expected": "observation",
+      "actual": "observation",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.99,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "key_facts",
+      "expected": "marble tile floor; dry; no buckling",
+      "actual": "Marble tile floor was inspected; Tiles appear dry; Grout appears dry and intact; No buckling of the floor tiles observed",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.99,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "category",
+      "expected": "observation",
+      "actual": "observation",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.99,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "key_facts",
+      "expected": "sink trap inspected; flexible drain pipe; no active dripping",
+      "actual": "Inspected sink trap; Inspected flexible drain pipe under counter; No active dripping observed",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.99,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "category",
+      "expected": "measurement",
+      "actual": "measurement",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 0.95,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "key_facts",
+      "expected": "12% WME; upper wall; normal dry baseline",
+      "actual": "Moisture meter reading is 12 percent WME; Reading is within normal dry baseline; Upper wall area tested",
+      "exactMatch": false,
+      "fuzzyMatch": true,
+      "confidence": 0.98,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "category",
+      "expected": "safety_concern",
+      "actual": "safety_concern",
+      "exactMatch": true,
+      "fuzzyMatch": true,
+      "confidence": 1.0,
+      "captureType": "NOTE"
+    },
+    {
+      "fieldName": "key_facts",
+      "expected": "check drain hose clamp; clear cleaning bottles",
+      "actual": "Safety concern identified regarding the drain setup; Drain hose clamp tightness needs to be checked; Cleaning bottles/items need to be cleared before servicing the trap",
+      "exactMatch": false,
+      "fuzzyMatch": false,
+      "confidence": 0.99,
+      "captureType": "NOTE"
+    }
+  ],
+  "worstFailures": [
+    {
+      "testId": "REAL-NP-003",
+      "captureType": "NAMEPLATE",
+      "difficulty": "easy",
+      "description": "Logitech M90 wired optical mouse underside rating label, clear",
+      "fieldName": "equipment_type",
+      "expected": "Mouse",
+      "actual": "Computer Mouse",
+      "confidence": 1.0,
+      "rootCause": "Mismatch on equipment_type: expected \u0027Mouse\u0027, got \u0027Computer Mouse\u0027 (confidence\u003d1.0)"
+    },
+    {
+      "testId": "REAL-NP-003",
+      "captureType": "NAMEPLATE",
+      "difficulty": "easy",
+      "description": "Logitech M90 wired optical mouse underside rating label, clear",
+      "fieldName": "model_number",
+      "expected": "M-U0026",
+      "actual": "M90",
+      "confidence": 1.0,
+      "rootCause": "Mismatch on model_number: expected \u0027M-U0026\u0027, got \u0027M90\u0027 (confidence\u003d1.0)"
+    },
+    {
+      "testId": "REAL-NP-007",
+      "captureType": "NAMEPLATE",
+      "difficulty": "medium",
+      "description": "Samsung Travel Adapter EP-TA20IBE dense small print on glossy plastic",
+      "fieldName": "capacity",
+      "expected": "9.0V 1.67A / 5.0V 2.0A",
+      "actual": null,
+      "confidence": 1.0,
+      "rootCause": "Model returned null for capacity (Samsung Travel Adapter EP-TA20IBE dense small print on glossy plastic)"
+    },
+    {
+      "testId": "REAL-NOTE-004",
+      "captureType": "NOTE",
+      "difficulty": "medium",
+      "description": "Dim under-sink follow-up safety and clamp check",
+      "fieldName": "key_facts",
+      "expected": "check drain hose clamp; clear cleaning bottles",
+      "actual": "Safety concern identified regarding the drain setup; Drain hose clamp tightness needs to be checked; Cleaning bottles/items need to be cleared before servicing the trap",
+      "confidence": 0.99,
+      "rootCause": "Degraded image readability (lighting/blur): Dim under-sink follow-up safety and clamp check"
+    },
+    {
+      "testId": "REAL-NP-002",
+      "captureType": "NAMEPLATE",
+      "difficulty": "easy",
+      "description": "Ant Esports Scorpion MK20 keyboard bottom label, clear front view",
+      "fieldName": "model_number",
+      "expected": "SCORPION MK20",
+      "actual": "MK1000",
+      "confidence": 0.95,
+      "rootCause": "Mismatch on model_number: expected \u0027SCORPION MK20\u0027, got \u0027MK1000\u0027 (confidence\u003d0.95)"
+    }
+  ],
+  "qualityChecks": [
+    {
+      "id": "REAL-NP-001",
+      "filename": "real_captures/20261126_234556.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 3866.165350800475,
+      "brightnessScore": 62,
+      "edgeDensity": 72.2778633795583,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-002",
+      "filename": "real_captures/20261126_234635.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 3335.7147506351266,
+      "brightnessScore": 77,
+      "edgeDensity": 43.68258859784284,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-003",
+      "filename": "real_captures/20261126_234653.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 1117.1359348157296,
+      "brightnessScore": 107,
+      "edgeDensity": 61.60760143810992,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-004",
+      "filename": "real_captures/20261126_234730.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 4532.197812458194,
+      "brightnessScore": 78,
+      "edgeDensity": 50.16692347200822,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-005",
+      "filename": "real_captures/20261126_234753.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 4185.294440429563,
+      "brightnessScore": 87,
+      "edgeDensity": 67.07755521314843,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-006",
+      "filename": "real_captures/20261126_234834.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": true,
+      "blurScore": 880.6688420433015,
+      "brightnessScore": 110,
+      "edgeDensity": 73.63893168977916,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-007",
+      "filename": "real_captures/20261126_234911.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 1378.695972705568,
+      "brightnessScore": 123,
+      "edgeDensity": 55.75243965074473,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-008",
+      "filename": "real_captures/20261126_235137.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 7708.394175746027,
+      "brightnessScore": 98,
+      "edgeDensity": 59.09090909090909,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-009",
+      "filename": "real_captures/20261126_235224.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 54.07998037065251,
+      "brightnessScore": 8,
+      "edgeDensity": 10.824345146379045,
+      "rejectionReason": "too blurry and too dark"
+    },
+    {
+      "id": "REAL-NP-010",
+      "filename": "real_captures/20261126_235349.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 29.54841858183263,
+      "brightnessScore": 49,
+      "edgeDensity": 47.20082177709297,
+      "rejectionReason": "too blurry"
+    },
+    {
+      "id": "REAL-NP-011",
+      "filename": "real_captures/20261126_235438.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": true,
+      "blurScore": 129.92357125253562,
+      "brightnessScore": 42,
+      "edgeDensity": 31.317411402157163,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NP-012",
+      "filename": "real_captures/20261126_235550.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 156.9248841954519,
+      "brightnessScore": 7,
+      "edgeDensity": 14.573703133025168,
+      "rejectionReason": "too dark"
+    },
+    {
+      "id": "REAL-NP-013",
+      "filename": "real_captures/20261126_235611.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 300.3580905150755,
+      "brightnessScore": 16,
+      "edgeDensity": 13.687724704673856,
+      "rejectionReason": "too dark"
+    },
+    {
+      "id": "REAL-DMG-001",
+      "filename": "real_captures/20261126_235705.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 246.07304851102225,
+      "brightnessScore": 181,
+      "edgeDensity": 5.200308166409862,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-002",
+      "filename": "real_captures/20261127_000527.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 346.14571984064696,
+      "brightnessScore": 160,
+      "edgeDensity": 3.5182331792501285,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-003",
+      "filename": "real_captures/20261127_000538.jpg",
+      "type": "DAMAGE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 116.21576696991995,
+      "brightnessScore": 180,
+      "edgeDensity": 10.092449922958398,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-004",
+      "filename": "real_captures/20261127_000609.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 37.33203970119261,
+      "brightnessScore": 174,
+      "edgeDensity": 0.9887005649717515,
+      "rejectionReason": "too blurry and badly framed"
+    },
+    {
+      "id": "REAL-DMG-005",
+      "filename": "real_captures/20261127_000652.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 512.232390116484,
+      "brightnessScore": 138,
+      "edgeDensity": 16.60246533127889,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-006",
+      "filename": "real_captures/20261127_000717.jpg",
+      "type": "DAMAGE",
+      "difficulty": "easy",
+      "isAcceptable": false,
+      "blurScore": 58.04758444841534,
+      "brightnessScore": 138,
+      "edgeDensity": 5.636877247046739,
+      "rejectionReason": "too blurry"
+    },
+    {
+      "id": "REAL-DMG-007",
+      "filename": "real_captures/20261127_000726.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": false,
+      "blurScore": 170.2565461114117,
+      "brightnessScore": 129,
+      "edgeDensity": 1.8875192604006163,
+      "rejectionReason": "badly framed"
+    },
+    {
+      "id": "REAL-DMG-008",
+      "filename": "real_captures/20261127_000745.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 317.99903416187726,
+      "brightnessScore": 159,
+      "edgeDensity": 3.697996918335902,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-009",
+      "filename": "real_captures/20261127_001046.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "isAcceptable": true,
+      "blurScore": 250.5671529370575,
+      "brightnessScore": 67,
+      "edgeDensity": 32.89676425269646,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-010",
+      "filename": "real_captures/20261127_001111.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": false,
+      "blurScore": 682.32576881025,
+      "brightnessScore": 176,
+      "edgeDensity": 0.7575757575757576,
+      "rejectionReason": "badly framed"
+    },
+    {
+      "id": "REAL-DMG-011",
+      "filename": "real_captures/20261127_002305.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "isAcceptable": true,
+      "blurScore": 188.50861829442326,
+      "brightnessScore": 38,
+      "edgeDensity": 40.63944530046225,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-012",
+      "filename": "real_captures/20261127_002334.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "isAcceptable": true,
+      "blurScore": 207.4251004615993,
+      "brightnessScore": 54,
+      "edgeDensity": 7.56291730868002,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-DMG-013",
+      "filename": "real_captures/20261127_002418.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 132.22781254194658,
+      "brightnessScore": 99,
+      "edgeDensity": 5.816640986132512,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NOTE-001",
+      "filename": "real_captures/20261127_000929.jpg",
+      "type": "NOTE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 2116.3694515312113,
+      "brightnessScore": 157,
+      "edgeDensity": 63.08423215202876,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NOTE-002",
+      "filename": "real_captures/20261127_001002.jpg",
+      "type": "NOTE",
+      "difficulty": "easy",
+      "isAcceptable": true,
+      "blurScore": 1472.1571265981008,
+      "brightnessScore": 123,
+      "edgeDensity": 45.390344119157675,
+      "rejectionReason": null
+    },
+    {
+      "id": "REAL-NOTE-003",
+      "filename": "real_captures/20261127_002243.jpg",
+      "type": "NOTE",
+      "difficulty": "hard",
+      "isAcceptable": false,
+      "blurScore": 94.1876718460626,
+      "brightnessScore": 163,
+      "edgeDensity": 0.8731381612737544,
+      "rejectionReason": "badly framed"
+    },
+    {
+      "id": "REAL-NOTE-004",
+      "filename": "real_captures/20261127_002359.jpg",
+      "type": "NOTE",
+      "difficulty": "medium",
+      "isAcceptable": true,
+      "blurScore": 311.13879876974346,
+      "brightnessScore": 70,
+      "edgeDensity": 43.86235233692861,
+      "rejectionReason": null
+    }
+  ],
+  "rawFrames": [
+    {
+      "id": "REAL-NP-001",
+      "filename": "real_captures/20261126_234556.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-001",
+        "filename": "real_captures/20261126_234556.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 3866.165350800475,
+        "brightnessScore": 62,
+        "edgeDensity": 72.2778633795583,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.95,
+      "rawJson": "{\n  \"equipment_type\": \"Air Fryer\",\n  \"manufacturer\": \"USHA\",\n  \"model_number\": \"iChef Smart Air Fryer 4.5L\",\n  \"serial_number\": \"ED0225K05179\",\n  \"manufacture_date\": null,\n  \"capacity\": \"4.5L\",\n  \"voltage\": \"230 V AC\",\n  \"additional_specs\": \"Frequency: 50 Hz; Power: 1350 W; Hologram code: 40061ICHEFSAFD41N; Standard: IS 302:PART 2: SEC 9: 2009; ISI license: CM/L-8400261411\",\n  \"confidence\": {\n    \"equipment_type\": 1.0,\n    \"manufacturer\": 1.0,\n    \"model_number\": 0.95,\n    \"serial_number\": 1.0,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.95\n  },\n  \"overall_confidence\": 0.95,\n  \"notes\": \"Text is clearly readable on both the main rating sticker and the holographic security label. No direct manufacture date is visible.\"\n}"
+    },
+    {
+      "id": "REAL-NP-002",
+      "filename": "real_captures/20261126_234635.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-002",
+        "filename": "real_captures/20261126_234635.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 3335.7147506351266,
+        "brightnessScore": 77,
+        "edgeDensity": 43.68258859784284,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.95,
+      "rawJson": "{\n  \"equipment_type\": \"Mechanical Backlit Gaming Keyboard\",\n  \"manufacturer\": \"Ant Esports\",\n  \"model_number\": \"MK1000\",\n  \"serial_number\": \"AESCMK20RSW0626\",\n  \"manufacture_date\": \"2026\",\n  \"capacity\": null,\n  \"voltage\": null,\n  \"additional_specs\": \"SCORPION MK20, BATCH NO. (Red Switches), IS 13252(Part 1):2010 / IEC 60950-1 : 2005, R-41183733\",\n  \"confidence\": {\n    \"equipment_type\": 0.95,\n    \"manufacturer\": 0.95,\n    \"model_number\": 0.95,\n    \"serial_number\": 0.9,\n    \"manufacture_date\": 0.9,\n    \"capacity\": 1.0\n  },\n  \"overall_confidence\": 0.95,\n  \"notes\": \"Clear label showing brand Ant Esports, model MK1000, and batch/serial information for a gaming keyboard.\"\n}"
+    },
+    {
+      "id": "REAL-NP-003",
+      "filename": "real_captures/20261126_234653.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-003",
+        "filename": "real_captures/20261126_234653.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 1117.1359348157296,
+        "brightnessScore": 107,
+        "edgeDensity": 61.60760143810992,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.95,
+      "rawJson": "{\n  \"equipment_type\": \"Computer Mouse\",\n  \"manufacturer\": \"Logitech\",\n  \"model_number\": \"M90\",\n  \"serial_number\": \"2435APCH9K68\",\n  \"manufacture_date\": null,\n  \"capacity\": null,\n  \"voltage\": \"5V\",\n  \"additional_specs\": \"Rating: 5V \u003d 100mA, P/N: 810-002148, M/N: M-U026, Made in Vietnam\",\n  \"confidence\": {\n    \"equipment_type\": 1.0,\n    \"manufacturer\": 1.0,\n    \"model_number\": 1.0,\n    \"serial_number\": 1.0,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.0\n  },\n  \"overall_confidence\": 0.95,\n  \"notes\": \"Label printed on the underside of a Logitech M90 optical mouse. All text is crisp and fully legible.\"\n}"
+    },
+    {
+      "id": "REAL-NP-004",
+      "filename": "real_captures/20261126_234730.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-004",
+        "filename": "real_captures/20261126_234730.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 4532.197812458194,
+        "brightnessScore": 78,
+        "edgeDensity": 50.16692347200822,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.0,
+      "rawJson": "{\n  \"error\": \"not_a_nameplate\",\n  \"description\": \"The image shows a product packaging label for a clothing item (Kurta Set by NAWAB PARKER), not an equipment nameplate.\"\n}"
+    },
+    {
+      "id": "REAL-NP-005",
+      "filename": "real_captures/20261126_234753.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-005",
+        "filename": "real_captures/20261126_234753.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 4185.294440429563,
+        "brightnessScore": 87,
+        "edgeDensity": 67.07755521314843,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.98,
+      "rawJson": "{\n  \"equipment_type\": \"Wireless Keyboard\",\n  \"manufacturer\": \"DELL\",\n  \"model_number\": \"WK118\",\n  \"serial_number\": \"CN-047TV0-LO300-018-K0WK-A00\",\n  \"manufacture_date\": \"Jan.2020\",\n  \"capacity\": null,\n  \"voltage\": \"3V\",\n  \"additional_specs\": \"Rating: 3V \u003d 30mA; FCC ID: H4IKBWK118; IFT: RCPDEWK18-0068; DP/N: 047TV0; Made in China\",\n  \"confidence\": {\n    \"equipment_type\": 1.0,\n    \"manufacturer\": 1.0,\n    \"model_number\": 1.0,\n    \"serial_number\": 0.95,\n    \"manufacture_date\": 1.0,\n    \"capacity\": 1.0\n  },\n  \"overall_confidence\": 0.98,\n  \"notes\": \"Label is very clear and fully legible.\"\n}"
+    },
+    {
+      "id": "REAL-NP-006",
+      "filename": "real_captures/20261126_234834.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-006",
+        "filename": "real_captures/20261126_234834.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": true,
+        "blurScore": 880.6688420433015,
+        "brightnessScore": 110,
+        "edgeDensity": 73.63893168977916,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.95,
+      "rawJson": "{\n  \"equipment_type\": \"Power Strip\",\n  \"manufacturer\": \"PORTRONICS\",\n  \"model_number\": \"Power Plate10\",\n  \"serial_number\": null,\n  \"manufacture_date\": null,\n  \"capacity\": \"1500W Max\",\n  \"voltage\": \"240V\",\n  \"additional_specs\": \"Socket Input: AC 240V ~ 50Hz, Socket Output: 6A, 1500W Max\",\n  \"confidence\": {\n    \"equipment_type\": 0.95,\n    \"manufacturer\": 0.99,\n    \"model_number\": 0.95,\n    \"serial_number\": 0.0,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.95\n  },\n  \"overall_confidence\": 0.95,\n  \"notes\": \"Text is clearly readable on the rear specification label of the device.\"\n}"
+    },
+    {
+      "id": "REAL-NP-007",
+      "filename": "real_captures/20261126_234911.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-NP-007",
+        "filename": "real_captures/20261126_234911.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 1378.695972705568,
+        "brightnessScore": 123,
+        "edgeDensity": 55.75243965074473,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 1.0,
+      "rawJson": "{\n  \"equipment_type\": \"Travel Adapter\",\n  \"manufacturer\": \"SAMSUNG\",\n  \"model_number\": \"EP-TA20IBE\",\n  \"serial_number\": \"R37K96K2H31RC3\",\n  \"manufacture_date\": \"2018.09.06\",\n  \"capacity\": null,\n  \"voltage\": \"100-240 V\",\n  \"additional_specs\": \"INPUT: 100-240 V ~ 50-60 Hz 0.5 A; OUTPUT: 9.0 V \u003d 1.67 A or 5.0 V \u003d 2.0 A; Adaptive Fast Charging; Standard: IS 13252 (Part 1)/ IEC 60950-1; Registration: R-85000272; Made in India\",\n  \"confidence\": {\n    \"equipment_type\": 1.0,\n    \"manufacturer\": 1.0,\n    \"model_number\": 1.0,\n    \"serial_number\": 1.0,\n    \"manufacture_date\": 1.0,\n    \"capacity\": 1.0\n  },\n  \"overall_confidence\": 1.0,\n  \"notes\": \"All text on the power adapter label is clearly visible and readable.\"\n}"
+    },
+    {
+      "id": "REAL-NP-008",
+      "filename": "real_captures/20261126_235137.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-008",
+        "filename": "real_captures/20261126_235137.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 7708.394175746027,
+        "brightnessScore": 98,
+        "edgeDensity": 59.09090909090909,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.8,
+      "rawJson": "{\n  \"equipment_type\": \"Refrigerator\",\n  \"manufacturer\": \"SAMSUNG\",\n  \"model_number\": \"RR23H2H35HS/HL/2026\",\n  \"serial_number\": null,\n  \"manufacture_date\": null,\n  \"capacity\": \"215 liters\",\n  \"voltage\": null,\n  \"additional_specs\": \"Direct Cool, 117 Units Per Year, Label Period: 1st Jan, 2026 to 31st Dec, 2028\",\n  \"confidence\": {\n    \"equipment_type\": 1.0,\n    \"manufacturer\": 1.0,\n    \"model_number\": 0.95,\n    \"serial_number\": 0.0,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.95\n  },\n  \"overall_confidence\": 0.8,\n  \"notes\": \"Power Savings Guide energy rating label for a refrigerator, clearly showing brand, model, capacity, and energy consumption.\"\n}"
+    },
+    {
+      "id": "REAL-NP-009",
+      "filename": "real_captures/20261126_235224.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-009",
+        "filename": "real_captures/20261126_235224.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 54.07998037065251,
+        "brightnessScore": 8,
+        "edgeDensity": 10.824345146379045,
+        "rejectionReason": "too blurry and too dark"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.1,
+      "rawJson": "{\n  \"equipment_type\": \"Energy Rating Label\",\n  \"manufacturer\": null,\n  \"model_number\": null,\n  \"serial_number\": null,\n  \"manufacture_date\": null,\n  \"capacity\": null,\n  \"voltage\": null,\n  \"additional_specs\": null,\n  \"confidence\": {\n    \"equipment_type\": 0.5,\n    \"manufacturer\": 0.0,\n    \"model_number\": 0.0,\n    \"serial_number\": 0.0,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.0\n  },\n  \"overall_confidence\": 0.1,\n  \"notes\": \"The image is extremely dark and underexposed, making it impossible to read any text, model numbers, or specifications on the energy efficiency rating label.\"\n}"
+    },
+    {
+      "id": "REAL-NP-010",
+      "filename": "real_captures/20261126_235349.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-010",
+        "filename": "real_captures/20261126_235349.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 29.54841858183263,
+        "brightnessScore": 49,
+        "edgeDensity": 47.20082177709297,
+        "rejectionReason": "too blurry"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.2,
+      "rawJson": "{\n  \"equipment_type\": null,\n  \"manufacturer\": null,\n  \"model_number\": \"2138 ????? ?ST\",\n  \"serial_number\": \"MP??????\",\n  \"manufacture_date\": null,\n  \"capacity\": null,\n  \"voltage\": null,\n  \"additional_specs\": null,\n  \"confidence\": {\n    \"equipment_type\": 0.1,\n    \"manufacturer\": 0.2,\n    \"model_number\": 0.4,\n    \"serial_number\": 0.3,\n    \"manufacture_date\": 0.1,\n    \"capacity\": 0.1\n  },\n  \"overall_confidence\": 0.2,\n  \"notes\": \"The label is extremely blurry and out of focus, making most text illegible.\"\n}"
+    },
+    {
+      "id": "REAL-NP-011",
+      "filename": "real_captures/20261126_235438.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-011",
+        "filename": "real_captures/20261126_235438.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": true,
+        "blurScore": 129.92357125253562,
+        "brightnessScore": 42,
+        "edgeDensity": 31.317411402157163,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.8,
+      "rawJson": "{\n  \"equipment_type\": \"Computer Mouse\",\n  \"manufacturer\": \"Logitech\",\n  \"model_number\": \"M90\",\n  \"serial_number\": \"2438APC7HBK9?\",\n  \"manufacture_date\": null,\n  \"capacity\": null,\n  \"voltage\": \"5V\u003d100mA\",\n  \"additional_specs\": \"P/N: 810-002148\",\n  \"confidence\": {\n    \"equipment_type\": 0.95,\n    \"manufacturer\": 0.95,\n    \"model_number\": 0.9,\n    \"serial_number\": 0.75,\n    \"manufacture_date\": 0.0,\n    \"capacity\": 0.0\n  },\n  \"overall_confidence\": 0.8,\n  \"notes\": \"Bottom label of a Logitech M90 optical mouse. Some parts of the serial number and regulatory text are slightly out of focus or washed out by the optical sensor light.\"\n}"
+    },
+    {
+      "id": "REAL-NP-012",
+      "filename": "real_captures/20261126_235550.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-012",
+        "filename": "real_captures/20261126_235550.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 156.9248841954519,
+        "brightnessScore": 7,
+        "edgeDensity": 14.573703133025168,
+        "rejectionReason": "too dark"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.85,
+      "rawJson": "{\n  \"equipment_type\": \"Keyboard\",\n  \"manufacturer\": \"Ant Esports\",\n  \"model_number\": \"SCORPION MK20\",\n  \"serial_number\": \"AESCMK20RSW0626\",\n  \"manufacture_date\": \"2026\",\n  \"capacity\": null,\n  \"voltage\": null,\n  \"additional_specs\": \"MECHANICAL BACKLIT GAMING KEYBOARD, IS 13252(Part 1):2010/ IEC 60950-1:2005, R-41183733\",\n  \"confidence\": {\n    \"equipment_type\": 0.9,\n    \"manufacturer\": 0.95,\n    \"model_number\": 0.9,\n    \"serial_number\": 0.9,\n    \"manufacture_date\": 0.8,\n    \"capacity\": 0.0\n  },\n  \"overall_confidence\": 0.85,\n  \"notes\": \"Label is slightly dark/grainy but text is mostly legible. Serial number text below barcode is readable.\"\n}"
+    },
+    {
+      "id": "REAL-NP-013",
+      "filename": "real_captures/20261126_235611.jpg",
+      "type": "NAMEPLATE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NP-013",
+        "filename": "real_captures/20261126_235611.jpg",
+        "type": "NAMEPLATE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 300.3580905150755,
+        "brightnessScore": 16,
+        "edgeDensity": 13.687724704673856,
+        "rejectionReason": "too dark"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.7,
+      "rawJson": "{\n  \"equipment_type\": \"Monitor / Docking Station\",\n  \"manufacturer\": \"DELL\",\n  \"model_number\": \"047TV0\",\n  \"serial_number\": \"CN-047TV0-LO300-018-KOWK-A00\",\n  \"manufacture_date\": \"Jan. 2020\",\n  \"capacity\": null,\n  \"voltage\": null,\n  \"additional_specs\": \"Made In China, DP/N 047TV0\",\n  \"confidence\": {\n    \"equipment_type\": 0.6,\n    \"manufacturer\": 0.95,\n    \"model_number\": 0.9,\n    \"serial_number\": 0.85,\n    \"manufacture_date\": 0.9,\n    \"capacity\": 0.0\n  },\n  \"overall_confidence\": 0.7,\n  \"notes\": \"The label is clearly legible in the white barcode section. Background text is dark and difficult to read.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-001",
+      "filename": "real_captures/20261126_235705.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash",
+      "quality": {
+        "id": "REAL-DMG-001",
+        "filename": "real_captures/20261126_235705.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 246.07304851102225,
+        "brightnessScore": 181,
+        "edgeDensity": 5.200308166409862,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.9,
+      "rawJson": "{\n  \"damage_type\": \"other\",\n  \"severity\": \"low\",\n  \"description\": \"Minor drywall repair patch/imperfection and faint discoloration observed on the painted wall near a curtain rod bracket.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 1 sq ft\",\n  \"room\": \"bedroom\",\n  \"surface\": \"wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"REMOVE_REPLACE_DRYWALL\",\n      \"reason\": \"Drywall surface requires minor patching/smoothing at the visible circular damaged area\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"~1 sq ft\"\n    },\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Priming and painting required to cover wall repair patch and match surrounding finish\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"~15 sq ft\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.95,\n    \"affected_materials\": 0.95,\n    \"line_items\": 0.9\n  },\n  \"overall_confidence\": 0.9,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic wall repair needed adjacent to the curtain rod mount.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-002",
+      "filename": "real_captures/20261127_000527.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-002",
+        "filename": "real_captures/20261127_000527.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 346.14571984064696,
+        "brightnessScore": 160,
+        "edgeDensity": 3.5182331792501285,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.87,
+      "rawJson": "{\n  \"damage_type\": \"other\",\n  \"severity\": \"low\",\n  \"description\": \"The wall surface in the hallway shows scuffs, marks, and minor surface damage near the doorway. The affected area is localized and cosmetic in nature.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 5 sq ft\",\n  \"room\": \"hallway\",\n  \"surface\": \"wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Wall surface needs painting and priming to cover scuffs and marks.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"1 unit\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.9,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.87,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic wear and scuffing on wall near the doorway.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-003",
+      "filename": "real_captures/20261127_000538.jpg",
+      "type": "DAMAGE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-003",
+        "filename": "real_captures/20261127_000538.jpg",
+        "type": "DAMAGE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 116.21576696991995,
+        "brightnessScore": 180,
+        "edgeDensity": 10.092449922958398,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.82,
+      "rawJson": "{\n  \"damage_type\": \"water_damage\",\n  \"severity\": \"medium\",\n  \"description\": \"The wall corner in the utility room shows significant surface staining, scuffing, and possible water run-down streaks. The drywall texture and integrity may be compromised due to moisture exposure and wear.\",\n  \"affected_materials\": [\n    \"drywall\",\n    \"paint\"\n  ],\n  \"affected_area_estimate\": \"approximately 15 sq ft\",\n  \"room\": \"utility room\",\n  \"surface\": \"wall corner\",\n  \"moisture_visible\": true,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"STRUCTURAL_DRY_OUT\",\n      \"reason\": \"Wall material requires thorough drying to mitigate moisture retention\",\n      \"priority\": \"high\",\n      \"estimated_quantity\": \"1 room\"\n    },\n    {\n      \"code\": \"ANTIMICROBIAL_TREATMENT\",\n      \"reason\": \"Disinfection needed on the stained and moisture-exposed wall surface to prevent mold growth\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"15 sq ft\"\n    },\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Walls need priming and repainting to cover stains and restore appearance after mitigation\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"15 sq ft\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.8,\n    \"affected_materials\": 0.85,\n    \"line_items\": 0.8\n  },\n  \"overall_confidence\": 0.82,\n  \"safety_concerns\": null,\n  \"notes\": \"Surface shows extensive staining and possible seepage near the base; inspection with a moisture meter is recommended to determine the full extent of saturation.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-004",
+      "filename": "real_captures/20261127_000609.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-004",
+        "filename": "real_captures/20261127_000609.jpg",
+        "type": "DAMAGE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 37.33203970119261,
+        "brightnessScore": 174,
+        "edgeDensity": 0.9887005649717515,
+        "rejectionReason": "too blurry and badly framed"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.92,
+      "rawJson": "{\n  \"damage_type\": \"structural\",\n  \"severity\": \"low\",\n  \"description\": \"A small circular hole or localized damage spot is visible on the bedroom wall surface. The surrounding area remains intact with minor cosmetic disruption.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"less than 1 sq ft\",\n  \"room\": \"bedroom\",\n  \"surface\": \"wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"REMOVE_REPLACE_DRYWALL\",\n      \"reason\": \"Small hole or damage spot requires drywall patching and repair.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"1 patch\"\n    },\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Primer and paint required to blend the wall repair with the surrounding surface.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"1 room wall section\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.9,\n    \"severity\": 0.95,\n    \"affected_materials\": 0.95,\n    \"line_items\": 0.9\n  },\n  \"overall_confidence\": 0.92,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic wall damage, simple patch and paint repair needed.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-005",
+      "filename": "real_captures/20261127_000652.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-005",
+        "filename": "real_captures/20261127_000652.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 512.232390116484,
+        "brightnessScore": 138,
+        "edgeDensity": 16.60246533127889,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.86,
+      "rawJson": "{\n  \"damage_type\": \"other\",\n  \"severity\": \"low\",\n  \"description\": \"The wall below the window shows minor scuffs, stains, and minor surface wear. No significant structural drywall damage or active water infiltration is visible.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 10 sq ft\",\n  \"room\": \"living room\",\n  \"surface\": \"wall below window\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"The wall surface has visible scuff marks and stains that require priming and repainting.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"~15 sq ft\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.8,\n    \"severity\": 0.9,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.86,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic wear only; no active leaks or moisture detected from visual inspection.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-006",
+      "filename": "real_captures/20261127_000717.jpg",
+      "type": "DAMAGE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-006",
+        "filename": "real_captures/20261127_000717.jpg",
+        "type": "DAMAGE",
+        "difficulty": "easy",
+        "isAcceptable": false,
+        "blurScore": 58.04758444841534,
+        "brightnessScore": 138,
+        "edgeDensity": 5.636877247046739,
+        "rejectionReason": "too blurry"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.9,
+      "rawJson": "{\n  \"damage_type\": \"structural\",\n  \"severity\": \"low\",\n  \"description\": \"A circular penetration hole is visible in the ceiling drywall of the hallway. The surrounding area appears stable, but the material is visibly breached.\",\n  \"affected_materials\": [\n    \"ceiling drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 1 sq ft\",\n  \"room\": \"hallway\",\n  \"surface\": \"ceiling\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"CEILING_REPAIR\",\n      \"reason\": \"Repair the puncture/hole in the ceiling drywall\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"1 unit\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.9,\n    \"severity\": 0.9,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.9\n  },\n  \"overall_confidence\": 0.9,\n  \"safety_concerns\": null,\n  \"notes\": \"Hole appears to be from a missing fixture or localized impact.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-007",
+      "filename": "real_captures/20261127_000726.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-007",
+        "filename": "real_captures/20261127_000726.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": false,
+        "blurScore": 170.2565461114117,
+        "brightnessScore": 129,
+        "edgeDensity": 1.8875192604006163,
+        "rejectionReason": "badly framed"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.88,
+      "rawJson": "{\n  \"damage_type\": \"structural\",\n  \"severity\": \"low\",\n  \"description\": \"A small circular hole is visible in the ceiling drywall, exposing the interior cavity. There is also a small circular patch or indentation nearby.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 1 sq ft\",\n  \"room\": \"hallway\",\n  \"surface\": \"ceiling\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"CEILING_REPAIR\",\n      \"reason\": \"The ceiling drywall has a noticeable hole that requires patching and refinishing.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"1 unit\"\n    },\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"The repaired ceiling area will require priming and painting to match the surrounding finish.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"~10 sq ft\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.9,\n    \"severity\": 0.9,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.88,\n  \"safety_concerns\": null,\n  \"notes\": \"Small localized impact or access hole in the ceiling.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-008",
+      "filename": "real_captures/20261127_000745.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-008",
+        "filename": "real_captures/20261127_000745.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 317.99903416187726,
+        "brightnessScore": 159,
+        "edgeDensity": 3.697996918335902,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.85,
+      "rawJson": "{\n  \"damage_type\": \"water_damage\",\n  \"severity\": \"low\",\n  \"description\": \"The upper wall shows water staining and mildew accumulation along the ceiling-wall intersection, likely resulting from a past leak or condensation issue.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 4 sq ft\",\n  \"room\": \"bedroom\",\n  \"surface\": \"upper wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": true,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"MOLD_REMEDIATION\",\n      \"reason\": \"Visible mildew staining on the upper wall requires antimicrobial cleaning and remediation.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"4 sq ft\"\n    },\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Wall surface requires sealing and repainting to cover stains and mildew discoloration after treatment.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"10 sq ft\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.8,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.85,\n  \"safety_concerns\": null,\n  \"notes\": \"Source of moisture should be verified prior to painting to ensure no active leak is present.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-009",
+      "filename": "real_captures/20261127_001046.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-009",
+        "filename": "real_captures/20261127_001046.jpg",
+        "type": "DAMAGE",
+        "difficulty": "hard",
+        "isAcceptable": true,
+        "blurScore": 250.5671529370575,
+        "brightnessScore": 67,
+        "edgeDensity": 32.89676425269646,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.85,
+      "rawJson": "{\n  \"damage_type\": \"water_damage\",\n  \"severity\": \"medium\",\n  \"description\": \"Water damage is visible inside the under-sink kitchen cabinet, likely originating from the plumbing configuration shown. Staining and moisture absorption are present on the surrounding cabinet structure and walls.\",\n  \"affected_materials\": [\n    \"drywall\",\n    \"cabinet interior\"\n  ],\n  \"affected_area_estimate\": \"approximately 6 sq ft\",\n  \"room\": \"kitchen\",\n  \"surface\": \"under sink cabinet\",\n  \"moisture_visible\": true,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PLUMBING_REPAIR\",\n      \"reason\": \"Faulty or improperly installed flexible drain piping visible under the sink that needs correction to stop active or future leaks.\",\n      \"priority\": \"high\",\n      \"estimated_quantity\": \"1 unit\"\n    },\n    {\n      \"code\": \"STRUCTURAL_DRY_OUT\",\n      \"reason\": \"The interior cabinet surfaces and adjacent wall require professional drying to prevent moisture retention and mold growth.\",\n      \"priority\": \"high\",\n      \"estimated_quantity\": \"1 unit\"\n    },\n    {\n      \"code\": \"ANTIMICROBIAL_TREATMENT\",\n      \"reason\": \"Application of antimicrobial treatment to affected areas under the sink to prevent microbial growth from the water leak.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"1 unit\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.9,\n    \"severity\": 0.8,\n    \"affected_materials\": 0.85,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.85,\n  \"safety_concerns\": null,\n  \"notes\": \"The flexible accordion drain pipe configuration is prone to leaks and clogging and should be replaced with rigid PVC plumbing during repairs.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-010",
+      "filename": "real_captures/20261127_001111.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-010",
+        "filename": "real_captures/20261127_001111.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": false,
+        "blurScore": 682.32576881025,
+        "brightnessScore": 176,
+        "edgeDensity": 0.7575757575757576,
+        "rejectionReason": "badly framed"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.87,
+      "rawJson": "{\n  \"damage_type\": \"other\",\n  \"severity\": \"low\",\n  \"description\": \"The image shows minor surface scuffs, scratches, and pencil/rub marks on the painted wall surface in the bedroom above the light switch plate.\",\n  \"affected_materials\": [\n    \"drywall\",\n    \"paint\"\n  ],\n  \"affected_area_estimate\": \"approximately 1-2 sq ft\",\n  \"room\": \"bedroom\",\n  \"surface\": \"wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Wall surface requires spot priming and repainting to cover surface scuffs and marks.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"1 wall\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.9,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.87,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic wall marks only; no structural damage or moisture detected.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-011",
+      "filename": "real_captures/20261127_002305.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-011",
+        "filename": "real_captures/20261127_002305.jpg",
+        "type": "DAMAGE",
+        "difficulty": "hard",
+        "isAcceptable": true,
+        "blurScore": 188.50861829442326,
+        "brightnessScore": 38,
+        "edgeDensity": 40.63944530046225,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.81,
+      "rawJson": "{\n  \"damage_type\": \"water_damage\",\n  \"severity\": \"low\",\n  \"description\": \"Under-sink area shows a plumbing assembly with a flexible corrugated drain line prone to leaks and moisture buildup. The surrounding cabinet wall/backing displays staining and potential water exposure.\",\n  \"affected_materials\": [\n    \"cabinet wall\",\n    \"plumbing fixtures\"\n  ],\n  \"affected_area_estimate\": \"approximately 4 sq ft\",\n  \"room\": \"kitchen\",\n  \"surface\": \"under sink\",\n  \"moisture_visible\": true,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PLUMBING_REPAIR\",\n      \"reason\": \"Visible corrugated drain line and plumbing connections require inspection and repair to prevent ongoing leaks.\",\n      \"priority\": \"high\",\n      \"estimated_quantity\": \"1 unit\"\n    },\n    {\n      \"code\": \"STRUCTURAL_DRY_OUT\",\n      \"reason\": \"Cabinet interior and wall surfaces beneath the sink need drying to prevent moisture retention and potential mold growth.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"1 unit\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.8,\n    \"affected_materials\": 0.75,\n    \"line_items\": 0.85\n  },\n  \"overall_confidence\": 0.81,\n  \"safety_concerns\": null,\n  \"notes\": \"Recommend replacing the flexible corrugated drain pipe with standard rigid PVC slip-joint piping to comply with plumbing codes and prevent clogs/leaks.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-012",
+      "filename": "real_captures/20261127_002334.jpg",
+      "type": "DAMAGE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-012",
+        "filename": "real_captures/20261127_002334.jpg",
+        "type": "DAMAGE",
+        "difficulty": "hard",
+        "isAcceptable": true,
+        "blurScore": 207.4251004615993,
+        "brightnessScore": 54,
+        "edgeDensity": 7.56291730868002,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.82,
+      "rawJson": "{\n  \"damage_type\": \"water_damage\",\n  \"severity\": \"low\",\n  \"description\": \"The hallway ceiling shows a localized puncture or penetration hole with surrounding water staining and potential moisture impact.\",\n  \"affected_materials\": [\n    \"ceiling drywall\"\n  ],\n  \"affected_area_estimate\": \"approximately 2 sq ft\",\n  \"room\": \"hallway\",\n  \"surface\": \"ceiling\",\n  \"moisture_visible\": true,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"CEILING_REPAIR\",\n      \"reason\": \"The ceiling surface contains a visible puncture and localized damage requiring patching and repair.\",\n      \"priority\": \"medium\",\n      \"estimated_quantity\": \"1 unit\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.85,\n    \"severity\": 0.8,\n    \"affected_materials\": 0.85,\n    \"line_items\": 0.8\n  },\n  \"overall_confidence\": 0.82,\n  \"safety_concerns\": null,\n  \"notes\": \"Image is dark, making it difficult to fully assess the extent of surrounding staining or water tracks.\"\n}"
+    },
+    {
+      "id": "REAL-DMG-013",
+      "filename": "real_captures/20261127_002418.jpg",
+      "type": "DAMAGE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-DMG-013",
+        "filename": "real_captures/20261127_002418.jpg",
+        "type": "DAMAGE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 132.22781254194658,
+        "brightnessScore": 99,
+        "edgeDensity": 5.816640986132512,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.91,
+      "rawJson": "{\n  \"damage_type\": \"other\",\n  \"severity\": \"low\",\n  \"description\": \"A single surface scratch or scuff mark is visible on the bedroom wall.\",\n  \"affected_materials\": [\n    \"drywall\"\n  ],\n  \"affected_area_estimate\": \"less than 1 sq ft\",\n  \"room\": \"bedroom\",\n  \"surface\": \"wall\",\n  \"moisture_visible\": false,\n  \"mold_visible\": false,\n  \"recommended_line_items\": [\n    {\n      \"code\": \"PAINT_PRIME_WALLS\",\n      \"reason\": \"Spot painting and priming needed to cover the surface scratch on the wall.\",\n      \"priority\": \"low\",\n      \"estimated_quantity\": \"1 wall\"\n    }\n  ],\n  \"confidence\": {\n    \"damage_type\": 0.9,\n    \"severity\": 0.95,\n    \"affected_materials\": 0.9,\n    \"line_items\": 0.9\n  },\n  \"overall_confidence\": 0.91,\n  \"safety_concerns\": null,\n  \"notes\": \"Cosmetic blemish only, no structural repair or replacement of drywall required.\"\n}"
+    },
+    {
+      "id": "REAL-NOTE-001",
+      "filename": "real_captures/20261127_000929.jpg",
+      "type": "NOTE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NOTE-001",
+        "filename": "real_captures/20261127_000929.jpg",
+        "type": "NOTE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 2116.3694515312113,
+        "brightnessScore": 157,
+        "edgeDensity": 63.08423215202876,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.98,
+      "rawJson": "{\n  \"transcribed_note\": \"Marble tile floor inspected. Tiles and grout appear dry and intact with no buckling.\",\n  \"category\": \"observation\",\n  \"image_context\": \"View of a light grey marble-patterned tile floor showing clean grout lines and intact surface condition.\",\n  \"key_facts\": [\n    \"Marble tile floor was inspected\",\n    \"Tiles appear dry\",\n    \"Grout appears dry and intact\",\n    \"No buckling of the floor tiles observed\"\n  ],\n  \"confidence\": {\n    \"transcription\": 0.99,\n    \"category\": 0.99,\n    \"image_context\": 0.95\n  },\n  \"overall_confidence\": 0.98,\n  \"follow_up_needed\": false,\n  \"follow_up_reason\": null\n}"
+    },
+    {
+      "id": "REAL-NOTE-002",
+      "filename": "real_captures/20261127_001002.jpg",
+      "type": "NOTE",
+      "difficulty": "easy",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NOTE-002",
+        "filename": "real_captures/20261127_001002.jpg",
+        "type": "NOTE",
+        "difficulty": "easy",
+        "isAcceptable": true,
+        "blurScore": 1472.1571265981008,
+        "brightnessScore": 123,
+        "edgeDensity": 45.390344119157675,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.98,
+      "rawJson": "{\n  \"transcribed_note\": \"Inspected sink trap and flexible drain pipe under the counter; no active dripping observed.\",\n  \"category\": \"observation\",\n  \"image_context\": \"Under-sink area showing the drain trap assembly, flexible corrugated drain pipe, and connection to the wall.\",\n  \"key_facts\": [\n    \"Inspected sink trap\",\n    \"Inspected flexible drain pipe under counter\",\n    \"No active dripping observed\"\n  ],\n  \"confidence\": {\n    \"transcription\": 0.99,\n    \"category\": 0.99,\n    \"image_context\": 0.98\n  },\n  \"overall_confidence\": 0.98,\n  \"follow_up_needed\": false,\n  \"follow_up_reason\": null\n}"
+    },
+    {
+      "id": "REAL-NOTE-003",
+      "filename": "real_captures/20261127_002243.jpg",
+      "type": "NOTE",
+      "difficulty": "hard",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NOTE-003",
+        "filename": "real_captures/20261127_002243.jpg",
+        "type": "NOTE",
+        "difficulty": "hard",
+        "isAcceptable": false,
+        "blurScore": 94.1876718460626,
+        "brightnessScore": 163,
+        "edgeDensity": 0.8731381612737544,
+        "rejectionReason": "badly framed"
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.94,
+      "rawJson": "{\n  \"transcribed_note\": \"Note: moisture meter reading on upper wall is 12 percent wood moisture equivalent, within normal dry baseline.\",\n  \"category\": \"measurement\",\n  \"image_context\": \"An interior wall surface showing minor scuffs and marks near the top, where moisture meter testing was performed.\",\n  \"key_facts\": [\n    \"Moisture meter reading is 12 percent WME\",\n    \"Reading is within normal dry baseline\",\n    \"Upper wall area tested\"\n  ],\n  \"confidence\": {\n    \"transcription\": 0.98,\n    \"category\": 0.95,\n    \"image_context\": 0.9\n  },\n  \"overall_confidence\": 0.94,\n  \"follow_up_needed\": false,\n  \"follow_up_reason\": null\n}"
+    },
+    {
+      "id": "REAL-NOTE-004",
+      "filename": "real_captures/20261127_002359.jpg",
+      "type": "NOTE",
+      "difficulty": "medium",
+      "model": "gemini-3.5-flash-lite",
+      "quality": {
+        "id": "REAL-NOTE-004",
+        "filename": "real_captures/20261127_002359.jpg",
+        "type": "NOTE",
+        "difficulty": "medium",
+        "isAcceptable": true,
+        "blurScore": 311.13879876974346,
+        "brightnessScore": 70,
+        "edgeDensity": 43.86235233692861,
+        "rejectionReason": null
+      },
+      "status": "SUCCESS",
+      "overallConfidence": 0.98,
+      "rawJson": "{\n  \"transcribed_note\": \"Safety concern: check drain hose clamp tightness and clear cleaning bottles before servicing the trap.\",\n  \"category\": \"safety_concern\",\n  \"image_context\": \"Undersink view showing the sink drain assembly, flexible gray P-trap/drain hose, and a green corrugated hose passing behind it.\",\n  \"key_facts\": [\n    \"Safety concern identified regarding the drain setup\",\n    \"Drain hose clamp tightness needs to be checked\",\n    \"Cleaning bottles/items need to be cleared before servicing the trap\"\n  ],\n  \"confidence\": {\n    \"transcription\": 0.99,\n    \"category\": 1.0,\n    \"image_context\": 0.95\n  },\n  \"overall_confidence\": 0.98,\n  \"follow_up_needed\": false,\n  \"follow_up_reason\": null\n}"
+    }
+  ]
+}

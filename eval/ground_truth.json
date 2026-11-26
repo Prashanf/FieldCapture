@@ -1,551 +1,431 @@
 {
   "schema_version": "1.0.0",
-  "description": "Ground truth annotations for FieldCapture extraction evaluation",
-  "created_at": "2024-11-17T00:00:00Z",
+  "description": "Ground truth annotations for FieldCapture real-world evaluation using 30 user-captured camera photos",
+  "created_at": "2026-11-27T00:40:00Z",
   "test_frames": [
     {
-      "id": "NP-001",
-      "filename": "nameplate_rheem_water_heater.jpg",
+      "id": "REAL-NP-001",
+      "filename": "real_captures/20261126_234556.jpg",
       "type": "NAMEPLATE",
-      "description": "Clear front-facing photo of Rheem water heater nameplate label",
+      "description": "USHA iChef Smart Air Fryer 4.5L bottom rating plate, clear lighting",
       "difficulty": "easy",
       "ground_truth": {
-        "equipment_type": "Water Heater",
-        "manufacturer": "Rheem",
-        "model_number": "XG40T06EC36U1",
-        "serial_number": "MP1234567890",
-        "manufacture_date": "2019",
-        "capacity": "40 GAL"
+        "equipment_type": "Air Fryer",
+        "manufacturer": "USHA",
+        "model_number": "iChef Smart Air Fryer 4.5L",
+        "serial_number": "ED0225K05179",
+        "manufacture_date": null,
+        "capacity": "4.5L"
       }
     },
     {
-      "id": "NP-002",
-      "filename": "nameplate_carrier_furnace.jpg",
+      "id": "REAL-NP-002",
+      "filename": "real_captures/20261126_234635.jpg",
       "type": "NAMEPLATE",
-      "description": "Carrier furnace label, slightly angled, good lighting",
+      "description": "Ant Esports Scorpion MK20 keyboard bottom label, clear front view",
       "difficulty": "easy",
       "ground_truth": {
-        "equipment_type": "Furnace",
-        "manufacturer": "Carrier",
-        "model_number": "59SC5A080S17-14",
-        "serial_number": "3221A00345",
-        "manufacture_date": "2021",
-        "capacity": "80000 BTU"
-      }
-    },
-    {
-      "id": "NP-003",
-      "filename": "nameplate_lennox_ac.jpg",
-      "type": "NAMEPLATE",
-      "description": "Lennox AC condenser label, outdoor lighting with some glare",
-      "difficulty": "medium",
-      "ground_truth": {
-        "equipment_type": "AC Condenser",
-        "manufacturer": "Lennox",
-        "model_number": "XC21-036-230A03",
-        "serial_number": "5821B08432",
-        "manufacture_date": "2018",
-        "capacity": "3 TON"
-      }
-    },
-    {
-      "id": "NP-004",
-      "filename": "nameplate_samsung_washer.jpg",
-      "type": "NAMEPLATE",
-      "description": "Samsung washer label behind unit, dim lighting, slight blur",
-      "difficulty": "hard",
-      "ground_truth": {
-        "equipment_type": "Washing Machine",
-        "manufacturer": "Samsung",
-        "model_number": "WF45R6100AW",
-        "serial_number": "0B4N5CDJ200481",
-        "manufacture_date": "2020",
-        "capacity": "4.5 cu ft"
-      }
-    },
-    {
-      "id": "NP-005",
-      "filename": "nameplate_ao_smith_water_heater.jpg",
-      "type": "NAMEPLATE",
-      "description": "A.O. Smith water heater, label partially obscured by pipe",
-      "difficulty": "hard",
-      "ground_truth": {
-        "equipment_type": "Water Heater",
-        "manufacturer": "A.O. Smith",
-        "model_number": "GPVL-50",
-        "serial_number": null,
-        "manufacture_date": "2017",
-        "capacity": "50 GAL"
-      }
-    },
-    {
-      "id": "NP-006",
-      "filename": "nameplate_trane_heatpump.jpg",
-      "type": "NAMEPLATE",
-      "description": "Trane heat pump outdoor unit, faded label",
-      "difficulty": "hard",
-      "ground_truth": {
-        "equipment_type": "Heat Pump",
-        "manufacturer": "Trane",
-        "model_number": "4TWR5036N1000A",
-        "serial_number": "21341HREVC",
-        "manufacture_date": "2016",
-        "capacity": "3 TON"
-      }
-    },
-    {
-      "id": "NP-007",
-      "filename": "nameplate_bradford_white_wh.jpg",
-      "type": "NAMEPLATE",
-      "description": "Bradford White water heater, well-lit utility room",
-      "difficulty": "easy",
-      "ground_truth": {
-        "equipment_type": "Water Heater",
-        "manufacturer": "Bradford White",
-        "model_number": "RG240T6N",
-        "serial_number": "BH42456789",
-        "manufacture_date": "2022",
-        "capacity": "40 GAL"
-      }
-    },
-    {
-      "id": "NP-008",
-      "filename": "nameplate_goodman_furnace.jpg",
-      "type": "NAMEPLATE",
-      "description": "Goodman furnace in attic, dim light, cobwebs on label",
-      "difficulty": "hard",
-      "ground_truth": {
-        "equipment_type": "Furnace",
-        "manufacturer": "Goodman",
-        "model_number": "GMVM970803BNA",
-        "serial_number": "2007388842",
-        "manufacture_date": "2020",
-        "capacity": "80000 BTU"
-      }
-    },
-    {
-      "id": "NP-009",
-      "filename": "nameplate_ge_dishwasher.jpg",
-      "type": "NAMEPLATE",
-      "description": "GE dishwasher label on door edge, clear",
-      "difficulty": "easy",
-      "ground_truth": {
-        "equipment_type": "Dishwasher",
-        "manufacturer": "GE",
-        "model_number": "GDT665SSNSS",
-        "serial_number": "FH802842A",
-        "manufacture_date": "2021",
+        "equipment_type": "Mechanical Backlit Gaming Keyboard",
+        "manufacturer": "Ant Esports",
+        "model_number": "SCORPION MK20",
+        "serial_number": "AESCMK20RSW0626",
+        "manufacture_date": "2026",
         "capacity": null
       }
     },
     {
-      "id": "NP-010",
-      "filename": "nameplate_york_ac.jpg",
+      "id": "REAL-NP-003",
+      "filename": "real_captures/20261126_234653.jpg",
       "type": "NAMEPLATE",
-      "description": "York AC unit, heavily weathered outdoor label",
-      "difficulty": "hard",
+      "description": "Logitech M90 wired optical mouse underside rating label, clear",
+      "difficulty": "easy",
       "ground_truth": {
-        "equipment_type": "AC Condenser",
-        "manufacturer": "York",
-        "model_number": "TCHD36S41S1A",
-        "serial_number": "N1M4523186",
-        "manufacture_date": "2015",
-        "capacity": "3 TON"
+        "equipment_type": "Mouse",
+        "manufacturer": "Logitech",
+        "model_number": "M-U0026",
+        "serial_number": "2435APCH9K68",
+        "manufacture_date": null,
+        "capacity": null
       }
     },
     {
-      "id": "NP-011",
-      "filename": "nameplate_whirlpool_fridge.jpg",
+      "id": "REAL-NP-004",
+      "filename": "real_captures/20261126_234730.jpg",
       "type": "NAMEPLATE",
-      "description": "Whirlpool refrigerator label inside door jamb",
+      "description": "Nawab Parker garment box barcode label, well-lit close-up",
+      "difficulty": "easy",
+      "ground_truth": {
+        "equipment_type": "Kurta Set",
+        "manufacturer": "Nawab Parker",
+        "model_number": "KS-20142",
+        "serial_number": "NP123173",
+        "manufacture_date": null,
+        "capacity": null
+      }
+    },
+    {
+      "id": "REAL-NP-005",
+      "filename": "real_captures/20261126_234753.jpg",
+      "type": "NAMEPLATE",
+      "description": "Dell WK118 Wireless Keyboard underside rating plate with QR sticker",
+      "difficulty": "easy",
+      "ground_truth": {
+        "equipment_type": "Wireless Keyboard",
+        "manufacturer": "Dell",
+        "model_number": "WK118",
+        "serial_number": "CN-047TV0-LO300-018-K0WK-A00",
+        "manufacture_date": "Jan.2020",
+        "capacity": null
+      }
+    },
+    {
+      "id": "REAL-NP-006",
+      "filename": "real_captures/20261126_234834.jpg",
+      "type": "NAMEPLATE",
+      "description": "Portronics Power Plate 10 low-contrast black-on-black embossed label",
+      "difficulty": "hard",
+      "ground_truth": {
+        "equipment_type": "Power Strip",
+        "manufacturer": "Portronics",
+        "model_number": "Power Plate 10",
+        "serial_number": null,
+        "manufacture_date": null,
+        "capacity": "1500W Max"
+      }
+    },
+    {
+      "id": "REAL-NP-007",
+      "filename": "real_captures/20261126_234911.jpg",
+      "type": "NAMEPLATE",
+      "description": "Samsung Travel Adapter EP-TA20IBE dense small print on glossy plastic",
       "difficulty": "medium",
+      "ground_truth": {
+        "equipment_type": "Travel Adapter",
+        "manufacturer": "Samsung",
+        "model_number": "EP-TA20IBE",
+        "serial_number": "R37K96K2H31RC3",
+        "manufacture_date": "2018.09.06",
+        "capacity": "9.0V 1.67A / 5.0V 2.0A"
+      }
+    },
+    {
+      "id": "REAL-NP-008",
+      "filename": "real_captures/20261126_235137.jpg",
+      "type": "NAMEPLATE",
+      "description": "Samsung Direct Cool Refrigerator BEE energy rating plate, clear lighting",
+      "difficulty": "easy",
       "ground_truth": {
         "equipment_type": "Refrigerator",
-        "manufacturer": "Whirlpool",
-        "model_number": "WRF535SWHZ",
-        "serial_number": "K93209452",
-        "manufacture_date": "2023",
-        "capacity": "25 cu ft"
+        "manufacturer": "Samsung",
+        "model_number": "RR23H2H35HS/HL/2026",
+        "serial_number": null,
+        "manufacture_date": "2026",
+        "capacity": "215 liters"
       }
     },
     {
-      "id": "NP-012",
-      "filename": "nameplate_ruud_water_heater.jpg",
+      "id": "REAL-NP-009",
+      "filename": "real_captures/20261126_235224.jpg",
       "type": "NAMEPLATE",
-      "description": "Ruud water heater in crawl space, flashlight illumination",
+      "description": "Samsung Refrigerator BEE label in very dim low-light conditions",
       "difficulty": "hard",
       "ground_truth": {
-        "equipment_type": "Water Heater",
-        "manufacturer": "Ruud",
-        "model_number": "PROG50-38N RH62",
-        "serial_number": "R0919485372",
-        "manufacture_date": "2019",
-        "capacity": "50 GAL"
+        "equipment_type": "Refrigerator",
+        "manufacturer": "Samsung",
+        "model_number": "RR23H2H35HS/HL/2026",
+        "serial_number": null,
+        "manufacture_date": "2026",
+        "capacity": "215 liters"
       }
     },
     {
-      "id": "NP-013",
-      "filename": "nameplate_mitsubishi_minisplit.jpg",
+      "id": "REAL-NP-010",
+      "filename": "real_captures/20261126_235349.jpg",
       "type": "NAMEPLATE",
-      "description": "Mitsubishi mini-split indoor head, label on side",
-      "difficulty": "medium",
+      "description": "Nawab Parker product label with significant motion blur and dim light",
+      "difficulty": "hard",
       "ground_truth": {
-        "equipment_type": "Mini-Split",
-        "manufacturer": "Mitsubishi Electric",
-        "model_number": "MSZ-GL12NA",
-        "serial_number": "84W00142",
-        "manufacture_date": "2022",
-        "capacity": "12000 BTU"
+        "equipment_type": "Kurta Set",
+        "manufacturer": "Nawab Parker",
+        "model_number": "KS-20142",
+        "serial_number": "NP123173",
+        "manufacture_date": null,
+        "capacity": null
       }
     },
     {
-      "id": "NP-014",
-      "filename": "nameplate_bosch_tankless.jpg",
+      "id": "REAL-NP-011",
+      "filename": "real_captures/20261126_235438.jpg",
       "type": "NAMEPLATE",
-      "description": "Bosch tankless water heater, clean install, easy to read",
-      "difficulty": "easy",
+      "description": "Logitech M90 mouse label in dim lighting with red optical LED glare",
+      "difficulty": "hard",
       "ground_truth": {
-        "equipment_type": "Tankless Water Heater",
-        "manufacturer": "Bosch",
-        "model_number": "WH17",
-        "serial_number": "FD 0423 00175",
-        "manufacture_date": "2023",
-        "capacity": "4.3 GPM"
+        "equipment_type": "Mouse",
+        "manufacturer": "Logitech",
+        "model_number": "M-U0026",
+        "serial_number": "2435APCH9K68",
+        "manufacture_date": null,
+        "capacity": null
       }
     },
     {
-      "id": "NP-015",
-      "filename": "nameplate_daikin_ac.jpg",
+      "id": "REAL-NP-012",
+      "filename": "real_captures/20261126_235550.jpg",
       "type": "NAMEPLATE",
-      "description": "Daikin AC, label sun-bleached and partially illegible",
+      "description": "Ant Esports Scorpion MK20 bottom label in dark under-exposed shadow",
       "difficulty": "hard",
       "ground_truth": {
-        "equipment_type": "AC Condenser",
-        "manufacturer": "Daikin",
-        "model_number": "DX16SA0363A",
-        "serial_number": "1803E05432",
-        "manufacture_date": "2018",
-        "capacity": "3 TON"
+        "equipment_type": "Mechanical Backlit Gaming Keyboard",
+        "manufacturer": "Ant Esports",
+        "model_number": "SCORPION MK20",
+        "serial_number": "AESCMK20RSW0626",
+        "manufacture_date": "2026",
+        "capacity": null
       }
     },
     {
-      "id": "DMG-001",
-      "filename": "damage_water_drywall_kitchen.jpg",
-      "type": "DAMAGE",
-      "description": "Water staining on kitchen drywall, lower 2 feet, clear photo",
-      "difficulty": "easy",
-      "metadata": { "room": "kitchen", "surface": "north wall" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "medium",
-        "affected_materials": ["drywall", "baseboard", "paint"],
-        "expected_line_items": ["REMOVE_REPLACE_DRYWALL", "REMOVE_REPLACE_BASEBOARD", "PAINT_PRIME_WALLS"]
-      }
-    },
-    {
-      "id": "DMG-002",
-      "filename": "damage_mold_basement_wall.jpg",
-      "type": "DAMAGE",
-      "description": "Black mold growth on basement concrete and drywall",
-      "difficulty": "easy",
-      "metadata": { "room": "basement", "surface": "east wall" },
-      "ground_truth": {
-        "damage_type": "mold",
-        "severity": "high",
-        "affected_materials": ["drywall", "insulation"],
-        "expected_line_items": ["MOLD_REMEDIATION", "REMOVE_REPLACE_DRYWALL", "REMOVE_REPLACE_INSULATION", "ANTIMICROBIAL_TREATMENT"]
-      }
-    },
-    {
-      "id": "DMG-003",
-      "filename": "damage_flooring_buckled_laundry.jpg",
-      "type": "DAMAGE",
-      "description": "Buckled vinyl flooring in laundry room from washer overflow",
-      "difficulty": "easy",
-      "metadata": { "room": "laundry room", "surface": "floor" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "high",
-        "affected_materials": ["vinyl flooring", "subfloor"],
-        "expected_line_items": ["REMOVE_REPLACE_FLOORING", "WATER_EXTRACTION", "STRUCTURAL_DRY_OUT"]
-      }
-    },
-    {
-      "id": "DMG-004",
-      "filename": "damage_ceiling_stain_bathroom.jpg",
-      "type": "DAMAGE",
-      "description": "Brown water stain on bathroom ceiling, circular pattern",
-      "difficulty": "medium",
-      "metadata": { "room": "bathroom", "surface": "ceiling" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "medium",
-        "affected_materials": ["ceiling drywall", "paint"],
-        "expected_line_items": ["CEILING_REPAIR", "PAINT_PRIME_WALLS", "PLUMBING_REPAIR"]
-      }
-    },
-    {
-      "id": "DMG-005",
-      "filename": "damage_carpet_saturated_hallway.jpg",
-      "type": "DAMAGE",
-      "description": "Saturated carpet in hallway, water migration from adjacent room",
-      "difficulty": "medium",
-      "metadata": { "room": "hallway", "surface": "floor" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "medium",
-        "affected_materials": ["carpet", "carpet pad"],
-        "expected_line_items": ["WATER_EXTRACTION", "REMOVE_REPLACE_FLOORING", "STRUCTURAL_DRY_OUT"]
-      }
-    },
-    {
-      "id": "DMG-006",
-      "filename": "damage_baseboard_warped_bedroom.jpg",
-      "type": "DAMAGE",
-      "description": "Warped and swollen baseboard along bedroom wall",
-      "difficulty": "medium",
-      "metadata": { "room": "bedroom", "surface": "south wall" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "low",
-        "affected_materials": ["baseboard"],
-        "expected_line_items": ["REMOVE_REPLACE_BASEBOARD"]
-      }
-    },
-    {
-      "id": "DMG-007",
-      "filename": "damage_pipe_burst_crawlspace.jpg",
-      "type": "DAMAGE",
-      "description": "Burst copper pipe in crawl space, active drip, dim lighting",
+      "id": "REAL-NP-013",
+      "filename": "real_captures/20261126_235611.jpg",
+      "type": "NAMEPLATE",
+      "description": "Dell WK118 Wireless Keyboard label in dim uneven shadow",
       "difficulty": "hard",
-      "metadata": { "room": "crawl space", "surface": null },
       "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "critical",
-        "affected_materials": ["plumbing", "insulation", "subfloor"],
-        "expected_line_items": ["PLUMBING_REPAIR", "WATER_EXTRACTION", "REMOVE_REPLACE_INSULATION"]
+        "equipment_type": "Wireless Keyboard",
+        "manufacturer": "Dell",
+        "model_number": "WK118",
+        "serial_number": "CN-047TV0-LO300-018-K0WK-A00",
+        "manufacture_date": "Jan.2020",
+        "capacity": null
       }
     },
     {
-      "id": "DMG-008",
-      "filename": "damage_mold_shower_caulk.jpg",
+      "id": "REAL-DMG-001",
+      "filename": "real_captures/20261126_235705.jpg",
       "type": "DAMAGE",
-      "description": "Mold growth along shower/tub caulk line and surrounding tile grout",
-      "difficulty": "easy",
-      "metadata": { "room": "bathroom", "surface": "shower wall" },
-      "ground_truth": {
-        "damage_type": "mold",
-        "severity": "low",
-        "affected_materials": ["caulk", "grout"],
-        "expected_line_items": ["ANTIMICROBIAL_TREATMENT"]
-      }
-    },
-    {
-      "id": "DMG-009",
-      "filename": "damage_drywall_multiple_rooms.jpg",
-      "type": "DAMAGE",
-      "description": "Wide-angle shot showing water damage across living/dining room wall, hard to assess area",
-      "difficulty": "hard",
-      "metadata": { "room": "living room", "surface": "west wall" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "high",
-        "affected_materials": ["drywall", "baseboard", "paint", "carpet"],
-        "expected_line_items": ["REMOVE_REPLACE_DRYWALL", "REMOVE_REPLACE_BASEBOARD", "PAINT_PRIME_WALLS", "CONTENT_MANIPULATION"]
-      }
-    },
-    {
-      "id": "DMG-010",
-      "filename": "damage_subfloor_exposed.jpg",
-      "type": "DAMAGE",
-      "description": "Exposed subfloor after flooring removal, visible water staining and soft spots",
-      "difficulty": "medium",
-      "metadata": { "room": "kitchen", "surface": "floor" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "high",
-        "affected_materials": ["subfloor", "flooring"],
-        "expected_line_items": ["REMOVE_REPLACE_FLOORING", "STRUCTURAL_DRY_OUT", "DEHUMIDIFIER_RENTAL", "AIR_MOVER_RENTAL"]
-      }
-    },
-    {
-      "id": "DMG-011",
-      "filename": "damage_appliance_washer_leak.jpg",
-      "type": "DAMAGE",
-      "description": "Washing machine with visible water pooling at base, supply hose connection",
-      "difficulty": "medium",
-      "metadata": { "room": "laundry room", "surface": null },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "high",
-        "affected_materials": ["appliance", "flooring"],
-        "expected_line_items": ["APPLIANCE_REPLACEMENT", "WATER_EXTRACTION", "REMOVE_REPLACE_FLOORING"]
-      }
-    },
-    {
-      "id": "DMG-012",
-      "filename": "damage_insulation_wet_attic.jpg",
-      "type": "DAMAGE",
-      "description": "Wet insulation in attic from roof leak, dim with flashlight",
-      "difficulty": "hard",
-      "metadata": { "room": "attic", "surface": "ceiling cavity" },
-      "ground_truth": {
-        "damage_type": "water_damage",
-        "severity": "medium",
-        "affected_materials": ["insulation", "drywall"],
-        "expected_line_items": ["REMOVE_REPLACE_INSULATION", "CEILING_REPAIR"]
-      }
-    },
-    {
-      "id": "DMG-013",
-      "filename": "damage_minor_wall_stain.jpg",
-      "type": "DAMAGE",
-      "description": "Very small water stain on wall, old and dried, cosmetic only",
+      "description": "Painted interior wall near curtain bracket showing paint blistering and flaking",
       "difficulty": "medium",
       "metadata": { "room": "bedroom", "surface": "wall" },
       "ground_truth": {
         "damage_type": "water_damage",
+        "severity": "low",
+        "affected_materials": ["paint", "drywall"],
+        "expected_line_items": ["PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-002",
+      "filename": "real_captures/20261127_000527.jpg",
+      "type": "DAMAGE",
+      "description": "Wall corner with vertical dark staining and scuff marks near doorway trim",
+      "difficulty": "medium",
+      "metadata": { "room": "hallway", "surface": "wall" },
+      "ground_truth": {
+        "damage_type": "water_damage",
+        "severity": "low",
+        "affected_materials": ["paint", "drywall"],
+        "expected_line_items": ["PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-003",
+      "filename": "real_captures/20261127_000538.jpg",
+      "type": "DAMAGE",
+      "description": "Wall corner showing dark speckled dampness and mold-like discoloration",
+      "difficulty": "easy",
+      "metadata": { "room": "utility room", "surface": "wall corner" },
+      "ground_truth": {
+        "damage_type": "mold",
+        "severity": "medium",
+        "affected_materials": ["drywall", "paint"],
+        "expected_line_items": ["MOLD_REMEDIATION", "ANTIMICROBIAL_TREATMENT", "PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-004",
+      "filename": "real_captures/20261127_000609.jpg",
+      "type": "DAMAGE",
+      "description": "Subtle low-contrast circular blistered patch on white painted wall",
+      "difficulty": "hard",
+      "metadata": { "room": "bedroom", "surface": "wall" },
+      "ground_truth": {
+        "damage_type": "water_damage",
+        "severity": "low",
+        "affected_materials": ["paint", "drywall"],
+        "expected_line_items": ["PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-005",
+      "filename": "real_captures/20261127_000652.jpg",
+      "type": "DAMAGE",
+      "description": "Wall beneath window sill showing peeling paint streaks and water staining",
+      "difficulty": "medium",
+      "metadata": { "room": "living room", "surface": "wall below window" },
+      "ground_truth": {
+        "damage_type": "water_damage",
+        "severity": "medium",
+        "affected_materials": ["drywall", "paint"],
+        "expected_line_items": ["REMOVE_REPLACE_DRYWALL", "PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-006",
+      "filename": "real_captures/20261127_000717.jpg",
+      "type": "DAMAGE",
+      "description": "Ceiling drywall with open circular hole from fixture/pipe penetration",
+      "difficulty": "easy",
+      "metadata": { "room": "hallway", "surface": "ceiling" },
+      "ground_truth": {
+        "damage_type": "structural",
+        "severity": "medium",
+        "affected_materials": ["ceiling drywall", "paint"],
+        "expected_line_items": ["CEILING_REPAIR", "PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-007",
+      "filename": "real_captures/20261127_000726.jpg",
+      "type": "DAMAGE",
+      "description": "Ceiling with exposed circular hole and faint secondary damp spot",
+      "difficulty": "medium",
+      "metadata": { "room": "hallway", "surface": "ceiling" },
+      "ground_truth": {
+        "damage_type": "water_damage",
+        "severity": "medium",
+        "affected_materials": ["ceiling drywall", "paint"],
+        "expected_line_items": ["CEILING_REPAIR", "PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-008",
+      "filename": "real_captures/20261127_000745.jpg",
+      "type": "DAMAGE",
+      "description": "Upper wall with dark scuffs near shelf bracket and covered electrical box",
+      "difficulty": "medium",
+      "metadata": { "room": "bedroom", "surface": "upper wall" },
+      "ground_truth": {
+        "damage_type": "structural",
+        "severity": "low",
+        "affected_materials": ["paint", "drywall"],
+        "expected_line_items": ["PAINT_PRIME_WALLS"]
+      }
+    },
+    {
+      "id": "REAL-DMG-009",
+      "filename": "real_captures/20261127_001046.jpg",
+      "type": "DAMAGE",
+      "description": "Under-sink plumbing enclosure showing damp staining and dark discoloration on wall",
+      "difficulty": "hard",
+      "metadata": { "room": "kitchen", "surface": "under sink cabinet" },
+      "ground_truth": {
+        "damage_type": "mold",
+        "severity": "medium",
+        "affected_materials": ["drywall", "plumbing"],
+        "expected_line_items": ["PLUMBING_REPAIR", "ANTIMICROBIAL_TREATMENT", "MOLD_REMEDIATION"]
+      }
+    },
+    {
+      "id": "REAL-DMG-010",
+      "filename": "real_captures/20261127_001111.jpg",
+      "type": "DAMAGE",
+      "description": "Painted wall above light switch plate showing surface marks and hairline wear",
+      "difficulty": "medium",
+      "metadata": { "room": "bedroom", "surface": "wall" },
+      "ground_truth": {
+        "damage_type": "structural",
         "severity": "low",
         "affected_materials": ["paint"],
         "expected_line_items": ["PAINT_PRIME_WALLS"]
       }
     },
     {
-      "id": "DMG-014",
-      "filename": "damage_toilet_overflow.jpg",
+      "id": "REAL-DMG-011",
+      "filename": "real_captures/20261127_002305.jpg",
       "type": "DAMAGE",
-      "description": "Toilet overflow damage, water on tile floor seeping under baseboard",
-      "difficulty": "medium",
-      "metadata": { "room": "bathroom", "surface": "floor" },
+      "description": "Under-sink drain assembly in dim lighting showing stained cabinet back wall",
+      "difficulty": "hard",
+      "metadata": { "room": "kitchen", "surface": "under sink" },
       "ground_truth": {
-        "damage_type": "water_damage",
+        "damage_type": "mold",
         "severity": "medium",
-        "affected_materials": ["baseboard", "drywall"],
-        "expected_line_items": ["WATER_EXTRACTION", "REMOVE_REPLACE_BASEBOARD", "ANTIMICROBIAL_TREATMENT"]
+        "affected_materials": ["plumbing", "drywall"],
+        "expected_line_items": ["PLUMBING_REPAIR", "ANTIMICROBIAL_TREATMENT"]
       }
     },
     {
-      "id": "DMG-015",
-      "filename": "damage_hvac_condensate_leak.jpg",
+      "id": "REAL-DMG-012",
+      "filename": "real_captures/20261127_002334.jpg",
       "type": "DAMAGE",
-      "description": "HVAC condensate drain overflow staining ceiling below unit",
-      "difficulty": "medium",
+      "description": "Ceiling opening photographed in dim low-light hallway conditions",
+      "difficulty": "hard",
       "metadata": { "room": "hallway", "surface": "ceiling" },
       "ground_truth": {
-        "damage_type": "water_damage",
+        "damage_type": "structural",
         "severity": "medium",
         "affected_materials": ["ceiling drywall"],
-        "expected_line_items": ["CEILING_REPAIR", "PAINT_PRIME_WALLS"]
+        "expected_line_items": ["CEILING_REPAIR"]
       }
     },
     {
-      "id": "NOTE-001",
-      "filename": "note_supply_line_connection.jpg",
-      "type": "NOTE",
-      "description": "Photo of corroded supply line fitting",
-      "metadata": { "spoken_text": "note: homeowner says leak started Tuesday, found water pooling near dishwasher" },
+      "id": "REAL-DMG-013",
+      "filename": "real_captures/20261127_002418.jpg",
+      "type": "DAMAGE",
+      "description": "Diagonal crack or gouge on shadowed drywall surface",
+      "difficulty": "medium",
+      "metadata": { "room": "bedroom", "surface": "wall" },
       "ground_truth": {
-        "category": "homeowner_statement",
-        "key_facts": ["leak started Tuesday", "water pooling near dishwasher"]
+        "damage_type": "structural",
+        "severity": "low",
+        "affected_materials": ["drywall", "paint"],
+        "expected_line_items": ["PAINT_PRIME_WALLS"]
       }
     },
     {
-      "id": "NOTE-002",
-      "filename": "note_moisture_reading.jpg",
+      "id": "REAL-NOTE-001",
+      "filename": "real_captures/20261127_000929.jpg",
       "type": "NOTE",
-      "description": "Photo of moisture meter showing reading",
-      "metadata": { "spoken_text": "note: moisture reading north wall 45 percent WME, east wall 18 percent" },
+      "description": "Ceramic marble-pattern floor tile inspection check",
+      "difficulty": "easy",
+      "metadata": { "spoken_text": "note: marble tile floor inspected, tiles and grout appear dry and intact with no buckling" },
+      "ground_truth": {
+        "category": "observation",
+        "key_facts": ["marble tile floor", "dry", "no buckling"]
+      }
+    },
+    {
+      "id": "REAL-NOTE-002",
+      "filename": "real_captures/20261127_001002.jpg",
+      "type": "NOTE",
+      "description": "Under-sink P-trap and flexible drain hose inspection",
+      "difficulty": "easy",
+      "metadata": { "spoken_text": "note: inspected sink trap and flexible drain pipe under counter, no active dripping observed" },
+      "ground_truth": {
+        "category": "observation",
+        "key_facts": ["sink trap inspected", "flexible drain pipe", "no active dripping"]
+      }
+    },
+    {
+      "id": "REAL-NOTE-003",
+      "filename": "real_captures/20261127_002243.jpg",
+      "type": "NOTE",
+      "description": "Baseline moisture check on upper painted wall",
+      "difficulty": "hard",
+      "metadata": { "spoken_text": "note: moisture meter reading on upper wall is 12 percent WME, within normal dry baseline" },
       "ground_truth": {
         "category": "measurement",
-        "key_facts": ["north wall 45% WME", "east wall 18% WME"]
+        "key_facts": ["12% WME", "upper wall", "normal dry baseline"]
       }
     },
     {
-      "id": "NOTE-003",
-      "filename": "note_safety_outlet.jpg",
+      "id": "REAL-NOTE-004",
+      "filename": "real_captures/20261127_002359.jpg",
       "type": "NOTE",
-      "description": "Photo of electrical outlet near water line",
-      "metadata": { "spoken_text": "note: safety concern, water within 6 inches of floor outlet, recommend de-energize circuit" },
+      "description": "Dim under-sink follow-up safety and clamp check",
+      "difficulty": "medium",
+      "metadata": { "spoken_text": "note: safety concern, check drain hose clamp tightness and clear cleaning bottles before servicing trap" },
       "ground_truth": {
         "category": "safety_concern",
-        "key_facts": ["water near electrical outlet", "recommend de-energize"]
-      }
-    },
-    {
-      "id": "NOTE-004",
-      "filename": "note_previous_repair.jpg",
-      "type": "NOTE",
-      "description": "Photo of previous patch repair on wall",
-      "metadata": { "spoken_text": "note: previous repair visible on south wall, looks like patch from about 6 months ago, may not have addressed source" },
-      "ground_truth": {
-        "category": "observation",
-        "key_facts": ["previous repair south wall", "approximately 6 months old", "source may not be addressed"]
-      }
-    },
-    {
-      "id": "NOTE-005",
-      "filename": "note_shutoff_valve.jpg",
-      "type": "NOTE",
-      "description": "Photo of water shutoff valve location",
-      "metadata": { "spoken_text": "note: main water shutoff is under kitchen sink, quarter turn ball valve, currently off" },
-      "ground_truth": {
-        "category": "observation",
-        "key_facts": ["main shutoff under kitchen sink", "quarter turn ball valve", "currently off"]
-      }
-    },
-    {
-      "id": "NOTE-006",
-      "filename": "note_insurance_info.jpg",
-      "type": "NOTE",
-      "description": "Photo of insurance paperwork on counter",
-      "metadata": { "spoken_text": "note: homeowner has State Farm policy, claim already filed, adjuster visit scheduled for Thursday" },
-      "ground_truth": {
-        "category": "homeowner_statement",
-        "key_facts": ["State Farm policy", "claim filed", "adjuster Thursday"]
-      }
-    },
-    {
-      "id": "NOTE-007",
-      "filename": "note_dehumidifier_placed.jpg",
-      "type": "NOTE",
-      "description": "Photo of dehumidifier placement in room",
-      "metadata": { "spoken_text": "note: placed two dehumidifiers, one in kitchen one in hallway, set to continuous drain mode" },
-      "ground_truth": {
-        "category": "observation",
-        "key_facts": ["two dehumidifiers placed", "kitchen and hallway", "continuous drain mode"]
-      }
-    },
-    {
-      "id": "NOTE-008",
-      "filename": "note_mold_smell.jpg",
-      "type": "NOTE",
-      "description": "Photo of wall area with no visible mold",
-      "metadata": { "spoken_text": "note: strong musty odor behind this wall, no visible mold but suspect growth behind drywall, recommend exploratory cut" },
-      "ground_truth": {
-        "category": "observation",
-        "key_facts": ["musty odor", "no visible mold", "suspect behind drywall", "recommend exploratory cut"]
-      }
-    },
-    {
-      "id": "NOTE-009",
-      "filename": "note_tenant_access.jpg",
-      "type": "NOTE",
-      "description": "Photo of rental unit entrance",
-      "metadata": { "spoken_text": "note: tenant works from home, available for access Monday through Friday 8am to 5pm, needs 24 hour notice" },
-      "ground_truth": {
-        "category": "homeowner_statement",
-        "key_facts": ["tenant works from home", "available M-F 8am-5pm", "24 hour notice required"]
-      }
-    },
-    {
-      "id": "NOTE-010",
-      "filename": "note_asbestos_concern.jpg",
-      "type": "NOTE",
-      "description": "Photo of old flooring tiles",
-      "metadata": { "spoken_text": "note: safety concern, floor tiles appear to be 9 by 9 inch which may contain asbestos, do not disturb, recommend testing before removal" },
-      "ground_truth": {
-        "category": "safety_concern",
-        "key_facts": ["9x9 floor tiles", "possible asbestos", "do not disturb", "recommend testing"]
+        "key_facts": ["check drain hose clamp", "clear cleaning bottles"]
       }
     }
   ]

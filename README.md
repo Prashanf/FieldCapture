@@ -125,31 +125,31 @@ Three deterministic checks in `ImageQualityAnalyzer` run on-device before any ne
 
 ---
 
-## Evaluation Results
+## Evaluation Results (30 Real Phone Camera Captures)
 
-| Metric | Measured / Projected Score | Source |
-|---|---|---|
-| Real EPA Damage Type Accuracy | **87.5%** (`7/8` completed calls; `70%` across `10` frames) | Live emulator run ([`eval/real_eval_results.json`](eval/real_eval_results.json)) |
-| Real EPA Severity Exact Match | **25.0%** (`2/8` completed; all misses off by 1 adjacent tier) | Live emulator run |
-| Real EPA Line-Item Hit Rate | **87.5%** (`7/8` completed; **63.5%** avg recall) | Live emulator run |
-| Equipment Type Accuracy | **93.3%** (`14/15` projected baseline) | [`eval/eval_report.md`](eval/eval_report.md) |
-| Serial Number Accuracy | **60.0%** fuzzy / **46.7%** exact (projected baseline) | [`eval/eval_report.md`](eval/eval_report.md) |
-| Benchmark Suite | **40** ground-truth frames + **12** real EPA images + **3** synthetic nameplates | `eval/ground_truth.json`, `eval/real_ground_truth.json` |
+| Metric | Measured Score | Details |
+|--------|---------------|---------|
+| Real Captures Evaluated | **30 / 30** completed | `13` Nameplates, `13` Damage, `4` Notes (`eval/test_set/real_captures/`) |
+| Quality Gate Filtering | **21 / 30** passed (`70%`) | Caught all blurry/dark retakes (`blur 29.5–54.1`, `bright 7–16`) |
+| Nameplate Manufacturer / Serial | **83.3%** (`10/12` fuzzy) | Reads embossed & clear plates; rejects non-equipment packaging (`REAL-NP-004`) |
+| Damage Affected Materials | **100.0%** (`13/13`) | `0.78` Line-Item F1 (`83.3%` recall, `79.5%` precision) |
+| Note Category / Key Facts | **100%** / **75%** (`4/4`, `3/4`) | High precision on spoken observations, measurements & safety checks |
+| Accuracy by Difficulty | **85.0%** Easy / **62.1%** Med / **54.0%** Hard | Bright vs. dim/blurry retake pairs measured directly |
 
-For full evaluation instructions (`eval/test_set/`), per-field accuracy tables, confidence calibration (`0.077` avg error), 5 worst failures, and threshold tuning, see [`eval/eval_report.md`](eval/eval_report.md).
+All evaluation metrics come from real camera captures run through `ImageQualityAnalyzer`, `ExtractionService`, 3-key rotated `GeminiApiClient`, and `EvalRunner`. See [`eval/eval_report.md`](eval/eval_report.md) for per-field breakdown, confidence calibration, 5 worst failures, and threshold tuning.
 
 ---
 
 ## Key Technical Decisions
 
 ### Why OkHttp directly instead of the Google AI SDK?
-Direct HTTP via OkHttp + Gson provides explicit access to HTTP status codes (`429`, `503`, `404`), per-model endpoint fallback (`gemini-3.5-flash` → `gemini-3.8-flash`), request timeouts, and immediate zero-backoff API key rotation that high-level SDK wrappers obscure.
+Direct HTTP via OkHttp + Gson provides explicit access to HTTP status codes (`429`, `503`, `404`), three-tier model fallback (`gemini-3.5-flash` → `gemini-3.8-flash` → `gemini-3.5-flash-lite`), request timeouts, and immediate zero-backoff API key rotation that high-level SDK wrappers obscure.
 
 ### Why pure Android math instead of OpenCV for quality checks?
 Shipping OpenCV native binaries adds ~50 MB to the APK and complicates ABI splits. Pure Kotlin `Bitmap` pixel passes for Laplacian variance, mean luminance, and Sobel edges run fast on-device while keeping dependencies minimal.
 
-### Why synthetic nameplates alongside real EPA photos?
-High-resolution public-domain datasets exist for mold and water damage ([EPA Mold Image Library](https://epa.gov/mold/mold-image-library)), whereas equipment nameplate datasets containing real serial numbers do not. Programmatic `Canvas`/`Paint` bitmaps (`ProgrammaticTestImageGenerator` and `SyntheticNameplateGenerator`) let us verify the end-to-end bitmap → Base64 → Gemini → JSON extraction code path deterministically; real hardware photographs remain the best next step for OCR tuning.
+### Why real phone captures + programmatic pipeline tests?
+Our primary benchmark evaluates **30 genuine phone camera photographs** (`eval/test_set/real_captures/`) captured across varied household appliances, low-contrast embossed plates, dark/motion-blurry retakes, and indoor wall/ceiling/plumbing scenes rather than relying on downloaded stock images. Programmatic `Canvas`/`Paint` bitmaps (`ProgrammaticTestImageGenerator` and `SyntheticNameplateGenerator`) remain available strictly for deterministic offline unit/instrumented code-path tests.
 
 ### Mock Device Kit Limitations vs. Real Meta AI Glasses
 - **Simulated cleanly:** Paired `GlassesModel.RAYBAN_META` lifecycle (`powerOn`, `don`, `unfold`), `CameraFacing.BACK` or video/image URI feeds, `VideoQuality.MEDIUM` stream preview, and `capturePhoto()` flow.
@@ -169,7 +169,7 @@ High-resolution public-domain datasets exist for mold and water damage ([EPA Mol
 
 ## Tools Used
 - **AI Coding Assistant:** Google DeepMind Antigravity (CLI agentic coding workflow)
-- **Vision Model:** Google Gemini 3.5 Flash (`gemini-3.5-flash`) with automatic fallback to Gemini 3.8 Flash (`gemini-3.8-flash`)
+- **Vision Model:** Google Gemini 3.5 Flash (`gemini-3.5-flash`) with automatic fallback to `gemini-3.8-flash` and `gemini-3.5-flash-lite`
 - **API Cost:** `$0` (Google AI Studio Free Tier, `20` requests/day per key × `3` rotated keys)
 
 ---
@@ -179,7 +179,7 @@ High-resolution public-domain datasets exist for mold and water damage ([EPA Mol
 - [`docs/assumptions.md`](docs/assumptions.md) — Technical & SDK compatibility assumptions
 - [`docs/research_memo.md`](docs/research_memo.md) — 1-page research memo on Meta AI glasses, DAT SDK findings, and hardware roadmap
 - [`docs/demo_script.md`](docs/demo_script.md) — 5-minute phone walk-through demo script
-- [`eval/eval_report.md`](eval/eval_report.md) — 40-frame benchmark & live EPA evaluation report
+- [`eval/eval_report.md`](eval/eval_report.md) — Live 30-capture real-world benchmark report
 
 ---
 

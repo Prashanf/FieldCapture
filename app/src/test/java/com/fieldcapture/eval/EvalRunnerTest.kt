@@ -130,7 +130,7 @@ class EvalRunnerTest {
     }
 
     @Test
-    fun `runEvaluation processes all 40 ground truth entries with pipeline runner`() = runTest {
+    fun `runEvaluation processes all 30 ground truth entries with pipeline runner`() = runTest {
         val runner = EvalRunner(groundTruthPath = "eval/ground_truth.json") { _, captureType, metadata ->
             when (captureType) {
                 CaptureType.NAMEPLATE -> Result.success(
@@ -201,10 +201,10 @@ class EvalRunnerTest {
             }
         }
 
-        assertEquals(40, summary.totalFrames)
-        assertEquals(40, summary.successfulExtractions)
+        assertEquals(30, summary.totalFrames)
+        assertEquals(30, summary.successfulExtractions)
         assertEquals(0, summary.failedExtractions)
-        assertEquals(15, summary.lineItemResults.size)
+        assertEquals(13, summary.lineItemResults.size)
         assertEquals(5, summary.worstFailures.size)
         assertEquals(6, summary.confidenceCalibration.size)
         assertTrue(summary.accuracyByDifficulty.containsKey("easy"))

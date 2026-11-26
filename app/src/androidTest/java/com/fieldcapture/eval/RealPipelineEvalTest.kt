@@ -58,8 +58,13 @@ class RealPipelineEvalTest {
     fun runDamageAndNoteImageEvaluation() = runBlocking {
         val results = mutableListOf<EvalResult>()
         val assetManager = InstrumentationRegistry.getInstrumentation().context.assets
+        val assetFiles = assetManager.list("eval_images")?.toSet().orEmpty()
+        if ("ground_truth.json" !in assetFiles) {
+            println("Skipping asset-based EPA evaluation (real phone captures are in eval/test_set/real_captures/)")
+            return@runBlocking
+        }
 
-        val groundTruthJson = assetManager.open("eval_images/real_ground_truth.json")
+        val groundTruthJson = assetManager.open("eval_images/ground_truth.json")
             .bufferedReader().readText()
         val groundTruth = gson.fromJson(groundTruthJson, Map::class.java)
         @Suppress("UNCHECKED_CAST")
@@ -67,6 +72,7 @@ class RealPipelineEvalTest {
 
         for (frame in testFrames) {
             val filename = frame["filename"] as String
+            if (filename !in assetFiles) continue
             val testId = frame["id"] as String
             val typeStr = frame["type"] as String
             @Suppress("UNCHECKED_CAST")
