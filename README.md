@@ -49,9 +49,11 @@ FieldCapture is an Android (Kotlin + Jetpack Compose) application built on Meta'
 4. **Launch & grant permissions:** Allow **Camera**, **Microphone**, and **Bluetooth / Nearby Devices** when prompted.
 
 5. **Run an inspection session:**
+   - *(Optional if you skipped `local.properties`)* Tap the **⚙️ Settings** gear icon in the top-right bar (or **Enter Key** on the no-key banner), paste your Gemini key, tap **Save**, and verify with **Test Key** (stored encrypted via AES-256-GCM).
    - Tap **Start Job** → enter Technician Name / optional Address → **Start**.
    - Tap **Start Session** to activate the Mock Device Kit camera feed preview.
-   - Tap **Start Listening** and speak voice commands hands-free.
+   - Tap **Start Listening** and speak voice commands hands-free (`"capture nameplate"`, `"capture damage ..."`, `"note ..."`).
+   - When done, tap **Stop Listen** → **Stop** → **Complete Job** (or **Review (N)** → **Generate Job Record**) → **Export JSON** / **Share JSON**.
 
 ### Voice Commands
 - **`"capture nameplate"`** — captures equipment plate and extracts manufacturer, model number, serial number, manufacture date, and capacity.
@@ -60,10 +62,10 @@ FieldCapture is an Android (Kotlin + Jetpack Compose) application built on Meta'
 
 ### Running Tests
 ```bash
-# Unit tests (67 tests across 8 suites via Gradle)
+# Unit tests (73 tests across 9 suites via Gradle)
 gradle testDebugUnitTest
 
-# Instrumented tests (requires device/emulator + API key in local.properties)
+# Instrumented tests (requires device/emulator + API key configured)
 gradle connectedDebugAndroidTest
 ```
 
@@ -191,4 +193,4 @@ Our primary benchmark evaluates **30 genuine phone camera photographs** (`eval/t
 ---
 
 ## License
-All Rights Reserved. See project repository terms.
+All Rights Reserved. See [`LICENSE`](LICENSE).

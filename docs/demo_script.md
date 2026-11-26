@@ -3,7 +3,7 @@
 > **Recorded Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/13XdZDxWriiBYlHyolZaSANX7PsDozu6r/view?usp=sharing)
 
 ## Pre-Recording Checklist
-- Android phone (`API 29+`) with latest **FieldCapture** debug APK installed (`GEMINI_API_KEY_1..3` compiled from `local.properties`).
+- Android phone (`API 29+`) with latest **FieldCapture** debug APK installed (`gemini-3.5-flash-lite` primary, plus **⚙️ Settings** `EncryptedSharedPreferences` AES-256-GCM key storage or `local.properties` `GEMINI_API_KEY_1..3` fallback).
 - Test props within walking distance:
   1. An appliance or utility label with readable model/serial numbers (water heater, furnace, fridge, dishwasher, or printed nameplate).
   2. A wall, baseboard, ceiling corner, or floor area to simulate water/mold damage.
