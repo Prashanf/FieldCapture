@@ -61,9 +61,9 @@ class GeminiApiClient(
         private val RETRY_DELAYS = longArrayOf(1000L, 2000L, 4000L)
 
         val DEFAULT_MODEL_ENDPOINTS = listOf(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent"
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
         )
 
         fun parseKeys(raw: String): List<String> =

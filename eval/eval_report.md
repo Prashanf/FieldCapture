@@ -161,13 +161,13 @@ Testing both the Android emulator and the 30-frame real-capture suite exposed a 
 
 | Model Endpoint | Healthy Latency | Stalled / Peak-Load Behavior | Tradeoff |
 |---|---|---|---|
-| `gemini-3.5-flash` *(primary)* | `~12.3s` / image | Frequent `503`s & `60s` read timeouts (`2–3+ min` w/ retries) | Highest detail, slowest & unstable under load |
-| `gemini-3.8-flash` *(fallback 1)* | `~10–15s` / image | Shares peak-load `503`s & separate `20` RPD free-tier bucket | Secondary fallback before lite |
-| `gemini-3.5-flash-lite` *(fallback 2)* | **`~2–3s` / image** | Zero `503`s/timeouts observed across 23 frames (`1m 53s` batch) | Much faster & more reliable; minor OCR sensitivity on dim glare |
+| `gemini-3.5-flash-lite` *(primary)* | **`~2–3s` / image** | Zero `503`s/timeouts observed across 23 frames (`1m 53s` batch) | Much faster & more reliable; minor OCR sensitivity on dim glare |
+| `gemini-3.5-flash` *(fallback 1)* | `~12.3s` / image | Frequent `503`s & `60s` read timeouts (`2–3+ min` w/ retries) | Highest detail, slowest & unstable under load |
+| `gemini-3.8-flash` *(fallback 2)* | `~10–15s` / image | Shares peak-load `503`s & separate `20` RPD free-tier bucket | Secondary fallback |
 
 ### Current Mitigation & Recommended Client Tuning
-- **Implemented Resilience:** Supports `N` API keys via `local.properties` (`GEMINI_API_KEY_1..N`) and `BuildConfig.GEMINI_API_KEYS`, rotating immediately with **zero backoff delay** on HTTP `429` (`AllKeysExhaustedException` only after all keys/models exhaust). `503`/I/O errors retry on the same key (`1s`, `2s`, `4s` backoff), and failed/timed-out captures fall back to `gemini-3.8-flash` → `gemini-3.5-flash-lite` or queue asynchronously in Room for `ExtractionQueueWorker` sync.
-- **Recommended Next Fix:** Lower OkHttp `readTimeout` from `60s` to `20–25s` and cap `503` retries at `1` per model so stalled primary calls fail over to `gemini-3.5-flash-lite` in `<25s` instead of blocking 2–3 minutes and burning retry quota.
+- **Implemented Resilience:** Supports `N` API keys via `local.properties` (`GEMINI_API_KEY_1..N`) and `BuildConfig.GEMINI_API_KEYS`, prioritizing `gemini-3.5-flash-lite` first for `~2–3s` latency with automatic fallback to `gemini-3.5-flash` → `gemini-3.8-flash`, and rotating immediately with **zero backoff delay** on HTTP `429` (`AllKeysExhaustedException` only after all keys/models exhaust). `503`/I/O errors retry on the same key (`1s`, `2s`, `4s` backoff), and failed/timed-out captures queue asynchronously in Room for `ExtractionQueueWorker` sync.
+- **Recommended Next Fix:** Lower OkHttp `readTimeout` from `60s` to `20–25s` and cap `503` retries at `1` per model so stalled fallback calls cycle in `<25s` instead of blocking 2–3 minutes.
 
 ### Future Architecture: On-Device VLM Fallback
 - **Recommended Model:** Google **Gemma 3 4B (INT4 quantized)** via MediaPipe LLM Inference API (~`2.5 GB`, `8–15s` per image on Snapdragon 8 Gen 2+) vs **Qwen2.5-VL 3B (INT4)** (`~1.8 GB`, lower OCR fidelity).

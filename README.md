@@ -116,9 +116,9 @@ Three deterministic checks in `ImageQualityAnalyzer` run on-device before any ne
 - **`FramingAnalyzer`:** Minimum Sobel edge density **`2.0`** to catch lens obstructions or blank wall frames.
 
 ### AI Extraction & API Resilience
-- **Direct OkHttp REST Client (`GeminiApiClient`):** Targets **`gemini-3.5-flash`** with automatic fallback to **`gemini-3.8-flash`** and **`gemini-3.5-flash-lite`**, requesting structured JSON with per-field confidence scores.
+- **Direct OkHttp REST Client (`GeminiApiClient`):** Targets **`gemini-3.5-flash-lite`** first (`~2–3s` fast response) with automatic fallback to **`gemini-3.5-flash`** and **`gemini-3.8-flash`**, requesting structured JSON with per-field confidence scores.
 - **Multi-Key Rotation:** Supports `N` API keys configured in `local.properties` (`GEMINI_API_KEY_1..N`). On HTTP `429 RESOURCE_EXHAUSTED`, `GeminiApiClient` rotates to the next key immediately with **zero backoff**, reserving exponential backoff (`1s`, `2s`, `4s`) for transient `503`/network errors. Throws `AllKeysExhaustedException` only after all keys and models are exhausted.
-- **Known API Latency & Reliability Issue:** Under healthy conditions, `gemini-3.5-flash` takes **`~12.3s`** per image, whereas peak-load **`503` spikes and `60s` read timeouts** can stall a single frame for **2–3+ minutes** across retries and burn multiple quota calls per capture (in contrast, `gemini-3.5-flash-lite` responds in **`~2–3s`** per image with zero observed timeouts across 23 frames). Extractions run asynchronously so techs are never blocked while walking, and any timed-out/failed capture queues automatically for WorkManager sync.
+- **Known API Latency & Reliability Issue:** Under healthy conditions, `gemini-3.5-flash` takes **`~12.3s`** per image, whereas peak-load **`503` spikes and `60s` read timeouts** can stall a single frame for **2–3+ minutes** across retries and burn multiple quota calls per capture (in contrast, `gemini-3.5-flash-lite` responds in **`~2–3s`** per image with zero observed timeouts across 23 frames, so it is configured as the primary endpoint). Extractions run asynchronously so techs are never blocked while walking, and any timed-out/failed capture queues automatically for WorkManager sync.
 - **Offline Queue (`Room` + `WorkManager`):** `ConnectivityObserver` monitors network availability while `ExtractionQueueWorker` (`@HiltWorker`) and `SyncManager` drain `PENDING` captures once connectivity returns.
 
 ### Line Item Mapping & Draft Pricing Disclaimer
@@ -144,7 +144,7 @@ All evaluation metrics come from real camera captures run through `ImageQualityA
 ## Key Technical Decisions
 
 ### Why OkHttp directly instead of the Google AI SDK?
-Direct HTTP via OkHttp + Gson provides explicit access to HTTP status codes (`429`, `503`, `404`), three-tier model fallback (`gemini-3.5-flash` → `gemini-3.8-flash` → `gemini-3.5-flash-lite`), request timeouts, and immediate zero-backoff API key rotation that high-level SDK wrappers obscure.
+Direct HTTP via OkHttp + Gson provides explicit access to HTTP status codes (`429`, `503`, `404`), three-tier model fallback (`gemini-3.5-flash-lite` → `gemini-3.5-flash` → `gemini-3.8-flash`), request timeouts, and immediate zero-backoff API key rotation that high-level SDK wrappers obscure.
 
 ### Why pure Android math instead of OpenCV for quality checks?
 Shipping OpenCV native binaries adds ~50 MB to the APK and complicates ABI splits. Pure Kotlin `Bitmap` pixel passes for Laplacian variance, mean luminance, and Sobel edges run fast on-device while keeping dependencies minimal.
@@ -170,7 +170,7 @@ Our primary benchmark evaluates **30 genuine phone camera photographs** (`eval/t
 
 ## Tools Used
 - **AI Coding Assistant:** Google DeepMind Antigravity (CLI agentic coding workflow)
-- **Vision Model:** Google Gemini 3.5 Flash (`gemini-3.5-flash`) with automatic fallback to `gemini-3.8-flash` and `gemini-3.5-flash-lite`
+- **Vision Model:** Google Gemini 3.5 Flash Lite (`gemini-3.5-flash-lite`, fast primary) with automatic fallback to `gemini-3.5-flash` and `gemini-3.8-flash`
 - **API Cost:** `$0` (Google AI Studio Free Tier, `20` requests/day per key × `3` rotated keys)
 
 ---
