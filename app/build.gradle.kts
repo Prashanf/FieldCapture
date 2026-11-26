@@ -28,8 +28,19 @@ android {
         if (localPropertiesFile.exists()) {
             localProperties.load(localPropertiesFile.inputStream())
         }
-        val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY", "")
-        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+
+        val apiKeys = buildList {
+            localProperties.getProperty("GEMINI_API_KEY")?.trim()?.takeIf { it.isNotBlank() }?.let { add(it) }
+            var i = 1
+            while (true) {
+                val indexedKey = localProperties.getProperty("GEMINI_API_KEY_$i")?.trim() ?: break
+                if (indexedKey.isNotBlank()) add(indexedKey)
+                i++
+            }
+        }.distinct()
+
+        buildConfigField("String", "GEMINI_API_KEYS", "\"${apiKeys.joinToString(",")}\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"${apiKeys.firstOrNull() ?: ""}\"")
     }
 
     buildTypes {

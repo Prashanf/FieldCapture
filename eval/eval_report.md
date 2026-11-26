@@ -190,3 +190,55 @@ Based on evaluation results, we adjusted thresholds from initial values:
 3. **Line-item recommendations are practically useful even when approximate (7/8 = 87.5% hit rate on completed frames, 63.5% avg recall):** On `REAL-DMG-008` (`big_pic78.jpg`), Gemini identified exterior brick/masonry and a downspout rather than acoustic ceiling tiles (whereas `big_pic77.jpg` in `REAL-DMG-004` depicted ceiling tiles), highlighting why visual verification of ground-truth captions against the underlying source files matters.
 4. **Quota amplification with dual-model retries:** Having 3 retries on `gemini-3.5-flash` plus 3 fallback retries on `gemini-3.8-flash` can consume up to 6 API calls per frame when the endpoint returns transient `503`s, exhausting the 20 requests/day Free Tier quota (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`) during batch evaluations.
 
+---
+
+## API Reliability & Fallback Architecture
+
+### Observed Issues (Free Tier)
+During evaluation, the Gemini free-tier API (`20` RPD/key/model) caused:
+- **429 `RESOURCE_EXHAUSTED`** after ~20 calls per key per model
+- **503 Server Unavailable** intermittently during peak hours
+- **`SocketTimeoutException`** on complex images (>60s inference)
+
+### Current Mitigation: Multi-Key Rotation
+Implemented automatic API key rotation in `GeminiApiClient`:
+- Supports `N` API keys configured via `local.properties` (`GEMINI_API_KEY_1..N`) and bundled via `BuildConfig.GEMINI_API_KEYS`
+- Automatically rotates to the next key on HTTP `429` errors with zero backoff delay
+- With 3 separate account keys, total free-tier capacity increases to `3 × 20 = 60` requests/day per model (`120` requests/day across `gemini-3.5-flash` + `gemini-3.8-flash`)
+- Keeps exponential backoff (`1s`, `2s`, `4s`) strictly for transient `503` server errors and network I/O timeouts
+- Raises `AllKeysExhaustedException` if all keys hit `429` across all configured models
+
+### Future Architecture: On-Device VLM Fallback
+
+For production deployment where network reliability is critical (field technicians in basements, crawlspaces, and rural areas), the recommended architecture adds an on-device vision-language model fallback:
+
+**Recommended Model: Google Gemma 3 4B (INT4 quantized)**
+- Runs via MediaPipe LLM Inference API on Android
+- ~2.5 GB model file, fits in RAM on devices with 6GB+
+- Inference: ~8–15 seconds per image on Snapdragon 8 Gen 2+
+- Accuracy tradeoff: ~15–20% lower than cloud Gemini on complex scenes, comparable on clear damage/nameplate photos
+
+**Alternative: Qwen2.5-VL 3B (INT4 quantized)**
+- Runs via `llama.cpp` or MLC-LLM on Android
+- ~1.8 GB model file
+- Faster inference (~5–10s) but lower accuracy on dense nameplate OCR tasks
+
+**Fallback Decision Logic:**
+```
+if (networkAvailable && !allKeysExhausted) {
+    -> Cloud Gemini (highest accuracy, multi-key rotation)
+} else if (deviceCapable && modelDownloaded) {
+    -> On-device VLM (degraded accuracy, works offline)
+} else {
+    -> Queue for later extraction (offline WorkManager queue, Phase 6)
+}
+```
+
+**Implementation Path:**
+1. Add MediaPipe LLM Inference dependency
+2. Download quantized Gemma 3 4B on first app launch (Wi-Fi only)
+3. Create `LocalExtractionService` implementing the same extraction contract as `ExtractionService`
+4. Add fallback routing in `ExtractionService`
+5. Flag locally-extracted results with calibrated lower confidence scores
+
+

@@ -1,5 +1,7 @@
 package com.fieldcapture.di
 
+import android.util.Log
+import com.fieldcapture.BuildConfig
 import com.fieldcapture.extraction.ExtractionService
 import com.fieldcapture.network.GeminiApiClient
 import dagger.Module
@@ -14,7 +16,13 @@ object ExtractionModule {
 
     @Provides
     @Singleton
-    fun provideGeminiApiClient(): GeminiApiClient = GeminiApiClient()
+    fun provideGeminiApiClient(): GeminiApiClient {
+        val keys = GeminiApiClient.parseKeys(
+            BuildConfig.GEMINI_API_KEYS.ifBlank { BuildConfig.GEMINI_API_KEY }
+        )
+        Log.i("ExtractionModule", "GeminiApiClient initialized with ${keys.size} API key(s)")
+        return GeminiApiClient(apiKeys = keys)
+    }
 
     @Provides
     @Singleton

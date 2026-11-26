@@ -15,43 +15,98 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Gemini Vision API client with automatic multi-key rotation on HTTP 429 rate limits,
+ * exponential backoff retries on transient 5xx/network errors, and primary/fallback models.
+ */
 @Singleton
-class GeminiApiClient @Inject constructor() {
+class GeminiApiClient(
+    apiKeys: List<String>,
+    private val modelEndpoints: List<String> = DEFAULT_MODEL_ENDPOINTS,
+    private val client: OkHttpClient = defaultOkHttpClient()
+) {
+    /**
+     * Default constructor loading configured keys from [BuildConfig.GEMINI_API_KEYS]
+     * (falling back to [BuildConfig.GEMINI_API_KEY]).
+     */
+    @Inject
+    constructor() : this(
+        apiKeys = parseKeys(
+            BuildConfig.GEMINI_API_KEYS.ifBlank { BuildConfig.GEMINI_API_KEY }
+        )
+    )
 
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    /**
+     * Backward-compatible constructor accepting a single key or comma-separated keys.
+     */
+    constructor(apiKey: String) : this(apiKeys = parseKeys(apiKey))
+
+    private val apiKeys: List<String> = apiKeys
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+        .distinct()
 
     private val gson = Gson()
-    private val modelEndpoints = listOf(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
-    )
+    private val currentKeyIndex = AtomicInteger(0)
+
+    class AllKeysExhaustedException(message: String) : IOException(message)
 
     companion object {
         private const val TAG = "GeminiApiClient"
         private const val MAX_RETRIES = 3
         private val RETRY_DELAYS = longArrayOf(1000L, 2000L, 4000L)
+
+        val DEFAULT_MODEL_ENDPOINTS = listOf(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
+        )
+
+        fun parseKeys(raw: String): List<String> =
+            raw.split(",")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .distinct()
+
+        fun defaultOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+    /** Number of distinct API keys configured for rotation. */
+    fun keyCount(): Int = apiKeys.size
+
+    /** Current active key index (wrapped modulo [keyCount]). */
+    fun currentKeyIndex(): Int = if (apiKeys.isEmpty()) 0 else currentKeyIndex.get() % apiKeys.size
+
+    private fun activeKey(): String = apiKeys[currentKeyIndex.get() % apiKeys.size]
+
+    private fun advanceKey(): Int {
+        val next = currentKeyIndex.incrementAndGet() % apiKeys.size
+        Log.w(TAG, "Rotating API key to index $next (of ${apiKeys.size})")
+        return next
     }
 
     /**
-     * Send an optional image + text prompt to Gemini 2.0 Flash and get JSON text response.
-     * Includes exponential backoff retry on HTTP 429, 5xx, and transient IO errors.
+     * Send an optional image + text prompt to Gemini Vision API and return raw JSON text.
+     *
+     * - On HTTP 429 with multiple keys: rotates immediately to the next key with zero backoff.
+     * - On HTTP 5xx or transient [IOException]: retries on the same key with exponential backoff.
+     * - On HTTP 404: falls back to the next model endpoint.
      */
     suspend fun analyzeImage(
         imageBytes: ByteArray? = null,
         mimeType: String = "image/jpeg",
         prompt: String
     ): Result<String> = withContext(Dispatchers.IO) {
-        val apiKey = BuildConfig.GEMINI_API_KEY
-        if (apiKey.isBlank()) {
+        if (apiKeys.isEmpty()) {
             return@withContext Result.failure(
-                IllegalStateException("Gemini API key not configured. Add GEMINI_API_KEY to local.properties")
+                IllegalStateException("Gemini API key not configured. Add GEMINI_API_KEY_1..N to local.properties")
             )
         }
 
@@ -88,10 +143,17 @@ class GeminiApiClient @Inject constructor() {
             .toRequestBody("application/json".toMediaType())
 
         var lastException: Exception? = null
+        var sawOnly429AcrossAllModels = true
 
         for (baseUrl in modelEndpoints) {
-            val url = "$baseUrl?key=$apiKey"
-            for (attempt in 0 until MAX_RETRIES) {
+            var retriesOnSameKey = 0
+            var rotationsOnModel = 0
+
+            while (retriesOnSameKey < MAX_RETRIES) {
+                val keyIdx = currentKeyIndex()
+                val apiKey = activeKey()
+                val url = "$baseUrl?key=$apiKey"
+
                 try {
                     val request = Request.Builder()
                         .url(url)
@@ -110,16 +172,33 @@ class GeminiApiClient @Inject constructor() {
                                 }
                             }
                             response.code == 429 -> {
-                                Log.w(TAG, "Rate limited (429) on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES")
+                                Log.w(TAG, "429 RESOURCE_EXHAUSTED on key[$keyIdx] ($baseUrl)")
                                 lastException = IOException("Rate limited: ${response.code}")
-                                if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
+                                if (apiKeys.size > 1 && rotationsOnModel < apiKeys.size - 1) {
+                                    rotationsOnModel++
+                                    advanceKey()
+                                    // Zero backoff latency when switching to a fresh key
+                                    continue
+                                } else if (apiKeys.size == 1 && retriesOnSameKey < MAX_RETRIES - 1) {
+                                    delay(RETRY_DELAYS[retriesOnSameKey])
+                                    retriesOnSameKey++
+                                } else {
+                                    if (apiKeys.size > 1) {
+                                        // Advance index past exhausted key before trying next model/request
+                                        advanceKey()
+                                    }
+                                    break
+                                }
                             }
                             response.code in 500..599 -> {
-                                Log.w(TAG, "Server error (${response.code}) on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES")
+                                sawOnly429AcrossAllModels = false
+                                Log.w(TAG, "Server error (${response.code}) on $baseUrl, attempt ${retriesOnSameKey + 1}/$MAX_RETRIES")
                                 lastException = IOException("Server error: ${response.code}")
-                                if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
+                                if (retriesOnSameKey < MAX_RETRIES - 1) delay(RETRY_DELAYS[retriesOnSameKey])
+                                retriesOnSameKey++
                             }
                             response.code == 404 -> {
+                                sawOnly429AcrossAllModels = false
                                 Log.w(TAG, "Model unavailable (404) at $baseUrl; trying fallback model")
                                 lastException = IOException("Model not found (404): $responseBody")
                                 break
@@ -132,11 +211,22 @@ class GeminiApiClient @Inject constructor() {
                         }
                     }
                 } catch (e: IOException) {
-                    Log.e(TAG, "Network error on $baseUrl, attempt ${attempt + 1}/$MAX_RETRIES", e)
+                    sawOnly429AcrossAllModels = false
+                    Log.e(TAG, "Network error on $baseUrl, attempt ${retriesOnSameKey + 1}/$MAX_RETRIES", e)
                     lastException = e
-                    if (attempt < MAX_RETRIES - 1) delay(RETRY_DELAYS[attempt])
+                    if (retriesOnSameKey < MAX_RETRIES - 1) delay(RETRY_DELAYS[retriesOnSameKey])
+                    retriesOnSameKey++
                 }
             }
+        }
+
+        if (sawOnly429AcrossAllModels && lastException?.message?.contains("429") == true) {
+            return@withContext Result.failure(
+                AllKeysExhaustedException(
+                    "All ${apiKeys.size} API key(s) hit rate limit (429) across all models. " +
+                        "Free tier allows 20 requests/day/key (${apiKeys.size * 20} requests/day total)."
+                )
+            )
         }
 
         Result.failure(lastException ?: IOException("Failed after $MAX_RETRIES attempts"))

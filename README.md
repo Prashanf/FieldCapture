@@ -20,12 +20,19 @@ Hands-free field capture Android application built with Kotlin, Jetpack Compose,
 <!-- TODO: Expand with final architecture diagram, tools used, known limitations, and future work -->
 1. Open `FieldCapture/` in Android Studio.
 2. Meta DAT SDK `1.0.1` resolves from Maven Central (`metaDatVersion=1.0.1` in `gradle.properties`); Developer Mode manifest metadata (`APPLICATION_ID="0"`, `CLIENT_TOKEN="AR|0|1"`) is pre-configured.
-3. Add your free Gemini API key (from [Google AI Studio](https://aistudio.google.com/apikey)) to `FieldCapture/local.properties` (gitignored):
+3. Add one or more Gemini API keys (from [Google AI Studio](https://aistudio.google.com/apikey)) to `FieldCapture/local.properties` (gitignored):
    ```properties
-   GEMINI_API_KEY=your_key_here
+   GEMINI_API_KEY_1=your_first_key_here
+   GEMINI_API_KEY_2=your_second_key_here
+   GEMINI_API_KEY_3=your_third_key_here
    ```
-   `app/build.gradle.kts` exposes this via `BuildConfig.GEMINI_API_KEY` for `gemini-3.5-flash` (with `gemini-3.8-flash` fallback) vision extraction.
+   `app/build.gradle.kts` collects `GEMINI_API_KEY` and `GEMINI_API_KEY_1..N` into `BuildConfig.GEMINI_API_KEYS` (and preserves `BuildConfig.GEMINI_API_KEY` for compatibility) for `gemini-3.5-flash` (with `gemini-3.8-flash` fallback) vision extraction.
 4. Sync Gradle and run on an Android emulator or device (Mock Device Kit mode enabled).
+
+### API Resilience Strategy
+
+- **Multi-Key Rotation:** `GeminiApiClient` supports multiple API keys with automatic rotation on rate-limit errors (HTTP `429`). Keys are configured in `local.properties` and rotated transparently with zero backoff delay — no request is dropped until all configured keys are exhausted (`AllKeysExhaustedException`), while transient `503`/network errors still retry with exponential backoff.
+- **Offline Fallback (Future):** Production roadmap includes on-device inference using Google Gemma 3 4B (quantized INT4) via MediaPipe LLM Inference API, enabling extraction in network-dead zones (basements, crawlspaces, rural properties). See [`eval/eval_report.md`](eval/eval_report.md) for the full fallback architecture design.
 
 ## Job Record Schema & Draft Pricing
 - **Schema Versioning:** Exported job records include `"schema_version": "1.0.0"` for forward/backward compatibility, capturing `equipment`, `damage_assessments` (with on-device `quality_scores`), `notes`, `line_items` (each linked back via `source_capture_id`), `summary`, and `metadata`.
